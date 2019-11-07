@@ -1,4 +1,11 @@
 # novoCaller
+## Modifications
+The parser has been updated to work with a different type of VCF not annotated with VEP.
+The new TAG parsed by the program is 'NOVO' and the format is as follow:
+```
+##INFO=<ID=NOVO,Number=.,Type=String,Description="values for novoCaller from VEP and gnomAD. Format:'Consequence|SYMBOL|Gene|gnomAD_AF' ">
+```
+
 ## About
 
 novoCaller is a Bayesian de novo variant calling algorithm that uses information from read-level data both in the pedigree and in unrelated samples. The method was extensively tested using large trio sequencing studies, and it consistently achieved over 98% sensitivity while giving significantly more specificity than other well known methods for the same sensitivity values. \
