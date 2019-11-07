@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/berse/Repos/novoCaller/definitions.h
+
+/Users/berse/Repos/novoCaller/novoCaller.cpp
+iostream
+-
+vector
+-
+list
+-
+map
+-
+sstream
+-
+string
+-
+fstream
+-
+stdexcept
+-
+cstdlib
+-
+ctime
+-
+cmath
+-
+limits
+-
+algorithm
+-
+sstream
+-
+definitions.h
+/Users/berse/Repos/novoCaller/definitions.h
+tests.h
+/Users/berse/Repos/novoCaller/tests.h
+
+/Users/berse/Repos/novoCaller/tests.h
+

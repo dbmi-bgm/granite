@@ -1064,9 +1064,9 @@ class vcf_line_cols{
 
 bool vcf_line_cols::CSQ_line_checker(const std::string& line){
 	using namespace std;
-	if(line.size()>=14){
-		const string temp(line.begin()+11,line.begin()+14);
-		if(temp=="CSQ")
+	if(line.size()>=15){
+		const string temp(line.begin()+11,line.begin()+15);
+		if(temp=="NOVO")
 			return 1;
 		else
 			return 0;
@@ -1093,7 +1093,7 @@ int vcf_line_cols::CSQ_ExAC_AF_col_extractor(const std::string& CSQ_line){
 	split_temp=split(temp,'|');
 	
 	for(size_t I(0);I<split_temp.size();++I){
-		if(split_temp[I]=="ExAC_AF")
+		if(split_temp[I]=="gnomAD_AF")
 			return I;
 	}
 	return -1;
