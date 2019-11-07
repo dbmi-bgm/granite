@@ -1326,8 +1326,8 @@ INFO_data::INFO_data(const std::string& INFO,const int ExAC_AF_col): split_INFO(
 			const std::string new_temp(temp.begin()+8,temp.end());
 			ExAC_AF=atof(new_temp.c_str());
 		}
-		if(std::string(temp.begin(),temp.begin()+4)=="CSQ="){
-			const std::string new_temp(temp.begin()+4,temp.end());
+		if(std::string(temp.begin(),temp.begin()+5)=="NOVO="){
+			const std::string new_temp(temp.begin()+5,temp.end());
 			CSQ_data_obj=CSQ_data(new_temp,ExAC_AF_col);
 		}
 	}
