@@ -1233,8 +1233,8 @@ CSQ_data::CSQ_data(const std::string& CSQ_line,const int ExAC_AF_col): MDQ("inte
 		if(split_each_val.size()>ExAC_AF_col && ExAC_AF_col>0)
 			freq_val=split_each_val[ExAC_AF_col];
 		
-		const string Consequence_val(split_each_val[1]);
-		MDQ_update(Consequence_val,split_each_val[3]);
+		const string Consequence_val(split_each_val[0]);
+		MDQ_update(Consequence_val,split_each_val[1]);
 		if(freq_val.size()>0)
 			vals[split_each_val[0]]=atof(freq_val.c_str());
 		else
