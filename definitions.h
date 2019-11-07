@@ -1080,17 +1080,14 @@ int vcf_line_cols::CSQ_ExAC_AF_col_extractor(const std::string& CSQ_line){
 	using namespace std;
 	string::const_iterator I1,I2;
 	I1=CSQ_line.begin();
-	while(*I1!='"')
+	while(*I1!='\'')
 		++I1;
 	I2=I1;
 	++I2;
-	while(*I2!='"')
+	while(*I2!='\'')
 		++I2;
 	string temp(I1+1,I2);
-	vector<string> split_temp( split(temp) );
-	const size_t L( split_temp.size() );
-	temp=split_temp[L-1];
-	split_temp=split(temp,'|');
+	vector<string> split_temp( split(temp, '|') );
 	
 	for(size_t I(0);I<split_temp.size();++I){
 		if(split_temp[I]=="gnomAD_AF")
@@ -1322,10 +1319,10 @@ INFO_data::INFO_data(const std::string& INFO,const int ExAC_AF_col): split_INFO(
 			AF=atof(new_temp.c_str());
 			continue;
 		}
-		if(std::string(temp.begin(),temp.begin()+8)=="ExAC_AF="){
+/*		if(std::string(temp.begin(),temp.begin()+8)=="ExAC_AF="){
 			const std::string new_temp(temp.begin()+8,temp.end());
 			ExAC_AF=atof(new_temp.c_str());
-		}
+		}       */
 		if(std::string(temp.begin(),temp.begin()+5)=="NOVO="){
 			const std::string new_temp(temp.begin()+5,temp.end());
 			CSQ_data_obj=CSQ_data(new_temp,ExAC_AF_col);
