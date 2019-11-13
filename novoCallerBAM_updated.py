@@ -181,7 +181,7 @@ def get_sam_file_list(list_of_filenames):
 	line=buff.readline()
 	samfile_list=[]
 	while len(line)>1:
-		split_line=line.split()
+		split_line=line.rstrip().split()
 		filename=split_line[0]
 		samfile = pysam.AlignmentFile(filename, "rb" )
 		samfile_list.append(samfile)
@@ -202,7 +202,7 @@ def get_ADs(samfile,chrom,position_actual,REF,MQ_thresh,BQ_thresh):
 	position=position_actual-1
 	ADf=np.array([0.,0])
 	ADr=np.array([0.,0])
-	if chrom==0: #chr are hardcoded, that may be an issue
+	if chrom==0:
 		CC="M"
 	#end if
 	if chrom>0 and chrom<=22:
@@ -972,40 +972,45 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 	trio_samfiles=get_sam_file_list(trio_filename)
 
 	while line:
-		count=count+1
+		if not line.startswith('#'):
+			count=count+1
 
-		print(count),
-		sys.stdout.flush()
-		split_line=line.split()
-		chrom=chr_calc(split_line[0])
-		pos=int(split_line[1])
-		REF=split_line[3]
-		ALT=split_line[4]
-		INFO=split_line[7]
-		split_INFO=INFO.split(";")
-		for SS in split_INFO:
-			temp="ExAC_AF_computed="
-			if SS[0:len(temp)]==temp:
-				allele_freq=float(SS[len(temp):])
+			sys.stderr.write('\rChecking variant... %d' %count)
+			sys.stderr.flush()
+			split_line=line.rstrip().split()
+			chrom=chr_calc(split_line[0])
+			pos=int(split_line[1])
+			REF=split_line[3]
+			ALT=split_line[4]
+			INFO=split_line[7]
+			split_INFO=INFO.split(";")
+
+			MDC,CSQ_gene="MCD","GENE"
+
+			# getting gnomAD AF from INFO column
+			for SS in split_INFO:
+				temp="novoAF="
+				if SS[0:len(temp)]==temp:
+					try:
+						allele_freq=float(SS[len(temp):])
+					except:
+						allele_freq=0.
+					#end try
+					break
+				#end if
+			#end for
+
+			PP,ADfs,ADrs,ADfs_U,ADrs_U,rho_f_new,rho_r_new,prior_L_new,AF_unrel = PP_calc(trio_samfiles,unrelated_samfiles,chrom,pos,REF,ALT,allele_freq,MQ_thresh,BQ_thresh)
+			if AF_unrel<0.01 and ALT_read_checker_in_parents(ADfs,ADrs):
+				rec_single=[PP,line,MDC,ADfs,ADrs,ADfs_U,ADrs_U,allele_freq,rho_f_new,rho_r_new,prior_L_new,AF_unrel,CSQ_gene]
+				record.append(rec_single)
 			#end if
-			temp="MDC="
-			if SS[0:len(temp)]==temp:
-				MDC=SS[len(temp):]
-			#end if
-			temp="CSQ_gene="
-			if SS[0:len(temp)]==temp:
-				CSQ_gene=SS[len(temp):]
-			#end if
-		PP,ADfs,ADrs,ADfs_U,ADrs_U,rho_f_new,rho_r_new,prior_L_new,AF_unrel = PP_calc(trio_samfiles,unrelated_samfiles,chrom,pos,REF,ALT,allele_freq,MQ_thresh,BQ_thresh)
-		if AF_unrel<0.01 and ALT_read_checker_in_parents(ADfs,ADrs):
-			rec_single=[PP,line,MDC,ADfs,ADrs,ADfs_U,ADrs_U,allele_freq,rho_f_new,rho_r_new,prior_L_new,AF_unrel,CSQ_gene]
-			record.append(rec_single)
 		#end if
 
 		line=buff.readline()
 	#end while
 
-	print()
+	sys.stderr.write("\n...Finished\n")
 
 	record.sort(cmp_entry)
 	count=1
@@ -1024,7 +1029,7 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 		AF_unrel=rec[11]
 		CSQ_gene=rec[12]
 
-		split_line=line.split()
+		split_line=line.rstrip().split()
 		outbuff_sorted_simple.write(str(count)+")\t"+split_line[0]+"\t"+split_line[1]+"\t"+split_line[3]+"\t"+split_line[4]+"\tAF="+str(allele_freq)+"\t")
 		outbuff_sorted_simple.write("rhos= "+str(rho_f_new)+","+str(rho_r_new)+"\t")
 		outbuff_sorted_simple.write(("prior=%r" %np.exp(prior_L_new))+"\tPP="+str(PP)+"\t")
@@ -1060,10 +1065,10 @@ if __name__=="__main__":
 		if argv[i]=="-T":
 			trio_filename=argv[i+1]
 
-	print("output file = ",outfilename)
-	print("input file = ",initial_filename)
-	print("unrelated samples files = ",unrelated_filename)
-	print("trio files = ",trio_filename)
+	print("output_file=",outfilename)
+	print("input_file=",initial_filename)
+	print("unrelated_files=",unrelated_filename)
+	print("trio_files=",trio_filename)
 
 	runner(outfilename,initial_filename,unrelated_filename,trio_filename)
 #end if
