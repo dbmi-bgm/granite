@@ -706,7 +706,7 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 
 
 	while line:
-		if not line.startswith('#')
+		if not line.startswith('#'):
 			count=count+1
 
 
