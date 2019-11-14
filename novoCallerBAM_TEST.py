@@ -719,16 +719,18 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 			ALT=split_line[4]
 			INFO=split_line[7]
 			split_INFO=INFO.split(";")
+
+			MDC, CSQ_gene = 'MDC', 'GENE'
 			for SS in split_INFO:
 				temp="novoAF="
 				if SS[0:len(temp)]==temp:
 					allele_freq=float(SS[len(temp):])
-				temp="MDC="
-				if SS[0:len(temp)]==temp:
-					MDC=SS[len(temp):]
-				temp="CSQ_gene="
-				if SS[0:len(temp)]==temp:
-					CSQ_gene=SS[len(temp):]
+				# temp="MDC="
+				# if SS[0:len(temp)]==temp:
+				# 	MDC=SS[len(temp):]
+				# temp="CSQ_gene="
+				# if SS[0:len(temp)]==temp:
+				# 	CSQ_gene=SS[len(temp):]
 			PP,ADfs,ADrs,ADfs_U,ADrs_U,rho_f_new,rho_r_new,prior_L_new,AF_unrel = PP_calc(trio_samfiles,unrelated_samfiles,chrom,pos,REF,ALT,allele_freq,MQ_thresh,BQ_thresh)
 			if AF_unrel<0.01 and ALT_read_checker_in_parents(ADfs,ADrs):
 				rec_single=[PP,line,MDC,ADfs,ADrs,ADfs_U,ADrs_U,allele_freq,rho_f_new,rho_r_new,prior_L_new,AF_unrel,CSQ_gene]
