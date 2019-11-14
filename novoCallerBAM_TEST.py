@@ -724,7 +724,10 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 			for SS in split_INFO:
 				temp="novoAF="
 				if SS[0:len(temp)]==temp:
-					allele_freq=float(SS[len(temp):])
+					try:
+						allele_freq=float(SS[len(temp):])
+					except:
+						allele_freq=0.
 				# temp="MDC="
 				# if SS[0:len(temp)]==temp:
 				# 	MDC=SS[len(temp):]
