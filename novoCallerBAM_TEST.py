@@ -727,7 +727,7 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 					try:
 						allele_freq=float(SS[len(temp):])
 					except:
-						allele_freq=0.
+						allele_freq=0. #need to handle also if the field is missing in the annotation
 				# temp="MDC="
 				# if SS[0:len(temp)]==temp:
 				# 	MDC=SS[len(temp):]
