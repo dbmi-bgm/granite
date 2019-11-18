@@ -6,6 +6,10 @@ The new TAG parsed by the program is 'NOVO' and the format is as follow:
 ##INFO=<ID=NOVO,Number=.,Type=String,Description="values for novoCaller from VEP and gnomAD. Format:'Consequence|SYMBOL|Gene|gnomAD_AF' ">
 ```
 
+## Notes
+
+The original python script for step 2 works only on the output of step 1. It also requires a numpy<=1.11.2, any newer numpy version will crash due to a change in the library. The program is using floatings as indexes to subset numpy tables, while this is handled in older numpy versions by an automatic cast to integers, the newer numpy versions raise an error.
+
 ## About
 
 novoCaller is a Bayesian de novo variant calling algorithm that uses information from read-level data both in the pedigree and in unrelated samples. The method was extensively tested using large trio sequencing studies, and it consistently achieved over 98% sensitivity while giving significantly more specificity than other well known methods for the same sensitivity values. \
