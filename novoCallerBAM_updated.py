@@ -1004,12 +1004,13 @@ if __name__=="__main__":
 		if argv[i]=="-T":
 			trio_filename=argv[i+1]
 		if argv[i]=="-A":
-			allele_freq_thr=argv[i+1]
+			allele_freq_thr=float(argv[i+1])
 
-	sys.stderr.write("outfilename=",outfilename)
-	sys.stderr.write("initial_filename=",initial_filename)
-	sys.stderr.write("unrelated_filename=",unrelated_filename)
-	sys.stderr.write("trio_filename=",trio_filename)
+	sys.stderr.write("outfilename=" + outfilename + '\n')
+	sys.stderr.write("initial_filename=" + initial_filename + '\n')
+	sys.stderr.write("unrelated_filename=" + unrelated_filename + '\n')
+	sys.stderr.write("trio_filename=" + trio_filename + '\n')
+	sys.stderr.write("allele_freq_thr=" + str(allele_freq_thr) + '\n')
 	sys.stderr.flush()
 
 	runner(outfilename,initial_filename,unrelated_filename,trio_filename)
