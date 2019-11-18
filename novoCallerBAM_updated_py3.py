@@ -20,7 +20,7 @@ import sys, os
 #################################################################
 def GT_ordering_alternate(ALT_count):
 	''' '''
-	combos=(ALT_count+1)*(ALT_count+2)/2
+	combos=(ALT_count+1)*(ALT_count+2)//2
 	ordering=np.empty([combos,2])
 	count=0
 	for a1 in range(0,ALT_count+1):
@@ -39,7 +39,7 @@ def GT_ordering_alternate(ALT_count):
 def row_gen(GT1,GT2,alt_count,mut_rate):
 	''' '''
 	N=alt_count
-	combos=(N+1)*(N+2)/2
+	combos=(N+1)*(N+2)//2
 	row=np.zeros(combos)
 	count=0
 	for a1 in range(N+1):
@@ -92,7 +92,7 @@ def table_gen(alt_count,mut_rate):
 	N=alt_count
 	II_prev=-1
 
-	combos=(N+1)*(N+2)/2
+	combos=(N+1)*(N+2)//2
 	table=np.zeros([combos**2,combos])
 	for a1 in range(N+1):
 		for a2 in range(a1,N+1):
@@ -125,7 +125,7 @@ def GT_likelihood_wrt_allele_calc(ALT_count):
 	''' '''
 	ordering=GT_ordering_alternate(ALT_count)
 
-	combos=(ALT_count+1)*(ALT_count+2)/2
+	combos=(ALT_count+1)*(ALT_count+2)//2
 	table=np.zeros([combos,ALT_count+1])*1.
 
 	for i in range(combos):
@@ -473,7 +473,7 @@ def M2_L_calc_aux(M1_L_k,GT_likelihood_wrt_allele_L):
 	if M1_L_k.size-1 != ALT_count:
 		sys.exit("ERROR in M2_L_calc_aux")
 	#end if
-	combos=(ALT_count+1)*(ALT_count+2)/2
+	combos=(ALT_count+1)*(ALT_count+2)//2
 	temp_table=GT_likelihood_wrt_allele_L+np.tile(M1_L_k.reshape([1,ALT_count+1]),[combos,1])
 	M2_L_k=np.zeros(combos)
 	for i in range(combos):
@@ -565,7 +565,7 @@ def M4_L_calc_aux(M3_L_k,GT_likelihood_wrt_allele_L):
 	if (GT_likelihood_wrt_allele_L.shape)[1]-1 != 1:
 		sys.exit("ERROR in M4_L_calc_aux")
 	#end if
-	combos=(ALT_count+1)*(ALT_count+2)/2
+	combos=(ALT_count+1)*(ALT_count+2)//2
 	temp_table=GT_likelihood_wrt_allele_L+np.tile(M3_L_k.reshape([combos,1]),[1,ALT_count+1])
 	M4_L_k=np.zeros(ALT_count+1)
 	for i in range(ALT_count+1):
