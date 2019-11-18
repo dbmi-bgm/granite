@@ -72,7 +72,7 @@ def row_gen(GT1,GT2,alt_count,mut_rate):
 					for b1 in [a1,a2]:
 						for b2 in [a3,a4]:
 							gt_work=np.sort([b1,b2])
-							index=(2*N+3-gt_work[0])*gt_work[0]/2+gt_work[1]-gt_work[0]
+							index=(2*N+3-gt_work[0])*gt_work[0]//2+gt_work[1]-gt_work[0]
 							row[index]=row[index]+0.25*P
 						#end for
 					#end for
