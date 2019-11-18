@@ -100,8 +100,8 @@ def table_gen(alt_count,mut_rate):
 				for a4 in range(a3,N+1):
 					GT1=[a1,a2]
 					GT2=[a3,a4]
-					I1=(2*N+3-GT1[0])*GT1[0]/2+GT1[1]-GT1[0]
-					I2=(2*N+3-GT2[0])*GT2[0]/2+GT2[1]-GT2[0]
+					I1=(2*N+3-GT1[0])*GT1[0]//2+GT1[1]-GT1[0]
+					I2=(2*N+3-GT2[0])*GT2[0]//2+GT2[1]-GT2[0]
 					II=I1*combos+I2
 
 					if II<=II_prev:
