@@ -850,18 +850,18 @@ def PP_calc(trio_samfiles,unrelated_samfiles,chrom,pos,REF,ALT,allele_freq,MQ_th
 #end def
 
 #################################################################
-#
+# Obsolete, not used anymore. Sorting is done by a lambda
 #################################################################
-def cmp_entry(E1,E2):
-	''' '''
-	if E1[0]>E2[0]:
-		return -1
-	elif E1[0]==E2[0]:
-		return 0
-	else:
-		return 1
-	#end if
-#end def
+# def cmp_entry(E1,E2):
+# 	''' '''
+# 	if E1[0]>E2[0]:
+# 		return -1
+# 	elif E1[0]==E2[0]:
+# 		return 0
+# 	else:
+# 		return 1
+# 	#end if
+# #end def
 
 #################################################################
 #
@@ -951,7 +951,7 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 	sys.stderr.flush()
 
 	# Writing results
-	record.sort(key=lambda e: (e[0], int(e[1].split('\t')[1])), reverse=True)
+	record.sort(key=lambda e: e[0], reverse=True)
 	count=1
 	for rec in record:
 		PP=rec[0]
