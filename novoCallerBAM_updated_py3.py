@@ -951,7 +951,7 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 	sys.stderr.flush()
 
 	# Writing results
-	record.sort(key=cmp_entry)
+	record.sort(key=lambda e: (e[0], int(e[1].split('\t')[1]))
 	count=1
 	for rec in record:
 		PP=rec[0]
