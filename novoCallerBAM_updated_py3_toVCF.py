@@ -994,6 +994,9 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 #################################################################
 if __name__=="__main__":
 
+	# Variables
+	outfilename = ''
+
 	argv=sys.argv
 	for i in range(1,len(argv)):
 		if argv[i]=="-O":
@@ -1006,6 +1009,10 @@ if __name__=="__main__":
 			trio_filename=argv[i+1]
 		if argv[i]=="-A":
 			allele_freq_thr=float(argv[i+1])
+
+	if not outfilename:
+		outfilename='novoCaller_' + initial_filename
+	#end if
 
 	sys.stderr.write("outfilename=" + outfilename + '\n')
 	sys.stderr.write("initial_filename=" + initial_filename + '\n')
