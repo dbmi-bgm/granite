@@ -946,7 +946,7 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 		line=buff.readline()
 	#end while
 
-	sys.stderr.write('\n ...Writing results' + str(count) + '\n')
+	sys.stderr.write('\n ...Writing results for ' + str(count) + ' variants\n')
 	sys.stderr.flush()
 
 	# Writing results
