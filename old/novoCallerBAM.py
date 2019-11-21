@@ -43,24 +43,24 @@ def row_gen(GT1,GT2,alt_count,mut_rate):
 					else:
 						P=P*mut_rate/N
 					count+=1
-					
+
 					for b1 in [a1,a2]:
 						for b2 in [a3,a4]:
 							gt_work=np.sort([b1,b2])
 							index=(2*N+3-gt_work[0])*gt_work[0]/2+gt_work[1]-gt_work[0]
-							
+
 							row[index]=row[index]+0.25*P
-	
+
 	return row
 
 
 
 def table_gen(alt_count,mut_rate):
 	N=alt_count
-	
-	
+
+
 	II_prev=-1
-	
+
 	combos=(N+1)*(N+2)/2
 	table=np.zeros([combos**2,combos])
 	for a1 in range(N+1):
@@ -72,25 +72,25 @@ def table_gen(alt_count,mut_rate):
 					I1=(2*N+3-GT1[0])*GT1[0]/2+GT1[1]-GT1[0]
 					I2=(2*N+3-GT2[0])*GT2[0]/2+GT2[1]-GT2[0]
 					II=I1*combos+I2
-					
+
 					if II<=II_prev:
 						print "error in II calc!!!"
 						print II_prev,II
-					
-					
+
+
 					row=row_gen(GT1,GT2,alt_count,mut_rate)
 					table[II,:]=row
-	
-	
+
+
 	return table
 
 
 def GT_likelihood_wrt_allele_calc(ALT_count):
 	ordering=GT_ordering_alternate(ALT_count)
-	
+
 	combos=(ALT_count+1)*(ALT_count+2)/2
 	table=np.zeros([combos,ALT_count+1])*1.
-	
+
 	for i in range(combos):
 		a1=ordering[i,0]
 		a2=ordering[i,1]
@@ -126,9 +126,9 @@ def get_sam_file_list(list_of_filenames):
 		filename=split_line[0]
 		samfile = pysam.AlignmentFile(filename, "rb" )
 		samfile_list.append(samfile)
-		
+
 		line=buff.readline()
-	
+
 	return samfile_list
 
 
@@ -167,7 +167,7 @@ def get_ADs(samfile,chrom,position_actual,REF,MQ_thresh,BQ_thresh):
 		if chrom==24:
 			CC="Y"
 		SP=samfile.pileup(CC, position, position+1)
-	
+
 	for pileupcolumn in SP:
 		if(pileupcolumn.pos==position):
 			for pileupread in pileupcolumn.pileups:
@@ -217,7 +217,7 @@ def get_ADs_deletion(samfile,chrom,position_actual,REF_0,MQ_thresh,BQ_thresh):
 	for pileupcolumn in SP:
 		if(pileupcolumn.pos==position):
 			for pileupread in pileupcolumn.pileups:
-				
+
 				if not pileupread.is_del and not pileupread.is_refskip:
 					MQ=pileupread.alignment.mapping_quality
 					BQ=pileupread.alignment.query_qualities[pileupread.query_position]
@@ -267,7 +267,7 @@ def get_ADs_insertion(samfile,chrom,position_actual,REF_0,MQ_thresh,BQ_thresh):
 	for pileupcolumn in SP:
 		if(pileupcolumn.pos==position):
 			for pileupread in pileupcolumn.pileups:
-				
+
 				if not pileupread.is_del and not pileupread.is_refskip:
 					MQ=pileupread.alignment.mapping_quality
 					BQ=pileupread.alignment.query_qualities[pileupread.query_position]
@@ -312,10 +312,10 @@ def get_all_ADs_combined(unrelated_samfiles,chrom,position_actual,REF,ALT,MQ_thr
 		ADf,ADr = get_ADs_combined(samfile,chrom,position_actual,REF,ALT,MQ_thresh,BQ_thresh)
 		ADfs.append(ADf)
 		ADrs.append(ADr)
-		
+
 	ADfs=np.array(ADfs)
 	ADrs=np.array(ADrs)
-	
+
 	return ADfs,ADrs
 
 
@@ -466,7 +466,7 @@ def T_term_calc_for_rho(A_marg_L,AD):
 	if len(A_marg_L)!=AD.size:
 		print "ERROR in T_term_calc"
 		sys.exit()
-	
+
 	ALT_count=AD.size-1
 	T1_term=0.
 	T2_term=0.
@@ -474,10 +474,10 @@ def T_term_calc_for_rho(A_marg_L,AD):
 		A_marg_L_k=A_marg_L[k]
 		A_marg_temp=np.exp(A_marg_L_k-np.max(A_marg_L_k))
 		A_marg=A_marg_temp/np.sum(A_marg_temp)
-		
+
 		T1_term=T1_term+A_marg[k]*AD[k]
 		T2_term=T2_term+(1.-A_marg[k])*AD[k]
-	
+
 	return T1_term,T2_term
 
 def GT_marg_L_to_GT_marg(GT_marg_L):
@@ -496,18 +496,18 @@ def EM_step(ADf_list,ADr_list,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_
 	D[0]=D_original[0]
 	D[1]=D_original[1]
 	D[2]=D_original[2]
-	
-	
+
+
 	if allele_freq<=0.:
 		AF=0.
 	else:
 		AF=allele_freq
-	
+
 	f0=(1.-AF)**2.
 	f2=AF**2.
 	f1=1.-f0-f2
 	D=np.array([f0,f1,f2])*1000.+2.
-	
+
 	T1_f=a-1.
 	T2_f=b-1.
 	T1_r=a-1.
@@ -517,11 +517,11 @@ def EM_step(ADf_list,ADr_list,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_
 	joint_probty=joint_probty+(a-1.)*np.log(rho_r_old)+(b-1.)*np.log(1.-rho_r_old)
 	for i in range(3):
 		joint_probty=joint_probty+(D[i]-1)*prior_L_old[i]
-	
+
 	if len(ADf_list)!=len(ADr_list):
 		print "ERROR1 in EM_step"
 		sys.exit()
-	
+
 	for i in range(len(ADf_list)):
 		ADf=ADf_list[i]
 		ADr=ADr_list[i]
@@ -536,33 +536,33 @@ def EM_step(ADf_list,ADr_list,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_
 		M4_L_r = M4_L_calc(M3_L_r,GT_likelihood_wrt_allele_L)
 		A_marg_L_f = A_marg_L_calc(M1_L_f,M4_L_f)
 		A_marg_L_r = A_marg_L_calc(M1_L_r,M4_L_r)
-		
+
 		T1_term_f,T2_term_f = T_term_calc_for_rho(A_marg_L_f,ADf)
 		T1_term_r,T2_term_r = T_term_calc_for_rho(A_marg_L_r,ADr)
-		
+
 		T1_f = T1_f + T1_term_f
 		T2_f = T2_f + T2_term_f
 		T1_r = T1_r + T1_term_r
 		T2_r = T2_r + T2_term_r
-		
+
 		GT_marg,joint_probty_term = GT_marg_L_to_GT_marg(GT_marg_L)
 		joint_probty = joint_probty + joint_probty_term
-		
+
 		T_for_prior = T_for_prior + GT_marg
-	
-	
+
+
 	rho_f_new=1./(1.+T2_f/T1_f)
 	rho_r_new=1./(1.+T2_r/T1_r)
 	prior_new=T_for_prior/np.sum(T_for_prior)
 	prior_L_new=np.log(prior_new)
-	
+
 	return rho_f_new,rho_r_new,prior_L_new,joint_probty
 
 
 
 
 def EM_full(ADfs,ADrs,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_allele_L,a,b,D,allele_freq):
-	
+
 	joint_probty_s=[]
 	joint_probty_new=np.nan
 	for i in range(3):
@@ -580,8 +580,8 @@ def EM_full(ADfs,ADrs,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_allele_L
 		prior_L_old=prior_L_new
 		joint_probty_s.append(joint_probty_new)
 	return rho_f_new,rho_r_new,prior_L_new,joint_probty_s
-	
-	
+
+
 
 def GTL_L_calc(ADf,ADr,rho_f,rho_r,GT_likelihood_wrt_allele_L):
 	M1_L_f = M1_L_calc(ADf,rho_f)
@@ -592,7 +592,7 @@ def GTL_L_calc(ADf,ADr,rho_f,rho_r,GT_likelihood_wrt_allele_L):
 	GTL_L = GT_marg_L_calc(M2_L_f,M2_L_r,ADf,ADr,prior_L)
 	GTL_L=GTL_L-np.max(GTL_L)
 	return GTL_L
-	
+
 
 def posterior_probty_calc_exact(prior_L,table_L,C_GL_L,M_GL_L,D_GL_L):
 	combos=3
@@ -601,7 +601,7 @@ def posterior_probty_calc_exact(prior_L,table_L,C_GL_L,M_GL_L,D_GL_L):
 		for I2 in range(combos):
 			II=I1*combos+I2
 			work_column[II]=prior_L[I1]+prior_L[I2]+M_GL_L[I1]+D_GL_L[I2]
-	
+
 	work_table=table_L+np.tile(C_GL_L,[combos**2,1])+np.tile(np.reshape(work_column,[combos**2,1]),[1,combos])
 	work_table=work_table-np.max(work_table)
 	work_table=np.exp(work_table)
@@ -638,10 +638,10 @@ def PP_calc(trio_samfiles,unrelated_samfiles,chrom,pos,REF,ALT,allele_freq,MQ_th
 	a=2.
 	b=2.
 	D=np.array([2.,2,2])
-	
+
 	rho_f_new,rho_r_new,prior_L_new,joint_probty_s = EM_full(ADfs,ADrs,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_allele_L,a,b,D,allele_freq)
-	
-	
+
+
 	AF_unrel=0.
 	for i in range(ADfs.shape[0]):
 		temp1=GTL_L_calc(ADfs[i],ADrs[i],rho_f_new,rho_r_new,GT_likelihood_wrt_allele_L)
@@ -649,17 +649,17 @@ def PP_calc(trio_samfiles,unrelated_samfiles,chrom,pos,REF,ALT,allele_freq,MQ_th
 		temp=temp-np.max(temp)
 		temp=np.exp(temp)
 		temp=temp/np.sum(temp)
-		
+
 		AF_unrel=AF_unrel+temp[1]+temp[2]*2.
-		
+
 	AF_unrel=AF_unrel/2./ADfs.shape[0]
-	
+
 	ADfs,ADrs = get_all_ADs_combined(trio_samfiles,chrom,pos,REF,ALT,MQ_thresh,BQ_thresh)
-	
+
 	table=table_gen(1,1e-8)
 	table_L=np.log(table)
 	PP,work_table = denovo_P_calc(ADfs,ADrs,rho_f_new,rho_r_new,GT_likelihood_wrt_allele_L,table_L,prior_L_new)
-	
+
 	return PP,ADfs,ADrs,ADfs_U,ADrs_U,rho_f_new,rho_r_new,prior_L_new,AF_unrel
 
 
@@ -682,7 +682,7 @@ def ALT_read_checker_in_parents(ADfs,ADrs):
 		print "ERROR in ALT_read_checker_in_parents"
 		sys.exit()
 	summ=ADfs[0][1]+ADfs[1][1]+ADrs[0][1]+ADrs[1][1]
-	
+
 	if summ>3:
 		return False
 	else:
@@ -700,15 +700,15 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 	MQ_thresh=-100.
 	BQ_thresh=-100.
 	count=0
-	
+
 	unrelated_samfiles=get_sam_file_list(unrelated_filename)
 	trio_samfiles=get_sam_file_list(trio_filename)
-	
-	
+
+
 	while line:
 		count=count+1
-		
-		
+
+
 		print count,
 		sys.stdout.flush()
 		split_line=line.split()
@@ -732,14 +732,14 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 		if AF_unrel<0.01 and ALT_read_checker_in_parents(ADfs,ADrs):
 			rec_single=[PP,line,MDC,ADfs,ADrs,ADfs_U,ADrs_U,allele_freq,rho_f_new,rho_r_new,prior_L_new,AF_unrel,CSQ_gene]
 			record.append(rec_single)
-		
-		
-		
+
+
+
 		line=buff.readline()
-		
-	
+
+
 	print
-	
+
 	record.sort(cmp_entry)
 	count=1
 	for rec in record:
@@ -756,7 +756,7 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 		prior_L_new=rec[10]
 		AF_unrel=rec[11]
 		CSQ_gene=rec[12]
-		
+
 		split_line=line.split()
 		outbuff_sorted_simple.write(str(count)+")\t"+split_line[0]+"\t"+split_line[1]+"\t"+split_line[3]+"\t"+split_line[4]+"\tAF="+str(allele_freq)+"\t")
 		outbuff_sorted_simple.write("rhos= "+str(rho_f_new)+","+str(rho_r_new)+"\t")
@@ -769,20 +769,20 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 		outbuff_sorted_simple.write("unrelated:\n")
 		for i in range(len(ADfs_U)):
 			outbuff_sorted_simple.write("%r\t%r\n" %(ADfs_U[i],ADrs_U[i]))
-		
-		
-		count=count+1
-	
-	
-	
 
-	
+
+		count=count+1
+
+
+
+
+
 
 
 
 
 if __name__=="__main__":
-	
+
 	argv=sys.argv
 	for i in range(1,len(argv)):
 		if argv[i]=="-O":
@@ -793,20 +793,10 @@ if __name__=="__main__":
 			unrelated_filename=argv[i+1]
 		if argv[i]=="-T":
 			trio_filename=argv[i+1]
-	
+
 	print "outfilename=",outfilename
 	print "initial_filename=",initial_filename
 	print "unrelated_filename=",unrelated_filename
 	print "trio_filename=",trio_filename
-	
+
 	runner(outfilename,initial_filename,unrelated_filename,trio_filename)
-	
-
-
-
-
-
-
-
-
-
