@@ -2,12 +2,20 @@
 
 #################################################################
 #
+#	novoCaller 2.0
+#
+#################################################################
+
+
+#################################################################
+#
 #	LIBRARIES
 #
 #################################################################
 import pysam
 import numpy as np
 import sys, os
+import argparse
 
 
 #################################################################
@@ -16,7 +24,7 @@ import sys, os
 #
 #################################################################
 #################################################################
-#
+#	GT_ordering_alternate (original)
 #################################################################
 def GT_ordering_alternate(ALT_count):
 	''' '''
@@ -34,7 +42,7 @@ def GT_ordering_alternate(ALT_count):
 #end def
 
 #################################################################
-#
+#	row_gen (original)
 #################################################################
 def row_gen(GT1,GT2,alt_count,mut_rate):
 	''' '''
@@ -85,7 +93,7 @@ def row_gen(GT1,GT2,alt_count,mut_rate):
 #end def
 
 #################################################################
-#
+#	table_gen (original)
 #################################################################
 def table_gen(alt_count,mut_rate):
 	''' '''
@@ -105,7 +113,7 @@ def table_gen(alt_count,mut_rate):
 					II=I1*combos+I2
 
 					if II<=II_prev:
-						sys.exit("error in II calc!!!")
+						sys.exit("error in II calc!!!\n")
 					#end if
 
 					row=row_gen(GT1,GT2,alt_count,mut_rate)
@@ -119,7 +127,7 @@ def table_gen(alt_count,mut_rate):
 #end def
 
 #################################################################
-#
+#	GT_likelihood_wrt_allele_calc (original)
 #################################################################
 def GT_likelihood_wrt_allele_calc(ALT_count):
 	''' '''
@@ -139,50 +147,53 @@ def GT_likelihood_wrt_allele_calc(ALT_count):
 #end def
 
 #################################################################
-#
+#	encode_chrom
 #################################################################
-def chr_calc(str_val):
-	''' '''
-	if str_val[0:3]=="chr":
-		str_val=str_val[3:len(str_val)]
-	#end if
-	chrom=-1
-	rec={"M":0,"X":23,"Y":24}
-	try:
-		chrom=rec[str_val]
-	except:
+def encode_chrom(chrom):
+	''' convert chr IDs to numbers to be used by other functions '''
+	encode = {'M': 0, 'MT': 0, 'X': 23, 'Y': 24}
+	chrom_repl = chrom.replace('chr', '')
+	if chrom_repl in encode:
+		return encode[chrom_repl]
+	else:
 		try:
-			chrom=int(str_val)
-		except:
-			chrom=25
+			return int(chrom_repl)
+		except Exception:
+			return 25
 		#end try
-	#end try
+	#end if
 
-	return chrom
 #end def
 
 #################################################################
-#
+#	buffering_bams
 #################################################################
-def get_sam_file_list(list_of_filenames):
-	''' '''
-	buff=open(list_of_filenames)
-	line=buff.readline()
-	samfile_list=[]
-	while len(line)>1:
-		split_line=line.rstrip().split()
-		filename=split_line[0]
-		samfile = pysam.AlignmentFile(filename, "rb" )
-		samfile_list.append(samfile)
+def buffering_bams(bams_infofile):
+	''' return a list containing reading buffers to bam files,
+	return also a list with the corrisponding IDs associated
+	to the bam files '''
+	bamfiles, IDs  = [], []
+	with open(bams_infofile) as fi:
+		for line in fi:
+			line_strip = line.rstrip()
+			if line_strip:
+				try:
+					ID, filepath = line_strip.split('\t') #ID	path/to/file
+					bamfile = pysam.AlignmentFile(filepath, "rb" )
+					IDs.append(ID)
+					bamfiles.append(bamfile)
+				except Exception:
+					sys.exit('ERROR in parsing the bams info file, expected two columns\n')
+				#end try
+			#end if
+		#end for
+	#end with
 
-		line=buff.readline()
-	#end while
-
-	return samfile_list
+	return bamfiles, IDs
 #end def
 
 #################################################################
-#
+#	get_ADs (original)
 #################################################################
 def get_ADs(samfile,chrom,position_actual,REF,MQ_thresh,BQ_thresh):
 	''' '''
@@ -249,7 +260,7 @@ def get_ADs(samfile,chrom,position_actual,REF,MQ_thresh,BQ_thresh):
 #end def
 
 #################################################################
-#
+#	get_ADs_deletion (original)
 #################################################################
 def get_ADs_deletion(samfile,chrom,position_actual,REF_0,MQ_thresh,BQ_thresh):
 	''' '''
@@ -320,7 +331,7 @@ def get_ADs_deletion(samfile,chrom,position_actual,REF_0,MQ_thresh,BQ_thresh):
 #end def
 
 #################################################################
-#
+#	get_ADs_insertion (original)
 #################################################################
 def get_ADs_insertion(samfile,chrom,position_actual,REF_0,MQ_thresh,BQ_thresh):
 	''' '''
@@ -391,7 +402,7 @@ def get_ADs_insertion(samfile,chrom,position_actual,REF_0,MQ_thresh,BQ_thresh):
 #end def
 
 #################################################################
-#
+#	get_ADs_combined (original)
 #################################################################
 def get_ADs_combined(samfile,chrom,position_actual,REF,ALT,MQ_thresh,BQ_thresh):
 	''' '''
@@ -414,7 +425,7 @@ def get_ADs_combined(samfile,chrom,position_actual,REF,ALT,MQ_thresh,BQ_thresh):
 #end def
 
 #################################################################
-#
+#	get_all_ADs_combined (original)
 #################################################################
 def get_all_ADs_combined(unrelated_samfiles,chrom,position_actual,REF,ALT,MQ_thresh,BQ_thresh):
 	''' '''
@@ -433,7 +444,7 @@ def get_all_ADs_combined(unrelated_samfiles,chrom,position_actual,REF,ALT,MQ_thr
 #end def
 
 #################################################################
-#
+#	M1_L_calc_aux (original)
 #################################################################
 def M1_L_calc_aux(rho,k):
 	''' '''
@@ -447,13 +458,13 @@ def M1_L_calc_aux(rho,k):
 #end def
 
 #################################################################
-#
+#	M1_L_calc (original)
 #################################################################
 def M1_L_calc(AD,rho):
 	''' '''
 	ALT_count=1
 	if AD.size-1 != ALT_count:
-		sys.exit("ERROR in M1_L_calc")
+		sys.exit("ERROR in M1_L_calc\n")
 	#end if
 	M1_L=[]
 	for k in range(ALT_count+1):
@@ -465,13 +476,13 @@ def M1_L_calc(AD,rho):
 #end def
 
 #################################################################
-#
+#	M2_L_calc_aux (original)
 #################################################################
 def M2_L_calc_aux(M1_L_k,GT_likelihood_wrt_allele_L):
 	''' '''
 	ALT_count=1
 	if M1_L_k.size-1 != ALT_count:
-		sys.exit("ERROR in M2_L_calc_aux")
+		sys.exit("ERROR in M2_L_calc_aux\n")
 	#end if
 	combos=(ALT_count+1)*(ALT_count+2)//2
 	temp_table=GT_likelihood_wrt_allele_L+np.tile(M1_L_k.reshape([1,ALT_count+1]),[combos,1])
@@ -487,13 +498,13 @@ def M2_L_calc_aux(M1_L_k,GT_likelihood_wrt_allele_L):
 #end def
 
 #################################################################
-#
+#	M2_L_calc (original)
 #################################################################
 def M2_L_calc(M1_L,GT_likelihood_wrt_allele_L):
 	''' '''
 	ALT_count=1
 	if (M1_L[0]).size-1 != ALT_count:
-		sys.exit("ERROR in M2_L_calc")
+		sys.exit("ERROR in M2_L_calc\n")
 	#end if
 	M2_L=[]
 	for k in range(ALT_count+1):
@@ -506,14 +517,14 @@ def M2_L_calc(M1_L,GT_likelihood_wrt_allele_L):
 #end def
 
 #################################################################
-#
+#	GT_marg_L_calc (original)
 #################################################################
 def GT_marg_L_calc(M2_L_f,M2_L_r,ADf,ADr,prior_L):
 	''' '''
 	GT_marg_L=prior_L
 	ALT_count=1
 	if ADf.size-1 != ALT_count or ADr.size-1 != ALT_count:
-		sys.exit("ERROR in GT_marg_L_calc")
+		sys.exit("ERROR in GT_marg_L_calc\n")
 	#end if
 	for k in range(ALT_count+1):
 		M2_L_k=M2_L_f[k]
@@ -528,7 +539,7 @@ def GT_marg_L_calc(M2_L_f,M2_L_r,ADf,ADr,prior_L):
 #end def
 
 #################################################################
-#
+#	M3_L_calc_aux (original)
 #################################################################
 def M3_L_calc_aux(GT_marg_L,M2_L_k):
 	''' '''
@@ -538,13 +549,13 @@ def M3_L_calc_aux(GT_marg_L,M2_L_k):
 #end def
 
 #################################################################
-#
+#	M3_L_calc (original)
 #################################################################
 def M3_L_calc(GT_marg_L,M2_L):
 	''' '''
 	ALT_count=1
 	if len(M2_L)-1 != ALT_count:
-		sys.exit("ERROR in M3_L_calc")
+		sys.exit("ERROR in M3_L_calc\n")
 	#end if
 	M3_L=[]
 	for k in range(ALT_count+1):
@@ -557,13 +568,13 @@ def M3_L_calc(GT_marg_L,M2_L):
 #end def
 
 #################################################################
-#
+#	M4_L_calc_aux (original)
 #################################################################
 def M4_L_calc_aux(M3_L_k,GT_likelihood_wrt_allele_L):
 	''' '''
 	ALT_count=1
 	if (GT_likelihood_wrt_allele_L.shape)[1]-1 != 1:
-		sys.exit("ERROR in M4_L_calc_aux")
+		sys.exit("ERROR in M4_L_calc_aux\n")
 	#end if
 	combos=(ALT_count+1)*(ALT_count+2)//2
 	temp_table=GT_likelihood_wrt_allele_L+np.tile(M3_L_k.reshape([combos,1]),[1,ALT_count+1])
@@ -579,13 +590,13 @@ def M4_L_calc_aux(M3_L_k,GT_likelihood_wrt_allele_L):
 #end def
 
 #################################################################
-#
+#	M4_L_calc (original)
 #################################################################
 def M4_L_calc(M3_L,GT_likelihood_wrt_allele_L):
 	''' '''
 	ALT_count=1
 	if (GT_likelihood_wrt_allele_L.shape)[1]-1 != ALT_count:
-		sys.exit("ERROR in M4_L_calc")
+		sys.exit("ERROR in M4_L_calc\n")
 	#end if
 	M4_L=[]
 	for k in range(ALT_count+1):
@@ -598,13 +609,13 @@ def M4_L_calc(M3_L,GT_likelihood_wrt_allele_L):
 #end def
 
 #################################################################
-#
+#	A_marg_L_calc (original)
 #################################################################
 def A_marg_L_calc(M1_L,M4_L):
 	''' '''
 	ALT_count=1
 	if len(M1_L)-1 != ALT_count:
-		sys.exit("ERROR in A_marg_L_calc")
+		sys.exit("ERROR in A_marg_L_calc\n")
 	#end if
 	A_marg_L=[]
 	for k in range(ALT_count+1):
@@ -618,12 +629,12 @@ def A_marg_L_calc(M1_L,M4_L):
 #end def
 
 #################################################################
-#
+#	T_term_calc_for_rho (original)
 #################################################################
 def T_term_calc_for_rho(A_marg_L,AD):
 	''' '''
 	if len(A_marg_L)!=AD.size:
-		sys.exit("ERROR in T_term_calc")
+		sys.exit("ERROR in T_term_calc\n")
 	#end if
 	ALT_count=AD.size-1
 	T1_term=0.
@@ -640,7 +651,7 @@ def T_term_calc_for_rho(A_marg_L,AD):
 #end def
 
 #################################################################
-#
+#	GT_marg_L_to_GT_marg (original)
 #################################################################
 def GT_marg_L_to_GT_marg(GT_marg_L):
 	''' '''
@@ -655,7 +666,7 @@ def GT_marg_L_to_GT_marg(GT_marg_L):
 #end def
 
 #################################################################
-#
+#	EM_step (original)
 #################################################################
 def EM_step(ADf_list,ADr_list,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_allele_L,a,b,D_original,allele_freq):
 	''' '''
@@ -687,7 +698,7 @@ def EM_step(ADf_list,ADr_list,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_
 	#end for
 
 	if len(ADf_list)!=len(ADr_list):
-		sys.exit("ERROR1 in EM_step")
+		sys.exit("ERROR1 in EM_step\n")
 	#end if
 
 	for i in range(len(ADf_list)):
@@ -728,7 +739,7 @@ def EM_step(ADf_list,ADr_list,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_
 #end def
 
 #################################################################
-#
+#	EM_full (original)
 #################################################################
 def EM_full(ADfs,ADrs,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_allele_L,a,b,D,allele_freq):
 	''' '''
@@ -755,7 +766,7 @@ def EM_full(ADfs,ADrs,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_allele_L
 #end def
 
 #################################################################
-#
+#	GTL_L_calc (original)
 #################################################################
 def GTL_L_calc(ADf,ADr,rho_f,rho_r,GT_likelihood_wrt_allele_L):
 	''' '''
@@ -771,7 +782,7 @@ def GTL_L_calc(ADf,ADr,rho_f,rho_r,GT_likelihood_wrt_allele_L):
 #end def
 
 #################################################################
-#
+#	posterior_probty_calc_exact (original)
 #################################################################
 def posterior_probty_calc_exact(prior_L,table_L,C_GL_L,M_GL_L,D_GL_L):
 	''' '''
@@ -794,20 +805,20 @@ def posterior_probty_calc_exact(prior_L,table_L,C_GL_L,M_GL_L,D_GL_L):
 #end def
 
 #################################################################
-#
+#	denovo_P_calc (original)
 #################################################################
 def denovo_P_calc(ADfs,ADrs,rho_f,rho_r,GT_likelihood_wrt_allele_L,table_L,prior_L):
 	''' '''
 	M_GL_L=GTL_L_calc(ADfs[0],ADrs[0],rho_f,rho_r,GT_likelihood_wrt_allele_L)
 	D_GL_L=GTL_L_calc(ADfs[1],ADrs[1],rho_f,rho_r,GT_likelihood_wrt_allele_L)
-	C_GL_L=GTL_L_calc(ADfs[2],ADrs[2],rho_f,rho_r,GT_likelihood_wrt_allele_L)
+	C_GL_L=GTL_L_calc(ADfs[2],ADrs[2],rho_f,rho_r,GT_likelihood_wrt_allele_L) # child is the last one
 	PP,work_table = posterior_probty_calc_exact(prior_L,table_L,C_GL_L,M_GL_L,D_GL_L)
 
 	return PP,work_table
 #end def
 
 #################################################################
-#
+#	PP_calc (original)
 #################################################################
 def PP_calc(trio_samfiles,unrelated_samfiles,chrom,pos,REF,ALT,allele_freq,MQ_thresh,BQ_thresh):
 	''' '''
@@ -850,140 +861,187 @@ def PP_calc(trio_samfiles,unrelated_samfiles,chrom,pos,REF,ALT,allele_freq,MQ_th
 #end def
 
 #################################################################
-# Obsolete, not used anymore. Sorting is done by a lambda
+#	ALT_read_check_in_parents
 #################################################################
-# def cmp_entry(E1,E2):
-# 	''' '''
-# 	if E1[0]>E2[0]:
-# 		return -1
-# 	elif E1[0]==E2[0]:
-# 		return 0
-# 	else:
-# 		return 1
-# 	#end if
-# #end def
-
-#################################################################
-#
-#################################################################
-def ALT_read_checker_in_parents(ADfs,ADrs):
-	''' '''
-	if(len(ADfs)!=3 or len(ADrs)!=3):
-		sys.exit("ERROR in ALT_read_checker_in_parents")
+def ALT_read_check_in_parents(ADfs, ADrs, thr=3):
+	''' check if parents have alternate reads over threshold '''
+	if len(ADfs) != 3 or len(ADrs) != 3:
+		sys.exit("ERROR in retrieving stranded AD counts, missing information for trio\n")
 	#end if
-	summ=ADfs[0][1]+ADfs[1][1]+ADrs[0][1]+ADrs[1][1]
+	alt_count = ADfs[0][1] + ADfs[1][1] + ADrs[0][1] + ADrs[1][1]
 
-	if summ>3:
+	if alt_count > thr:
 		return False
 	else:
 		return True
 	#end if
+
 #end def
 
 #################################################################
-# RUNNER function
+# RUNNER (main function)
 #################################################################
-def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
-	''' '''
-	outbuff_sorted_simple=open(outfilename,'w')
-	buff=open(initial_filename,'r')
-	line=buff.readline()
-	record=[]
-	MQ_thresh=-100.
-	BQ_thresh=-100.
-	count=0
+def runner(args):
+	''' parse the input vcf file and calls the functions to run the analysis '''
 
-	# Opening BAM files
-	unrelated_samfiles=get_sam_file_list(unrelated_filename)
-	trio_samfiles=get_sam_file_list(trio_filename)
+	# Variables
+	is_allele_freq_thr = True if args['allelefreqthr'] else False
+	allele_freq_thr = float(args['allelefreqthr']) if is_allele_freq_thr else 1.
+	MQ_thr, BQ_thr = -100., -100.
 
-	# Reading variants
-	while line:
-		if not line.startswith('#'): # filtering header lines
-			count=count+1
+	# Buffers
+	output_writer = open(args['outputfile'], 'w')
+	input_reader = open(args['inputfile'], 'r')
 
+	# Data structures
+	variants_passed = []
+	trio_column_idxes = {}
+
+	# Opening bam files and getting bam associated IDs
+	sys.stderr.write('Reading unrelated and trio bamfiles...\n')
+	sys.stderr.flush()
+
+	unrelated_bamfiles, IDs_unrelated = buffering_bams(args['unrelatedbams'])
+	trio_bamfiles, IDs_trio = buffering_bams(args['triobams']) # [parent, parent, child]
+
+	# Checking bam info files for trio is complete
+	if len(trio_bamfiles) != 3:
+		sys.exit('ERROR in bams info file for trio, missing information for some family member\n')
+	#end if
+
+	# Reading input file
+	count, add_format, added_format = 0, False, False
+	line_strip = input_reader.readline().rstrip()
+	while line_strip:
+		if line_strip.startswith('#'): # reading a header line
+			if line_strip.startswith('##'): # header definition line
+				if line_strip.split('=')[0] == '##FORMAT':
+					add_format = True
+				#end if
+
+				# Adding new format tag definition to header for strand AD (RSTR_tag)
+				if add_format and not added_format:
+					added_format = True
+					RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">\n'
+					output_writer.write(RSTR_tag)
+				#end if
+
+				output_writer.write(line_strip + '\n') # writing header line
+			elif line_strip.startswith('#CHROM'): # header columns line
+				output_writer.write(line_strip) # writing header line
+
+				# Saving the idxes of columns for trio IDs in vcf
+				for i, ID in enumerate(line_strip.split('\t')[9:]):
+					if ID in IDs_trio:
+						trio_column_idxes.setdefault(ID, i)
+					#end if
+				#end for
+
+				# Checking genotypes trio are complete
+				if len(trio_column_idxes) != 3:
+					sys.exit('ERROR in vcf structure, missing genotype information for trio\n')
+				#end if
+
+				# Writing unrelated samples IDs in the order associate bam files are given
+				for ID in IDs_unrelated:
+					output_writer.write('\t' + ID)
+				#end for
+				output_writer.write('\n')
+			#end if
+		else:
+			count += 1
 			sys.stderr.write('Analyzing variant: ' + str(count) + '\n')
 			sys.stderr.flush()
 
-			# Splitting Line and parsing information
-			split_line=line.rstrip().split()
-			chrom=chr_calc(split_line[0])
-			pos=int(split_line[1])
-			REF=split_line[3]
-			ALT=split_line[4]
-			INFO=split_line[7]
-			split_INFO=INFO.split(";")
-
-			MDC, CSQ_gene = 'MDC', 'GENE' # placeholders
-			is_novoAF, allele_freq = False, 0.
+			# Splitting line and parsing basic information
+			try:
+				CHROM, POS, _, REF, ALT, _, _, INFO = line_strip.split('\t')[:8]
+				chrom_int = encode_chrom(CHROM)
+				pos_int = int(POS)
+			except Exception:
+				sys.exit('ERROR in vcf structure, missing essential columns\n')
+			#end try
 
 			# Getting allele frequency
-			for SS in split_INFO:
-				temp="novoAF="
-				if SS[0:len(temp)] == temp:
+			is_novoAF, allele_freq = False, 0.
+			for tag in INFO.split(";"):
+				if tag.startswith('novoAF='):
 					is_novoAF = True
 					try:
-						allele_freq = float(SS[len(temp):])
-					except: # novo_AF field is not a float as expected, error
-						sys.exit('novoAF field is in the wrong format, verify the input format')
+						allele_freq = float(tag.split('=')[1])
+					except Exception: # novo_AF field is not a float as expected
+						if is_allele_freq_thr: # error if allele frequency threshold was provided
+							sys.exit('ERROR in input parsing, novoAF field is in the wrong format but looks like you expect to filter based on allele frequency')
+						else: # set to 0. if no filtering by allele frequency is requested
+							allele_freq = 0.
+						#end if
 					#end try
 					break
 				#end if
 			#end for
 
-			if not is_novoAF: # novo_AF field missing, error
-				sys.exit('novoAF field missing, verify the input format')
+			# Check if novo_AF field missing, error if allele frequency threshold was provided
+			if not is_novoAF and is_allele_freq_thr:
+				sys.exit('ERROR in input parsing, novoAF field missing but looks like you expect to filter based on allele frequency')
 			#end if
 
-			if allele_freq <= allele_freq_thr: # hard filter on gnomAD allele frequency
-				PP,ADfs,ADrs,ADfs_U,ADrs_U,rho_f_new,rho_r_new,prior_L_new,AF_unrel = PP_calc(trio_samfiles,unrelated_samfiles,chrom,pos,REF,ALT,allele_freq,MQ_thresh,BQ_thresh)
-				if AF_unrel<0.01 and ALT_read_checker_in_parents(ADfs,ADrs): # another filtering based on a calculated AF using unrelated samples
-					rec_single=[PP,line,MDC,ADfs,ADrs,ADfs_U,ADrs_U,allele_freq,rho_f_new,rho_r_new,prior_L_new,AF_unrel,CSQ_gene]
-					record.append(rec_single)
+			# Calculate statistics
+			if allele_freq <= allele_freq_thr: # hard filter on gnomAD allele frequency to substitute the one on unrelated AF
+				PP, ADfs, ADrs, ADfs_U, ADrs_U, _, _, _, AF_unrel = PP_calc(trio_bamfiles, unrelated_bamfiles, chrom_int, pos_int, REF, ALT, allele_freq, MQ_thr, BQ_thr)
+				#if AF_unrel < 0.01 and ALT_read_checker_in_parents(ADfs, ADrs):
+				if ALT_read_check_in_parents(ADfs, ADrs):
+					variant = [PP, line_strip, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel]
+					variants_passed.append(variant)
 				#end if
 			#end if
 		#end if
 
-		line=buff.readline()
+		line_strip=input_reader.readline().rstrip()
 	#end while
 
-	sys.stderr.write('\n ...Writing results for ' + str(count) + ' variants\n')
+	sys.stderr.write('\n...Writing results for ' + str(count) + ' variants\n')
 	sys.stderr.flush()
 
 	# Writing results
-	record.sort(key=lambda e: e[0], reverse=True)
-	count=1
-	for rec in record:
-		PP=rec[0]
-		line=rec[1]
-		MDC=rec[2]
-		ADfs=rec[3]
-		ADrs=rec[4]
-		ADfs_U=rec[5]
-		ADrs_U=rec[6]
-		allele_freq=rec[7]
-		rho_f_new=rec[8]
-		rho_r_new=rec[9]
-		prior_L_new=rec[10]
-		AF_unrel=rec[11]
-		CSQ_gene=rec[12]
-	#end for
+	for variant in sorted(variants_passed, key=lambda x: x[0], reverse=True):
+		PP, line_strip, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel = variant
 
 		# Formatting the printed output
-		split_line=line.rstrip().split()
-		outbuff_sorted_simple.write(str(count)+")\t"+split_line[0]+"\t"+split_line[1]+"\t"+split_line[3]+"\t"+split_line[4]+"\tAF="+str(allele_freq)+"\t")
-		outbuff_sorted_simple.write("rhos= "+str(rho_f_new)+","+str(rho_r_new)+"\t")
-		outbuff_sorted_simple.write(("prior=%r" %np.exp(prior_L_new))+"\tPP="+str(PP)+"\t")
-		outbuff_sorted_simple.write(("AF_unrel=%r" %AF_unrel)+"\t")
-		outbuff_sorted_simple.write(("CSQ_gene=%r" %CSQ_gene)+"\n")
-		outbuff_sorted_simple.write("trio:\n")
-		for i in range(len(ADfs)):
-			outbuff_sorted_simple.write("%r\t%r\n" %(ADfs[i],ADrs[i]))
-		outbuff_sorted_simple.write("unrelated:\n")
-		for i in range(len(ADfs_U)):
-			outbuff_sorted_simple.write("%r\t%r\n" %(ADfs_U[i],ADrs_U[i]))
+		output_writer.write('\t'.join(line_strip.split('\t')[:7]) + '\t')
+		infos = line_strip.split()[7]
+		if infos[-1] == ';':
+			output_writer.write(line_strip.split()[7] + 'PP={0};AF_unrel={1};\t'.format(PP, AF_unrel))
+		else:
+			output_writer.write(line_strip.split()[7] + ';PP={0};AF_unrel={1};\t'.format(PP, AF_unrel))
+		#end if
+		output_writer.write(line_strip.split()[8] + ':RSTR\t')
 
-		count=count+1
+		genotypes = line_strip.split()[9:]
+		empty_genotype = './.' + ':' * genotypes[0].count(':')
+
+		# Modifying genotypes with AD by strand info
+		for i in range(len(genotypes)):
+			genotypes[i] += ':'
+		#end for
+		for i in range(3):
+			genotypes[trio_column_idxes[IDs_trio[i]]] += '{0},{1},{2},{3}'.format(int(ADfs[i][0]), int(ADfs[i][1]), int(ADrs[i][0]), int(ADrs[i][1]))
+		#end for
+		for i in range(len(ADfs_U)):
+			genotypes.append(empty_genotype + ':{0},{1},{2},{3}'.format(int(ADfs_U[i][0]), int(ADfs_U[i][1]), int(ADrs_U[i][0]), int(ADrs_U[i][1])))
+		#end for
+
+		output_writer.write('\t'.join(genotypes) + '\n')
+	# end for
+
+	# Closing files buffers
+	input_reader.close()
+	output_writer.close()
+	for buffer in unrelated_bamfiles:
+		buffer.close()
+	#end for
+	for buffer in trio_bamfiles:
+		buffer.close()
+	#end for
 #end def
 
 
@@ -992,33 +1050,20 @@ def runner(outfilename,initial_filename,unrelated_filename,trio_filename):
 # MAIN
 #
 #################################################################
-if __name__=="__main__":
+if __name__ == "__main__":
 
-	# Variables
-	outfilename = ''
+	parser = argparse.ArgumentParser(description='Bayesian de novo variant caller')
 
-	argv=sys.argv
-	for i in range(1,len(argv)):
-		if argv[i]=="-O":
-			outfilename=argv[i+1]
-		if argv[i]=="-I":
-			initial_filename=argv[i+1]
-		if argv[i]=="-U":
-			unrelated_filename=argv[i+1]
-		if argv[i]=="-T":
-			trio_filename=argv[i+1]
-		if argv[i]=="-A":
-			allele_freq_thr=float(argv[i+1])
+	parser.add_argument('-i', '--inputfile', help='input vcf file, must contain novoAF=<float> in INFO field to filter by allele frequency', required=True)
+	parser.add_argument('-o', '--outputfile', help='output file to write results, vcf format', required=True)
+	parser.add_argument('-u', '--unrelatedbams', help='tsv file containing ID<TAB>Path/to/file for unrelated bam files \
+													used to train the model', required=True)
+	parser.add_argument('-t', '--triobams', help='tsv file containing ID<TAB>Path/to/file for family bam files, \
+												the proband must be listed as last', required=True)
+	parser.add_argument('-a', '--allelefreqthr', help='threshold to filter by population allele frequency', required=False)
 
-	if not outfilename:
-		outfilename='novoCaller_' + initial_filename
-	#end if
+	args = vars(parser.parse_args())
 
-	sys.stderr.write("outfilename=" + outfilename + '\n')
-	sys.stderr.write("initial_filename=" + initial_filename + '\n')
-	sys.stderr.write("unrelated_filename=" + unrelated_filename + '\n')
-	sys.stderr.write("trio_filename=" + trio_filename + '\n')
-	sys.stderr.write("allele_freq_thr=" + str(allele_freq_thr) + '\n')
-	sys.stderr.flush()
+	runner(args)
 
-	runner(outfilename,initial_filename,unrelated_filename,trio_filename)
+#end if
