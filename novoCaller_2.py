@@ -2,7 +2,8 @@
 
 #################################################################
 #
-#	novoCaller 2.0
+#	novoCaller 2
+#		contact: berselli.michele@gmail.com
 #
 #################################################################
 
@@ -16,6 +17,7 @@ import pysam
 import numpy as np
 import sys, os
 import argparse
+import re
 
 
 #################################################################
@@ -888,6 +890,7 @@ def runner(args):
 	is_allele_freq_thr = True if args['allelefreqthr'] else False
 	allele_freq_thr = float(args['allelefreqthr']) if is_allele_freq_thr else 1.
 	MQ_thr, BQ_thr = -100., -100.
+	replace_RSTR, replace_novoCaller = False, False
 
 	# Buffers
 	output_writer = open(args['outputfile'], 'w')
@@ -910,23 +913,40 @@ def runner(args):
 	#end if
 
 	# Reading input file
-	count, add_format, added_format = 0, False, False
+	count, add_RSTR, added_RSTR = 0, False, False
+	add_novoCaller, added_novoCaller = False, False
 	line_strip = input_reader.readline().rstrip()
 	while line_strip:
 		if line_strip.startswith('#'): # reading a header line
 			if line_strip.startswith('##'): # header definition line
 				if line_strip.split('=')[0] == '##FORMAT':
-					add_format = True
+					add_RSTR = True
+				elif line_strip.split('=')[0] == '##INFO':
+					add_novoCaller = True
 				#end if
 
-				# Adding new format tag definition to header for strand AD (RSTR_tag)
-				if add_format and not added_format:
-					added_format = True
-					RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">\n'
+				# Adding new format and novoCaller tag definition to header
+				if add_RSTR and not added_RSTR:
+					added_RSTR = True
+					RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="\
+								Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">\n'
 					output_writer.write(RSTR_tag)
+				elif add_novoCaller and not added_novoCaller:
+					added_novoCaller = True
+					novoCaller_tag = '##INFO=<ID=novoCaller,Number=2,Type=Float,Description="\
+									Statistics from novoCaller 2. Format:\'Post_prob|AF_unrel\'">\n'
+					output_writer.write(novoCaller_tag)
 				#end if
 
-				output_writer.write(line_strip + '\n') # writing header line
+				# Checking if fields are already in the vcf and need to be replaced
+				#	if not write header line
+				if line_strip.startswith("##FORMAT=<ID=RSTR"):
+					replace_RSTR = True
+				elif line_strip.startswith("##INFO=<ID=novoCaller")):
+					replace_novoCaller = True
+				else:
+					output_writer.write(line_strip + '\n') # writing header line
+				#end if
 			elif line_strip.startswith('#CHROM'): # header columns line
 				output_writer.write(line_strip) # writing header line
 
@@ -964,14 +984,15 @@ def runner(args):
 
 			# Getting allele frequency
 			is_novoAF, allele_freq = False, 0.
-			for tag in INFO.split(";"):
-				if tag.startswith('novoAF='):
+			for ID in INFO.split(";"):
+				if ID.startswith('novoAF='):
 					is_novoAF = True
 					try:
-						allele_freq = float(tag.split('=')[1])
+						allele_freq = float(ID.split('=')[1])
 					except Exception: # novo_AF field is not a float as expected
 						if is_allele_freq_thr: # error if allele frequency threshold was provided
-							sys.exit('ERROR in input parsing, novoAF field is in the wrong format but looks like you expect to filter based on allele frequency')
+							sys.exit('ERROR in input parsing, novoAF field is in the wrong format \
+									but looks like you expect to filter based on allele frequency')
 						else: # set to 0. if no filtering by allele frequency is requested
 							allele_freq = 0.
 						#end if
@@ -982,7 +1003,8 @@ def runner(args):
 
 			# Check if novo_AF field missing, error if allele frequency threshold was provided
 			if not is_novoAF and is_allele_freq_thr:
-				sys.exit('ERROR in input parsing, novoAF field missing but looks like you expect to filter based on allele frequency')
+				sys.exit('ERROR in input parsing, novoAF field missing but looks like you expect \
+						to filter based on allele frequency')
 			#end if
 
 			# Calculate statistics
@@ -1008,15 +1030,50 @@ def runner(args):
 
 		# Formatting the printed output
 		output_writer.write('\t'.join(line_strip.split('\t')[:7]) + '\t')
-		infos = line_strip.split()[7]
-		if infos[-1] == ';':
-			output_writer.write(line_strip.split()[7] + 'PP={0};AF_unrel={1};\t'.format(PP, AF_unrel))
-		else:
-			output_writer.write(line_strip.split()[7] + ';PP={0};AF_unrel={1};\t'.format(PP, AF_unrel))
-		#end if
-		output_writer.write(line_strip.split()[8] + ':RSTR\t')
 
-		genotypes = line_strip.split()[9:]
+		# INFO
+		infos = line_strip.split('\t')[7]
+		if replace_novoCaller:
+			# Removing novoCaller field
+			infos_to_write = re.sub(r'novoCaller=.*?;', '', infos)
+		else:
+			infos_to_write = infos
+		#end if
+
+		# Adding novoCaller to INFO
+		if infos_to_write[-1] == ';':
+			output_writer.write(infos_to_write + 'novoCaller={0}|{1};\t'.format(PP, AF_unrel))
+		else:
+			output_writer.write(infos_to_write + ';novoCaller={0}|{1};\t'.format(PP, AF_unrel))
+		#end if
+
+		# FORMAT
+		formats = line_strip.split('\t')[8]
+		if replace_RSTR:
+			idx_RSTR, formats_to_write = 0, ''
+			# Removing RSTR field
+			for i, tag in enumerate(formats.split(':')):
+				if tag == 'RSTR':
+					idx_RSTR = i
+				else:
+					formats_to_write += tag + ':'
+				#end if
+			#end for
+			genotypes = []
+			for gtp in line_strip.split('\t')[9:]:
+				gtp_as_list = gtp.split(':')
+				del gtp_as_list[idx_RSTR]
+				genotypes.append(':'.join(gtp_as_list))
+			#end for
+		else:
+			formats_to_write = formats + ':'
+			genotypes = line_strip.split('\t')[9:]
+		#end if
+
+		# Adding tag RSTR
+		output_writer.write(formats_to_write + 'RSTR\t')
+
+		# Genotypes
 		empty_genotype = './.' + ':' * genotypes[0].count(':')
 
 		# Modifying genotypes with AD by strand info
