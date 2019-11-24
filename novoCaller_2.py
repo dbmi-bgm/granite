@@ -98,68 +98,57 @@ class Vcf(object):
 			for IDs_genotype in self.IDs_genotypes:
 				genotypes_as_list.append(self.GENOTYPES[IDs_genotype])
 			#end for
+
 			return variant_as_string + '\t'.join(genotypes_as_list) + '\n'
 		#end def
 
-		def remove_tag_genotype(self, tag_to_remove):
+		def remove_tag_genotype(self, tag_to_remove, sep=':'):
 			''' remove tag field from FORMAT and GENOTYPES '''
 			idx_tag_to_remove, new_format = 0, []
 			# Removing tag field from FORMAT
-			for i, tag in enumerate(self.FORMAT.split(':')):
+			for i, tag in enumerate(self.FORMAT.split(sep)):
 				if tag_to_remove == tag:
 					idx_tag_to_remove = i
 				else:
 					new_format.append(tag)
 				#end if
 			#end for
-			self.FORMAT = ':'.join(new_format)
+			self.FORMAT = sep.join(new_format)
 			# Removing tag field from GENOTYPES
 			for ID_genotype, genotype in self.GENOTYPES.items():
-				genotype_as_list = genotype.split(':')
+				genotype_as_list = genotype.split(sep)
 				del genotype_as_list[idx_tag_to_remove]
-				self.GENOTYPES[ID_genotype] = ':'.join(genotype_as_list)
+				self.GENOTYPES[ID_genotype] = sep.join(genotype_as_list)
 			#end for
 		#end def
 
-		def remove_tag_info(self, tag_to_remove):
+		def remove_tag_info(self, tag_to_remove, sep=';'):
 			''' remove tag field from INFO '''
-			self.INFO = re.sub(r'{0}=.*?;'.format(tag_to_remove), '', self.INFO)
+			self.INFO = re.sub(r'{0}=.*?{1}'.format(tag_to_remove, sep), '', self.INFO)
 		#end def
 
-		def add_tag_format(self, tag_to_add):
+		def add_tag_format(self, tag_to_add, sep=':'):
 			''' add tag field to FORMAT '''
-			self.FORMAT += ':' + tag_to_add
+			self.FORMAT += sep + tag_to_add
 		#end def
 
-		def add_values_genotype(self, ID_genotype, values):
+		def add_values_genotype(self, ID_genotype, values, sep=':'):
 			''' add values field to genotype specified by corresponding ID '''
-			self.GENOTYPES[ID_genotype] += ':' + values
+			self.GENOTYPES[ID_genotype] += sep + values
 		#end def
 
-		def add_tag_info(self, tag_to_add):
+		def add_tag_info(self, tag_to_add, sep=';'):
 			''' add tag field to INFO '''
-			if ';' == self.INFO[-1]:
-				self.INFO += tag_to_add + ';'
-			else:
-				self.INFO += ';' + tag_to_add + ';'
+			self.INFO += tag_to_add + sep
 			#end if
 		#end def
 
 	#end class Variant
 
-	def __open(self, inputfile):
-		''' check the existance of inputfile and opens it if exists '''
-		if os.path.isfile(inputfile):
-			return open(inputfile, 'r')
-		else:
-			raise ValueError('ERROR while reading input file, file is missing\n')
-		#end if
-	#end def __open
-
 	def parse_header(self, inputfile):
 		''' read header and save information as Header object '''
 		definitions, columns, IDs_genotypes = '', '', ''
-		with self.__open(inputfile) as fi:
+		with open(inputfile) as fi:
 			for line in fi:
 				if line.startswith('#'): # reading a header line
 					line_strip = line.rstrip()
@@ -174,6 +163,7 @@ class Vcf(object):
 				#end if
 			#end for
 		#end with
+
 		# Checking header is correct
 		if definitions and columns and IDs_genotypes:
 			return self.Header(definitions, columns, IDs_genotypes)
@@ -184,7 +174,7 @@ class Vcf(object):
 
 	def parse_variants(self, inputfile): # generator
 		''' return a generator to variants saved as Variant objects '''
-		with self.__open(inputfile) as fi:
+		with open(inputfile) as fi:
 			for line in fi:
 				if not line.startswith('#'):
 					line_strip = line.rstrip()
@@ -337,6 +327,7 @@ def encode_chrom(chrom):
 	''' convert chr IDs to numbers to be used by other functions '''
 	encode = {'M': 0, 'MT': 0, 'X': 23, 'Y': 24}
 	chrom_repl = chrom.replace('chr', '')
+
 	if chrom_repl in encode:
 		return encode[chrom_repl]
 	else:
@@ -346,7 +337,6 @@ def encode_chrom(chrom):
 			return 25
 		#end try
 	#end if
-
 #end def
 
 #################################################################
@@ -1059,27 +1049,23 @@ def ALT_read_check_in_parents(ADfs, ADrs, thr=3):
 	else:
 		return True
 	#end if
-
 #end def
 
 #################################################################
 # RUNNER (main function)
 #################################################################
 def runner(args):
-	''' parse the input vcf file and calls the functions to run the analysis '''
+	''' read the input vcf file and calls the functions to run the analysis '''
 
 	# Variables
 	is_allele_freq_thr = True if args['allelefreqthr'] else False
 	allele_freq_thr = float(args['allelefreqthr']) if is_allele_freq_thr else 1.
 	MQ_thr, BQ_thr = -100., -100.
-	RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="\
-				Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
-	novoCaller_tag = '##INFO=<ID=novoCaller,Number=2,Type=Float,Description="\
-					Statistics from novoCaller 2. Format:\'Post_prob|AF_unrel\'">'
+	RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
+	novoCaller_tag = '##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller 2. Format:\'Post_prob|AF_unrel\'">'
 
 	# Buffers
-	output_writer = open(args['outputfile'], 'w')
-	input_reader = open(args['inputfile'], 'r')
+	fo = open(args['outputfile'], 'w')
 
 	# Data structures
 	variants_passed = []
@@ -1096,22 +1082,24 @@ def runner(args):
 		sys.exit('ERROR in bams info file for trio, missing information for some family member\n')
 	#end if
 
-	# Reading input vcf files
-	input_vcf = Vcf(input_reader)
+	# Creating Vcf object
+	vcf_obj = Vcf(args['inputfile'])
 
-	for variant in input_vcf:
+	# Reading variants
+	for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
+		sys.stderr.write('Analyzing variant... ' + str(i) + '\n')
+		sys.stderr.flush()
 
-		# Getting allele frequency
+		# Getting allele frequency from novoAF tag
 		is_novoAF, allele_freq = False, 0.
-		for tag in variant.INFO.split(";"):
+		for tag in vnt_obj.INFO.split(";"):
 			if tag.startswith('novoAF='):
 				is_novoAF = True
 				try:
-					allele_freq = float(ID.split('=')[1])
+					allele_freq = float(tag.split('=')[1])
 				except Exception: # novo_AF field is not a float as expected
 					if is_allele_freq_thr: # error if allele frequency threshold was provided
-						sys.exit('ERROR in input parsing, novoAF field is in the wrong format \
-								but looks like you expect to filter based on allele frequency')
+						sys.exit('ERROR in input parsing, novoAF field is in the wrong format but looks like you expect to filter based on allele frequency\n')
 					else: # set to 0. if no filtering by allele frequency is requested
 						allele_freq = 0.
 					#end if
@@ -1122,101 +1110,85 @@ def runner(args):
 
 		# Check if novo_AF field missing, error if allele frequency threshold was provided
 		if not is_novoAF and is_allele_freq_thr:
-			sys.exit('ERROR in input parsing, novoAF field missing but looks like you expect \
-					to filter based on allele frequency')
+			sys.exit('ERROR in input parsing, novoAF field missing but looks like you expect to filter based on allele frequency\n')
 		#end if
 
 		# Calculate statistics
-		if allele_freq <= allele_freq_thr: # hard filter on gnomAD allele frequency to substitute the one on unrelated AF
-			PP, ADfs, ADrs, ADfs_U, ADrs_U, _, _, _, AF_unrel = PP_calc(trio_bamfiles, unrelated_bamfiles, chrom_int, pos_int, REF, ALT, allele_freq, MQ_thr, BQ_thr)
+		if allele_freq <= allele_freq_thr: # hard filter on gnomAD allele frequency
+			PP, ADfs, ADrs, ADfs_U, ADrs_U, _, _, _, AF_unrel = \
+				PP_calc(trio_bamfiles, unrelated_bamfiles, encode_chrom(vnt_obj.CHROM), int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, allele_freq, MQ_thr, BQ_thr)
 			#if AF_unrel < 0.01 and ALT_read_checker_in_parents(ADfs, ADrs):
 			if ALT_read_check_in_parents(ADfs, ADrs):
-				variants_passed.append(PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, variant)
+				variants_passed.append(PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj)
 			#end if
 		#end if
 	#end if
 
-
-
-						# Checking genotypes trio are complete
-						if len(trio_column_idxes) != 3:
-							sys.exit('ERROR in vcf structure, missing genotype information for trio\n')
-						#end if
-
-						# Writing unrelated samples IDs in the order associate bam files are given
-						for ID in IDs_unrelated:
-							output_writer.write('\t' + ID)
-						#end for
-						output_writer.write('\n')
-					#end if
-
-	sys.stderr.write('\n...Writing results for ' + str(count) + ' variants\n')
+	# Writing output
+	sys.stderr.write('\n...Writing results for ' + str(i) + ' analyzed variants\n')
 	sys.stderr.flush()
 
-	# Writing results
+	# Header definitions
+	is_RSTR = 'RSTR' in vcf_obj.header.definitions
+	is_novoCaller = 'novoCaller' in vcf_obj.header.definitions
+
+	if not is_RSTR:
+		vcf_obj.header.definitions.add_tag_definition(RSTR_tag, 'FORMAT')
+	#end if
+	if not is_novoCaller:
+		vcf_obj.header.definitions.add_tag_definition(novoCaller_tag, 'INFO')
+	#end if
+
+	# Adding to header columns unrelated samples missing IDs
+	fo.write(vcf_obj.header.columns.rstrip())
+	for ID in IDs_unrelated:
+		if ID not in vcf_obj.header.IDs_genotypes:
+			fo.write('\t' + ID)
+		#end if
+	#end for
+	fo.write('\n')
+
+	# Variants passed
 	for variant in sorted(variants_passed, key=lambda x: x[0], reverse=True):
-		PP, line_strip, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel = variant
+		PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj = variant
 
-		# Formatting the printed output
-		output_writer.write('\t'.join(line_strip.split('\t')[:7]) + '\t')
-
-		# INFO
-		infos = line_strip.split('\t')[7]
-		if replace_novoCaller:
-			# Removing novoCaller field
-			infos_to_write = re.sub(r'novoCaller=.*?;', '', infos)
-		else:
-			infos_to_write = infos
+		# Removing older tags fields if present
+		if is_RSTR:
+			vnt_obj.remove_tag_genotype('RSTR')
+		#end if
+		if is_novoCaller:
+			vnt_obj.remove_tag_info('novoCaller')
 		#end if
 
-		# Adding novoCaller to INFO
-		if infos_to_write[-1] == ';':
-			output_writer.write(infos_to_write + 'novoCaller={0}|{1};\t'.format(PP, AF_unrel))
-		else:
-			output_writer.write(infos_to_write + ';novoCaller={0}|{1};\t'.format(PP, AF_unrel))
-		#end if
+		# Adding new tags
+		vnt_obj.add_tag_info('novoCaller={0}|{1}'.format(PP, AF_unrel))
+		vnt_obj.add_tag_format('RSTR')
 
-		# FORMAT
-		formats = line_strip.split('\t')[8]
-		if replace_RSTR:
-			idx_RSTR, formats_to_write = 0, ''
-			# Removing RSTR field
-			for i, tag in enumerate(formats.split(':')):
-				if tag == 'RSTR':
-					idx_RSTR = i
-				else:
-					formats_to_write += tag + ':'
-				#end if
-			#end for
-			genotypes = []
-			for gtp in line_strip.split('\t')[9:]:
-				gtp_as_list = gtp.split(':')
-				del gtp_as_list[idx_RSTR]
-				genotypes.append(':'.join(gtp_as_list))
-			#end for
-		else:
-			formats_to_write = formats + ':'
-			genotypes = line_strip.split('\t')[9:]
-		#end if
-
-		# Adding tag RSTR
-		output_writer.write(formats_to_write + 'RSTR\t')
-
-		# Genotypes
-		empty_genotype = './.' + ':' * genotypes[0].count(':')
-
-		# Modifying genotypes with AD by strand info
-		for i in range(len(genotypes)):
-			genotypes[i] += ':'
-		#end for
-		for i in range(3):
-			genotypes[trio_column_idxes[IDs_trio[i]]] += '{0},{1},{2},{3}'.format(int(ADfs[i][0]), int(ADfs[i][1]), int(ADrs[i][0]), int(ADrs[i][1]))
-		#end for
-		for i in range(len(ADfs_U)):
-			genotypes.append(empty_genotype + ':{0},{1},{2},{3}'.format(int(ADfs_U[i][0]), int(ADfs_U[i][1]), int(ADrs_U[i][0]), int(ADrs_U[i][1])))
+		# Updating genotypes family
+		for ID in vnt_obj.GENOTYPES:
+			vnt_obj.add_values_genotype(ID, '')
 		#end for
 
-		output_writer.write('\t'.join(genotypes) + '\n')
+		# Updating genotypes trio
+		for i, ID in enumerate(IDs_trio):
+			values = '{0},{1},{2},{3}'.format(int(ADfs[i][0]), int(ADfs[i][1]), int(ADrs[i][0]), int(ADrs[i][1]))
+			vnt_obj.add_values_genotype(ID, values, sep='')
+		#end for
+		empty_genotype = './.' + ':' * vnt_obj.GENOTYPES[ID].count(':')
+
+		# Updating unrelated if already present
+		unrelated_genotypes = []
+		for i, ID in enumerate(IDs_unrelated):
+			values = '{0},{1},{2},{3}'.format(int(ADfs_U[i][0]), int(ADfs_U[i][1]), int(ADrs_U[i][0]), int(ADrs_U[i][1]))
+			if ID in vnt_obj.GENOTYPES:
+				vnt_obj.add_values_genotype(ID, values, sep='')
+			else:
+				unrelated_genotypes.append(empty_genotype + values)
+			#end if
+		#end for
+
+		# Writing output
+		fo.write(vnt_obj.to_string.rstrip() + '\t'.join(unrelated_genotypes) + '\n')
 	# end for
 
 	# Closing files buffers
