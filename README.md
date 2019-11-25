@@ -5,21 +5,15 @@ novoCaller 2 is a Bayesian de novo variant calling algorithm that uses informati
 The program represents an updated and improved implementation of the original algorithm described in [paper](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
 
 ## Requirements
-novoCaller requires Python (version 3.X), numpy and pysam libraries.
+novoCaller requires Python (version 3.X), *numpy* and *pysam* libraries.
 
-To install numpy under unix environment (linux, osx):
+To install [*numpy*](https://docs.scipy.org/doc/ "numpy documentation") under unix environment (linux, osx):
 
     sudo pip install numpy
 
-To get help with numpy installation check
-[numpy docs](https://docs.scipy.org/doc/ "numpy documentation")
-
-To install pysam under unix environment (linux, osx):
+To install [*pysam*](https://pysam.readthedocs.io/en/latest/ "pysam documentation") under unix environment (linux, osx):
 
     sudo pip install pysam
-
-To get help with pysam installation check
-[pysam docs](https://pysam.readthedocs.io/en/latest/installation.html "pysam documentation")
 
 ## Running novoCaller 2
 To run novoCaller 2 under unix environment (linux, osx):
