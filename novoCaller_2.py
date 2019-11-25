@@ -93,8 +93,7 @@ class Vcf(object):
 																						self.QUAL,
 																						self.FILTER,
 																						self.INFO,
-																						self.FORMAT,
-																						self.GENOTYPES)
+																						self.FORMAT)
 			for IDs_genotype in self.IDs_genotypes:
 				genotypes_as_list.append(self.GENOTYPES[IDs_genotype])
 			#end for
@@ -140,7 +139,6 @@ class Vcf(object):
 		def add_tag_info(self, tag_to_add, sep=';'):
 			''' add tag field to INFO '''
 			self.INFO += tag_to_add + sep
-			#end if
 		#end def
 
 	#end class Variant
@@ -173,16 +171,18 @@ class Vcf(object):
 	#end def
 
 	def parse_variants(self, inputfile): # generator
-		''' return a generator to variants saved as Variant objects '''
+		''' return a generator to variants stored as Variant objects '''
 		with open(inputfile) as fi:
 			for line in fi:
 				if not line.startswith('#'):
 					line_strip = line.rstrip()
-					try:
-						yield self.Variant(line_strip, self.header.IDs_genotypes)
-					except Exception:
-						sys.exit('ERROR in variant vcf structure, missing essential columns\n')
-					#end try
+					if line_strip:
+						try:
+							yield self.Variant(line_strip, self.header.IDs_genotypes)
+						except Exception:
+							sys.exit('ERROR in variant vcf structure, missing essential columns\n')
+						#end try
+					#end if
 				#end if
 			#end for
 		#end with
@@ -1114,7 +1114,7 @@ def runner(args):
 		#end if
 
 		# Calculate statistics
-		if allele_freq <= allele_freq_thr: # hard filter on gnomAD allele frequency
+		if allele_freq <= allele_freq_thr: # hard filter on allele frequency
 			PP, ADfs, ADrs, ADfs_U, ADrs_U, _, _, _, AF_unrel = \
 				PP_calc(trio_bamfiles, unrelated_bamfiles, encode_chrom(vnt_obj.CHROM), int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, allele_freq, MQ_thr, BQ_thr)
 			#if AF_unrel < 0.01 and ALT_read_checker_in_parents(ADfs, ADrs):
@@ -1217,7 +1217,7 @@ if __name__ == "__main__":
 	parser.add_argument('-u', '--unrelatedbams', help='tsv file containing ID<TAB>Path/to/file for unrelated bam files \
 													used to train the model', required=True)
 	parser.add_argument('-t', '--triobams', help='tsv file containing ID<TAB>Path/to/file for family bam files, \
-												the proband must be listed as last', required=True)
+												the PROBAND must be listed as LAST', required=True)
 	parser.add_argument('-a', '--allelefreqthr', help='threshold to filter by population allele frequency', required=False)
 
 	args = vars(parser.parse_args())
