@@ -1,10 +1,10 @@
 # novoCaller 2
 
-### About
+## About
 novoCaller 2 is a Bayesian de novo variant calling algorithm that uses information from read-level data both in the pedigree and in unrelated samples.
 The program represents an updated and improved implementation of the original algorithm described in [paper](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
 
-### Requirements
+## Requirements
 novoCaller requires Python (version 3.X), numpy and pysam libraries.
 
 To install numpy under unix environment (linux, osx):
@@ -21,7 +21,7 @@ To install pysam under unix environment (linux, osx):
 To get help with pysam installation check
 [pysam docs](https://pysam.readthedocs.io/en/latest/installation.html "pysam documentation")
 
-### Running novoCaller 2
+## Running novoCaller 2
 To run novoCaller 2 under unix environment (linux, osx):
 
     # move to QPARSE folder
@@ -31,15 +31,15 @@ To run novoCaller 2 under unix environment (linux, osx):
     sudo chmod +x novoCaller_2.py
 
     # run QPARSE
-    ./novoCaller_2.py [ARGUMENTS]
+    ./novoCaller_2.py [-h] -i INPUTFILE -o OUTPUTFILE -u UNRELATEDBAMS -t TRIOBAMS [-a ALLELEFREQTHR]
 
     # !!! if the above is not working run
-    python novoCaller_2.py [ARGUMENTS]
+    python novoCaller_2.py [-h] -i INPUTFILE -o OUTPUTFILE -u UNRELATEDBAMS -t TRIOBAMS [-a ALLELEFREQTHR]
 
-### Input
+## Input
 The program accepts files in vcf format (VCFv4.x).
 
-### Arguments
+## Arguments
   - **-i**, **--inputfile**, path to input file in vcf format
   - **-o**, **--outputfile**, path to output file to be used
   - **-u**, **--unrelatedbams**, path to tsv file containing `ID<TAB>Path/to/file` for unrelated bam files used to train the model
