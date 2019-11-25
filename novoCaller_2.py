@@ -1119,7 +1119,7 @@ def runner(args):
 				PP_calc(trio_bamfiles, unrelated_bamfiles, encode_chrom(vnt_obj.CHROM), int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, allele_freq, MQ_thr, BQ_thr)
 			#if AF_unrel < 0.01 and ALT_read_checker_in_parents(ADfs, ADrs):
 			if ALT_read_check_in_parents(ADfs, ADrs):
-				variants_passed.append(PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj)
+				variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj])
 			#end if
 		#end if
 	#end if
@@ -1133,11 +1133,12 @@ def runner(args):
 	is_novoCaller = 'novoCaller' in vcf_obj.header.definitions
 
 	if not is_RSTR:
-		vcf_obj.header.definitions.add_tag_definition(RSTR_tag, 'FORMAT')
+		vcf_obj.header.add_tag_definition(RSTR_tag, 'FORMAT')
 	#end if
 	if not is_novoCaller:
-		vcf_obj.header.definitions.add_tag_definition(novoCaller_tag, 'INFO')
+		vcf_obj.header.add_tag_definition(novoCaller_tag, 'INFO')
 	#end if
+	fo.write(vcf_obj.header.definitions)
 
 	# Adding to header columns unrelated samples missing IDs
 	fo.write(vcf_obj.header.columns.rstrip())
@@ -1188,12 +1189,11 @@ def runner(args):
 		#end for
 
 		# Writing output
-		fo.write(vnt_obj.to_string.rstrip() + '\t'.join(unrelated_genotypes) + '\n')
+		fo.write(vnt_obj.to_string().rstrip() + '\t' + '\t'.join(unrelated_genotypes) + '\n')
 	# end for
 
 	# Closing files buffers
-	input_reader.close()
-	output_writer.close()
+	fo.close()
 	for buffer in unrelated_bamfiles:
 		buffer.close()
 	#end for
