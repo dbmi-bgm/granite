@@ -1196,7 +1196,11 @@ def runner(args):
 		#end for
 
 		# Writing output
-		fo.write(vnt_obj.to_string().rstrip() + '\t' + '\t'.join(unrelated_genotypes) + '\n')
+		if unrelated_genotypes:
+			fo.write(vnt_obj.to_string().rstrip() + '\t' + '\t'.join(unrelated_genotypes) + '\n')
+		else:
+			fo.write(vnt_obj.to_string().rstrip() + '\n')
+		#end if
 	# end for
 
 	# Closing files buffers
