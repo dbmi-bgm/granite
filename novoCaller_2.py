@@ -1085,6 +1085,13 @@ def runner(args):
 	# Creating Vcf object
 	vcf_obj = Vcf(args['inputfile'])
 
+	# Checking information for trio is complete in the vcf
+	for ID in IDs_trio:
+		if ID not in vcf_obj.header.IDs_genotypes:
+			sys.exit('ERROR in vcf file, missing information for some family member\n')
+		#end diff
+	#end if
+
 	# Reading variants
 	for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
 		sys.stderr.write('Analyzing variant... ' + str(i) + '\n')
