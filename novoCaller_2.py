@@ -1124,8 +1124,7 @@ def runner(args):
 		if allele_freq <= allele_freq_thr: # hard filter on allele frequency
 			PP, ADfs, ADrs, ADfs_U, ADrs_U, _, _, _, AF_unrel = \
 				PP_calc(trio_bamfiles, unrelated_bamfiles, encode_chrom(vnt_obj.CHROM), int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, allele_freq, MQ_thr, BQ_thr)
-			#if AF_unrel < 0.01 and ALT_read_checker_in_parents(ADfs, ADrs):
-			if ALT_read_check_in_parents(ADfs, ADrs):
+			if AF_unrel < 0.01 and ALT_read_check_in_parents(ADfs, ADrs): # filter on AF_unrel
 				variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj])
 			#end if
 		#end if

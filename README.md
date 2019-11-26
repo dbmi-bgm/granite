@@ -31,11 +31,13 @@ To run novoCaller 2 under unix environment (linux, osx):
     python novoCaller_2.py [-h] -i INPUTFILE -o OUTPUTFILE -u UNRELATEDBAMS -t TRIOBAMS [-a ALLELEFREQTHR]
 
 ## Input
-The program accepts files in vcf format (VCFv4.x).
+The program accepts files in vcf format (VCFv4.x). The files must contain genotype information for the trio in addition to standard vcf columns. Columns IDs for trio must match the IDs provided together with the list of bam files (TRIOBAMS).
+
+    #CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  HG002   HG003   HG004   ...
 
 ## Arguments
   - **-i**, **--inputfile**, path to input file in vcf format
   - **-o**, **--outputfile**, path to output file to be used
-  - **-u**, **--unrelatedbams**, path to tsv file containing `ID<TAB>Path/to/file` for unrelated bam files used to train the model
-  - **-t**, **--triobams**, path to tsv file containing `ID<TAB>Path/to/file` for family bam files, the PROBAND must be listed as LAST
+  - **-u**, **--unrelatedbams**, path to tsv file listing `ID<TAB>Path/to/file` for unrelated bam files used to train the model
+  - **-t**, **--triobams**, path to tsv file listing `ID<TAB>Path/to/file` for family bam files, the PROBAND must be listed as LAST
   - [**-a**, **--allelefreqthr**], threshold used to filter by population allele frequency. If specified, the allele frequency to be considered for each variant must be provided as annotation in the INFO field using the tag `novoAF=<float>;`.
