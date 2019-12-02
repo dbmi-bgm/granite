@@ -1060,7 +1060,7 @@ def runner(args):
 	# Variables
 	is_allele_freq_thr = True if args['allelefreqthr'] else False
 	allele_freq_thr = float(args['allelefreqthr']) if is_allele_freq_thr else 1.
-	PP_thr = float(args['postprobthr']) if args['postprobthr'] else 1.
+	PP_thr = float(args['postprobthr']) if args['postprobthr'] else 0.
 	AF_unrel_thr = 0.01
 	MQ_thr, BQ_thr = -100., -100.
 	RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
@@ -1126,7 +1126,7 @@ def runner(args):
 		if allele_freq <= allele_freq_thr: # hard filter on allele frequency
 			PP, ADfs, ADrs, ADfs_U, ADrs_U, _, _, _, AF_unrel = \
 				PP_calc(trio_bamfiles, unrelated_bamfiles, encode_chrom(vnt_obj.CHROM), int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, allele_freq, MQ_thr, BQ_thr)
-			if AF_unrel < AF_unrel_thr and PP <= PP_thr and ALT_read_check_in_parents(ADfs, ADrs): # hard filter on AF_unrel
+			if AF_unrel < AF_unrel_thr and PP >= PP_thr and ALT_read_check_in_parents(ADfs, ADrs): # hard filter on AF_unrel
 				variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj])
 			#end if
 		#end if
