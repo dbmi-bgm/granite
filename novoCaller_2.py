@@ -1060,6 +1060,8 @@ def runner(args):
 	# Variables
 	is_allele_freq_thr = True if args['allelefreqthr'] else False
 	allele_freq_thr = float(args['allelefreqthr']) if is_allele_freq_thr else 1.
+	PP_thr = float(args['postprobthr']) if args['postprobthr'] else 1.
+	AF_unrel_thr = 0.01
 	MQ_thr, BQ_thr = -100., -100.
 	RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
 	novoCaller_tag = '##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller 2. Format:\'Post_prob|AF_unrel\'">'
@@ -1124,7 +1126,7 @@ def runner(args):
 		if allele_freq <= allele_freq_thr: # hard filter on allele frequency
 			PP, ADfs, ADrs, ADfs_U, ADrs_U, _, _, _, AF_unrel = \
 				PP_calc(trio_bamfiles, unrelated_bamfiles, encode_chrom(vnt_obj.CHROM), int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, allele_freq, MQ_thr, BQ_thr)
-			if AF_unrel < 0.01 and ALT_read_check_in_parents(ADfs, ADrs): # filter on AF_unrel
+			if AF_unrel < AF_unrel_thr and PP <= PP_thr and ALT_read_check_in_parents(ADfs, ADrs): # hard filter on AF_unrel
 				variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj])
 			#end if
 		#end if
@@ -1228,7 +1230,8 @@ if __name__ == "__main__":
 													used to train the model', required=True)
 	parser.add_argument('-t', '--triobams', help='tsv file containing ID<TAB>Path/to/file for family bam files, \
 												the PROBAND must be listed as LAST', required=True)
-	parser.add_argument('-a', '--allelefreqthr', help='threshold to filter by population allele frequency', required=False)
+	parser.add_argument('-a', '--allelefreqthr', help='threshold to filter by population allele frequency [1]', required=False)
+	parser.add_argument('-p', '--postprobthr', help='threshold to filter by posterior probabilty [1]', required=False)
 
 	args = vars(parser.parse_args())
 

@@ -39,5 +39,6 @@ The program accepts files in vcf format (VCFv4.x). The files must contain genoty
   - **-i**, **--inputfile**, path to input file in vcf format
   - **-o**, **--outputfile**, path to output file to be used
   - **-u**, **--unrelatedbams**, path to tsv file listing `ID<TAB>Path/to/file` for unrelated bam files used to train the model
-  - **-t**, **--triobams**, path to tsv file listing `ID<TAB>Path/to/file` for family bam files, the PROBAND must be listed as LAST
-  - [**-a**, **--allelefreqthr**], threshold used to filter by population allele frequency. If specified, the allele frequency to be considered for each variant must be provided as annotation in the INFO field using the tag `novoAF=<float>;`.
+  - **-t**, **--triobams**, path to tsv file listing `ID<TAB>Path/to/file` for family bam files, **PROBAND must be listed as LAST**
+  - [**-a**, **--allelefreqthr**], threshold used to filter by population allele frequency. If specified, the allele frequency to be considered for each variant must be provided as annotation in the INFO field using the tag `novoAF=<float>;` [1]
+  - [**-p**, **--postprobthr**], threshold used to filter by posterior probabilty [1]
