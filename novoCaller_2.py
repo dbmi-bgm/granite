@@ -889,8 +889,8 @@ def PP_calc(trio_samfiles, unrelated_samfiles, chrom, pos, REF, ALT, allele_freq
 		EM_full(ADfs_U, ADrs_U, rho_f_old, rho_r_old, prior_L_old, GT_likelihood_wrt_allele_L, a, b, D, allele_freq)
 
 	AF_unrel = 0.
-	for i in range(ADfs.shape[0]):
-		temp1 = GTL_L_calc(ADfs[i], ADrs[i], rho_f_new, rho_r_new, GT_likelihood_wrt_allele_L)
+	for i in range(ADfs_U.shape[0]):
+		temp1 = GTL_L_calc(ADfs_U[i], ADrs_U[i], rho_f_new, rho_r_new, GT_likelihood_wrt_allele_L)
 		temp = temp1 + prior_L_new
 		temp = temp - np.max(temp)
 		temp = np.exp(temp)
@@ -899,7 +899,7 @@ def PP_calc(trio_samfiles, unrelated_samfiles, chrom, pos, REF, ALT, allele_freq
 		AF_unrel = AF_unrel + temp[1] + temp[2] * 2.
 	#end for
 
-	AF_unrel = AF_unrel / 2. / ADfs.shape[0]
+	AF_unrel = AF_unrel / 2. / ADfs_U.shape[0]
 
 	ADfs, ADrs = get_all_ADs(trio_samfiles, chrom, pos, REF, ALT, MQ_thresh, BQ_thresh)
 
