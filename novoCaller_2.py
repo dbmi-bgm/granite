@@ -321,22 +321,26 @@ def GT_likelihood_wrt_allele_calc(ALT_count):
 #end def
 
 #################################################################
-#	encode_chrom
+#	check_chrom
 #################################################################
-def encode_chrom(chrom):
-	''' convert chr IDs to numbers to be used by other functions '''
-	encode = {'M': 0, 'MT': 0, 'X': 23, 'Y': 24}
+def check_chrom(chrom):
+	''' check if chromosome is canonical and in a valid format '''
 	chrom_repl = chrom.replace('chr', '')
 
-	if chrom_repl in encode:
-		return encode[chrom_repl]
+	if chrom_repl in {'M', 'MT', 'X', 'Y'}:
+		return True
 	else:
 		try:
-			return int(chrom_repl)
+			int_chrom_repl = int(chrom_repl)
 		except Exception:
-			return 25
+			return False
 		#end try
+		if int_chrom_repl > 0 and int_chrom_repl < 23:
+			return True
+		#end if
 	#end if
+
+	return False
 #end def
 
 #################################################################
@@ -369,29 +373,18 @@ def buffering_bams(bams_infofile):
 #################################################################
 #	get_ADs
 #################################################################
-def get_ADs(bamfile, chrom, position_actual, REF, MQ_thresh, BQ_thresh, delition=False, insertion=False):
+def get_ADs(bamfile, chrom, pos, REF, MQ_thr, BQ_thr, deletion=False, insertion=False):
 	''' access bam file and return AD counts by strand for reference and alternate allele for variant,
 	the way pileup is used depend on variant type (insertion, delition or snv) '''
-	position = position_actual - 1
-	REF_upper, SP = REF.upper(), []
+	position = pos - 1
+	REF_upper = REF.upper()
 	ADf, ADr = np.array([0., 0]), np.array([0., 0])
-	encode_38 = {0: 'M', 23: 'X', 24: 'Y'}
-	encode_37 = {0: 'MT', 23: 'X', 24: 'Y'}
-	if chrom > 0 and chrom <= 24:
-		if chrom not in [0, 23, 24]:
-			try:
-				SP = bamfile.pileup('chr' + str(chrom), position, position + 1)
-			except Exception:
-				SP = bamfile.pileup(str(chrom), position, position + 1)
-			#end try
-		else:
-			try:
-				SP = bamfile.pileup('chr' + encode_38[chrom], position, position + 1)
-			except Exception:
-				SP = bamfile.pileup(encode_37[chrom], position, position + 1)
-			#end try
-		#end if
-	#end if
+
+	# Getting pileup info
+	try: SP = bamfile.pileup(chrom, position, position + 1)
+	except Exception:
+		sys.exit('ERROR in accessing bam file, variant and bam file chromosome formats are not matching\n')
+	#end try
 
 	# Getting AD info
 	for pileupcolumn in SP:
@@ -401,10 +394,10 @@ def get_ADs(bamfile, chrom, position_actual, REF, MQ_thresh, BQ_thresh, delition
 					qp = pileupread.query_position
 					MQ = pileupread.alignment.mapping_quality
 					BQ = pileupread.alignment.query_qualities[qp]
-					if MQ >= MQ_thresh and BQ >= BQ_thresh:
+					if MQ >= MQ_thr and BQ >= BQ_thr:
 						seq = pileupread.alignment.query_sequence[qp].upper()
-						# DELITION
-						if delition:
+						# DELETION
+						if deletion:
 							indel_val = pileupread.indel
 							if seq == REF_upper and indel_val >= 0:
 								if pileupread.alignment.is_reverse: ADr[0] += 1
@@ -417,7 +410,7 @@ def get_ADs(bamfile, chrom, position_actual, REF, MQ_thresh, BQ_thresh, delition
 							#end if
 						# INSERTION
 						elif insertion:
-							indel_val=pileupread.indel
+							indel_val = pileupread.indel
 							if seq == REF_upper and indel_val <= 0:
 								if pileupread.alignment.is_reverse: ADr[0] += 1
 								else: ADf[0] += 1
@@ -449,40 +442,56 @@ def get_ADs(bamfile, chrom, position_actual, REF, MQ_thresh, BQ_thresh, delition
 #end def
 
 #################################################################
-#	get_ADs_combined
+#	get_ADs_caller
 #################################################################
-def get_ADs_combined(bamfile, chrom, position_actual, REF, ALT, MQ_thresh, BQ_thresh):
+def get_ADs_caller(bamfile, chrom, pos, REF, ALT, MQ_thr, BQ_thr):
 	''' define variant type and run the appropriate function to access the bam file
 	to retrieve AD counts by strand for reference and alternate allele for variant'''
 	split_ALT = ALT.split(',')
 	if len(split_ALT) > 1:
-		return get_ADs(bamfile, chrom, position_actual, REF[0], MQ_thresh, BQ_thresh)
+		return get_ADs(bamfile, chrom, pos, REF[0], MQ_thr, BQ_thr)
 	elif len(REF) > 1:
-		return get_ADs(bamfile, chrom, position_actual, REF[0], MQ_thresh, BQ_thresh, deletion=True)
+		return get_ADs(bamfile, chrom, pos, REF[0], MQ_thr, BQ_thr, deletion=True)
 	elif len(ALT) > 1:
-		return get_ADs(bamfile, chrom, position_actual, REF[0], MQ_thresh, BQ_thresh, insertion=True)
+		return get_ADs(bamfile, chrom, pos, REF[0], MQ_thr, BQ_thr, insertion=True)
 	#end if
 
-	return get_ADs(bamfile, chrom, position_actual, REF[0], MQ_thresh, BQ_thresh)
+	return get_ADs(bamfile, chrom, pos, REF[0], MQ_thr, BQ_thr)
 #end def
 
 #################################################################
-#	get_all_ADs_combined
+#	get_all_ADs
 #################################################################
-def get_all_ADs_combined(bamfiles, chrom, position_actual, REF, ALT, MQ_thresh, BQ_thresh):
-	''' '''
-	ADfs = []
-	ADrs = []
+def get_all_ADs(bamfiles, chrom, pos, REF, ALT, MQ_thr, BQ_thr):
+	''' return the AD counts by strand for reference and alternate allele for variant
+	in all the bam files '''
+	ADfs, ADrs = [], []
 	for bamfile in bamfiles:
-		ADf, ADr = get_ADs_combined(bamfile, chrom, position_actual, REF, ALT, MQ_thresh, BQ_thresh)
+		ADf, ADr = get_ADs_caller(bamfile, chrom, pos, REF, ALT, MQ_thr, BQ_thr)
 		ADfs.append(ADf)
 		ADrs.append(ADr)
 	#end for
 
-	ADfs = np.array(ADfs)
-	ADrs = np.array(ADrs)
+	return np.array(ADfs), np.array(ADrs)
+#end def
 
-	return ADfs, ADrs
+#################################################################
+#	check_all_ADs
+#################################################################
+def check_all_ADs(bamfiles, chrom, pos, REF, ALT, MQ_thr, BQ_thr, thr_samples=2, thr_reads=2):
+	''' check if more than thr_samples bam files have more than thr_reads for the alternate allele '''
+	count = 0
+	for bamfile in bamfiles:
+		ADf, ADr = get_ADs_caller(bamfile, chrom, pos, REF, ALT, MQ_thr, BQ_thr)
+		if ADf[1] + ADr[1] > thr_reads:
+			count += 1
+		#end if
+		if count > thr_samples:
+			return True
+		#end if
+	#end for
+
+	return False
 #end def
 
 #################################################################
@@ -867,7 +876,7 @@ def denovo_P_calc(ADfs, ADrs, rho_f, rho_r, GT_likelihood_wrt_allele_L, table_L,
 #################################################################
 def PP_calc(trio_samfiles, unrelated_samfiles, chrom, pos, REF, ALT, allele_freq, MQ_thresh, BQ_thresh):
 	''' '''
-	ADfs_U, ADrs_U = get_all_ADs_combined(unrelated_samfiles, chrom, pos, REF, ALT, MQ_thresh, BQ_thresh)
+	ADfs_U, ADrs_U = get_all_ADs(unrelated_samfiles, chrom, pos, REF, ALT, MQ_thresh, BQ_thresh)
 	rho_f_old, rho_r_old = 0.8, 0.8
 	prior_old = np.array([1. / 3, 1. / 3, 1. / 3])
 	prior_old = prior_old / np.sum(prior_old)
@@ -877,7 +886,7 @@ def PP_calc(trio_samfiles, unrelated_samfiles, chrom, pos, REF, ALT, allele_freq
 	a, b, D = 2., 2., np.array([2., 2, 2])
 
 	rho_f_new, rho_r_new, prior_L_new, joint_probty_s = \
-		EM_full(ADfs, ADrs,r ho_f_old, rho_r_old, prior_L_old, GT_likelihood_wrt_allele_L, a, b, D, allele_freq)
+		EM_full(ADfs, ADrs, rho_f_old, rho_r_old, prior_L_old, GT_likelihood_wrt_allele_L, a, b, D, allele_freq)
 
 	AF_unrel = 0.
 	for i in range(ADfs.shape[0]):
@@ -892,7 +901,7 @@ def PP_calc(trio_samfiles, unrelated_samfiles, chrom, pos, REF, ALT, allele_freq
 
 	AF_unrel = AF_unrel / 2. / ADfs.shape[0]
 
-	ADfs, ADrs = get_all_ADs_combined(trio_samfiles, chrom, pos, REF, ALT, MQ_thresh, BQ_thresh)
+	ADfs, ADrs = get_all_ADs(trio_samfiles, chrom, pos, REF, ALT, MQ_thresh, BQ_thresh)
 
 	table = table_gen(1, 1e-8)
 	table_L = np.log(table)
@@ -902,35 +911,61 @@ def PP_calc(trio_samfiles, unrelated_samfiles, chrom, pos, REF, ALT, allele_freq
 #end def
 
 #################################################################
-#	ALT_read_check_in_parents
+#	ALT_count_check_parents
 #################################################################
-def ALT_read_check_in_parents(ADfs, ADrs, thr=3):
-	''' check if parents have alternate reads over threshold '''
+def ALT_count_check_parents(ADfs, ADrs, thr=3):
+	''' check if total alternate reads count in parents is over threshold '''
 	if len(ADfs) != 3 or len(ADrs) != 3:
 		sys.exit("ERROR in retrieving stranded AD counts, missing information for trio\n")
 	#end if
 	alt_count = ADfs[0][1] + ADfs[1][1] + ADrs[0][1] + ADrs[1][1]
 
-	if alt_count > thr:
-		return False
-	else:
-		return True
+	if alt_count > thr: return True
+	else: return False
 	#end if
 #end def
 
-def ALT_read_check_in_unrelated(ADfs, ADrs, thr=3):
-	''' check if unrelated have alternate reads over threshold '''
+#################################################################
+#	ALT_count_check_samples
+#################################################################
+def ALT_count_check_samples(ADfs, ADrs, thr=3):
+	''' check if total alternate reads count in samples is over threshold '''
+	if len(ADfs) != len(ADrs):
+		sys.exit("ERROR in retrieving stranded AD counts\n")
+	#end if
 	alt_count = 0
 	for i in range(len(ADfs)):
-		alt_count_i = ADfs[i][1] + ADrs[i][1]
-
+		alt_count += ADfs[i][1] + ADrs[i][1]
 	#end for
 
-	if alt_count > thr:
-		return False
-	else:
-		return True
+	if alt_count > thr: return True
+	else: return False
 	#end if
+#end def
+
+#################################################################
+#	get_allele_freq
+#################################################################
+def get_allele_freq(vnt_obj, is_required=False, tag_AF='novoAF='):
+	''' '''
+	is_tag_AF, allele_freq = False, 0. # by default allele_freq set to 0.
+	for tag in vnt_obj.INFO.split(";"):
+		if tag.startswith(tag_AF):
+			is_tag_AF = True
+			try:
+				allele_freq = float(tag.split('=')[1])
+			except Exception: # tag_AF field is not a float as expected
+				sys.exit('ERROR in input parsing, allele frequency INFO field is in the wrong format\n')
+			#end try
+			break
+		#end if
+	#end for
+
+	if not is_tag_AF and is_required:
+		sys.exit('ERROR in input parsing, allele frequency INFO field is missing\n')
+	#end if
+
+	return allele_freq
 #end def
 
 #################################################################
@@ -985,35 +1020,20 @@ def runner_novo(args):
 		sys.stderr.write('Analyzing variant... ' + str(i) + '\n')
 		sys.stderr.flush()
 
-		# Getting allele frequency from novoAF tag
-		is_novoAF, allele_freq = False, 0.
-		for tag in vnt_obj.INFO.split(";"):
-			if tag.startswith('novoAF='):
-				is_novoAF = True
-				try:
-					allele_freq = float(tag.split('=')[1])
-				except Exception: # novo_AF field is not a float as expected
-					if is_allele_freq_thr: # error if allele frequency threshold was provided
-						sys.exit('ERROR in input parsing, novoAF field is in the wrong format but looks like you expect to filter based on allele frequency\n')
-					else: # set to 0. if no filtering by allele frequency is requested
-						allele_freq = 0.
-					#end if
-				#end try
-				break
-			#end if
-		#end for
-
-		# Check if novo_AF field missing, error if allele frequency threshold was provided
-		if not is_novoAF and is_allele_freq_thr:
-			sys.exit('ERROR in input parsing, novoAF field missing but looks like you expect to filter based on allele frequency\n')
+		# Check if chromosome is canonical and in valid format
+		if not check_chrom(vnt_obj.CHROM): # skip variant if not
+			continue
 		#end if
+
+		# Getting allele frequency from novoAF tag
+		allele_freq = get_allele_freq(vnt_obj, is_required=is_allele_freq_thr)
 
 		# Calculate statistics
 		if allele_freq <= allele_freq_thr: # hard filter on allele frequency
 			analyzed += 1
 			PP, ADfs, ADrs, ADfs_U, ADrs_U, _, _, _, AF_unrel = \
-				PP_calc(trio_bamfiles, unrelated_bamfiles, encode_chrom(vnt_obj.CHROM), int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, allele_freq, MQ_thr, BQ_thr)
-			if AF_unrel < AF_unrel_thr and PP >= PP_thr and ALT_read_check_in_parents(ADfs, ADrs): # hard filter on AF_unrel
+				PP_calc(trio_bamfiles, unrelated_bamfiles, vnt_obj.CHROM, int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, allele_freq, MQ_thr, BQ_thr)
+			if AF_unrel < AF_unrel_thr and PP >= PP_thr and not ALT_count_check_parents(ADfs, ADrs): # hard filter on AF_unrel, PP, total alternate reads count
 				variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj])
 			#end if
 		#end if
@@ -1087,7 +1107,7 @@ def runner_novo(args):
 		if unrelated_genotypes:
 			fo.write(vnt_obj.to_string().rstrip() + '\t' + '\t'.join(unrelated_genotypes) + '\n')
 		else:
-			fo.write(vnt_obj.to_string().rstrip() + '\n')
+			fo.write(vnt_obj.to_string())
 		#end if
 	# end for
 
@@ -1125,41 +1145,30 @@ def runner_blacklist(args):
 	# Creating Vcf object
 	vcf_obj = Vcf(args['inputfile'])
 
+	# Writing header
+	fo.write(vcf_obj.header.definitions)
+	fo.write(vcf_obj.header.columns)
+
 	# Reading variants
 	analyzed = 0
 	for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
 		sys.stderr.write('Analyzing variant... ' + str(i) + '\n')
 		sys.stderr.flush()
 
-		# Getting allele frequency from novoAF tag
-		is_novoAF, allele_freq = False, 0.
-		for tag in vnt_obj.INFO.split(";"):
-			if tag.startswith('novoAF='):
-				is_novoAF = True
-				try:
-					allele_freq = float(tag.split('=')[1])
-				except Exception: # novo_AF field is not a float as expected
-					if is_allele_freq_thr: # error if allele frequency threshold was provided
-						sys.exit('ERROR in input parsing, novoAF field is in the wrong format but looks like you expect to filter based on allele frequency\n')
-					else: # set to 0. if no filtering by allele frequency is requested
-						allele_freq = 0.
-					#end if
-				#end try
-				break
-			#end if
-		#end for
-
-		# Check if novo_AF field missing, error if allele frequency threshold was provided
-		if not is_novoAF and is_allele_freq_thr:
-			sys.exit('ERROR in input parsing, novoAF field missing but looks like you expect to filter based on allele frequency\n')
+		# Check if chromosome is canonical and in valid format
+		if not check_chrom(vnt_obj.CHROM):
+			continue
 		#end if
+
+		# Getting allele frequency from novoAF tag
+		allele_freq = get_allele_freq(vnt_obj, is_required=is_allele_freq_thr)
 
 		# Calculate statistics
 		if allele_freq <= allele_freq_thr: # hard filter on allele frequency
 			analyzed += 1
-			ADfs_U, ADrs_U = get_all_ADs_combined(blacklist_bamfiles, encode_chrom(vnt_obj.CHROM), int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, MQ_thresh, BQ_thresh)
-			if ALT_read_check_in_unrelated(ADfs, ADrs, thr=):
-				#WRITE VARIANT
+			if not check_all_ADs(blacklist_bamfiles, vnt_obj.CHROM, int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, MQ_thr, BQ_thr, thr_samples=2, thr_reads=2):
+				# Write variant
+				fo.write(vnt_obj.to_string())
 			#end if
 		#end if
 	#end for
@@ -1170,6 +1179,7 @@ def runner_blacklist(args):
 		buffer.close()
 	#end for
 #end def
+
 
 #################################################################
 #
