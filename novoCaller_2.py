@@ -1015,7 +1015,7 @@ def runner_novo(args):
 	#end if
 
 	# Reading variants
-	analyzed = 1
+	analyzed = 0
 	for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
 		sys.stderr.write('Analyzing variant... ' + str(i + 1) + '\n')
 		sys.stderr.flush()
@@ -1150,7 +1150,7 @@ def runner_blacklist(args):
 	fo.write(vcf_obj.header.columns)
 
 	# Reading variants
-	analyzed = 1
+	analyzed = 0
 	for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
 		sys.stderr.write('Analyzing variant... ' + str(i + 1) + '\n')
 		sys.stderr.flush()
