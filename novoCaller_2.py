@@ -1015,9 +1015,9 @@ def runner_novo(args):
 	#end if
 
 	# Reading variants
-	analyzed = 0
+	analyzed = 1
 	for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
-		sys.stderr.write('Analyzing variant... ' + str(i) + '\n')
+		sys.stderr.write('Analyzing variant... ' + str(i + 1) + '\n')
 		sys.stderr.flush()
 
 		# Check if chromosome is canonical and in valid format
@@ -1040,7 +1040,7 @@ def runner_novo(args):
 	#end if
 
 	# Writing output
-	sys.stderr.write('\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(i) + ' total variants\n')
+	sys.stderr.write('\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(i + 1) + ' total variants\n')
 	sys.stderr.flush()
 
 	# Header definitions
@@ -1150,9 +1150,9 @@ def runner_blacklist(args):
 	fo.write(vcf_obj.header.columns)
 
 	# Reading variants
-	analyzed = 0
+	analyzed = 1
 	for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
-		sys.stderr.write('Analyzing variant... ' + str(i) + '\n')
+		sys.stderr.write('Analyzing variant... ' + str(i + 1) + '\n')
 		sys.stderr.flush()
 
 		# Check if chromosome is canonical and in valid format
@@ -1172,6 +1172,10 @@ def runner_blacklist(args):
 			#end if
 		#end if
 	#end for
+
+	# Writing output
+	sys.stderr.write('\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(i + 1) + ' total variants\n')
+	sys.stderr.flush()
 
 	# Closing files buffers
 	fo.close()
