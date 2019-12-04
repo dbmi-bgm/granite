@@ -886,7 +886,7 @@ def PP_calc(trio_samfiles, unrelated_samfiles, chrom, pos, REF, ALT, allele_freq
 	a, b, D = 2., 2., np.array([2., 2, 2])
 
 	rho_f_new, rho_r_new, prior_L_new, joint_probty_s = \
-		EM_full(ADfs, ADrs, rho_f_old, rho_r_old, prior_L_old, GT_likelihood_wrt_allele_L, a, b, D, allele_freq)
+		EM_full(ADfs_U, ADrs_U, rho_f_old, rho_r_old, prior_L_old, GT_likelihood_wrt_allele_L, a, b, D, allele_freq)
 
 	AF_unrel = 0.
 	for i in range(ADfs.shape[0]):
