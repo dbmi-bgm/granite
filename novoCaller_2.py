@@ -478,7 +478,7 @@ def get_all_ADs(bamfiles, chrom, pos, REF, ALT, MQ_thr, BQ_thr):
 #################################################################
 #	check_all_ADs
 #################################################################
-def check_all_ADs(bamfiles, chrom, pos, REF, ALT, MQ_thr, BQ_thr, thr_bams=2, thr_reads=2):
+def check_all_ADs(bamfiles, chrom, pos, REF, ALT, MQ_thr, BQ_thr, thr_bams=2, thr_reads=1):
 	''' check if more than thr_samples bam files have more than thr_reads for the alternate allele '''
 	count = 0
 	for bamfile in bamfiles:
@@ -1130,8 +1130,8 @@ def runner_blacklist(args):
 	# Variables
 	is_allele_freq_thr = True if args['allelefreqthr'] else False
 	allele_freq_thr = float(args['allelefreqthr']) if is_allele_freq_thr else 1.
-	thr_bams = int(args['thr_bams']) if args['thr_bams'] else 1
-	thr_reads = int(args['thr_reads']) if args['thr_reads'] else 2
+	thr_bams = int(args['thr_bams']) if args['thr_bams'] else 2
+	thr_reads = int(args['thr_reads']) if args['thr_reads'] else 1
 	AF_unrel_thr = 0.01
 	MQ_thr, BQ_thr = -100., -100.
 
