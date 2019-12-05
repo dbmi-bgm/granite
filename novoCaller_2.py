@@ -478,15 +478,15 @@ def get_all_ADs(bamfiles, chrom, pos, REF, ALT, MQ_thr, BQ_thr):
 #################################################################
 #	check_all_ADs
 #################################################################
-def check_all_ADs(bamfiles, chrom, pos, REF, ALT, MQ_thr, BQ_thr, thr_samples=2, thr_reads=2):
+def check_all_ADs(bamfiles, chrom, pos, REF, ALT, MQ_thr, BQ_thr, thr_bams=2, thr_reads=2):
 	''' check if more than thr_samples bam files have more than thr_reads for the alternate allele '''
 	count = 0
 	for bamfile in bamfiles:
 		ADf, ADr = get_ADs_caller(bamfile, chrom, pos, REF, ALT, MQ_thr, BQ_thr)
-		if ADf[1] + ADr[1] > thr_reads:
+		if ADf[1] + ADr[1] >= thr_reads:
 			count += 1
 		#end if
-		if count > thr_samples:
+		if count >= thr_bams:
 			return True
 		#end if
 	#end for
@@ -1130,6 +1130,8 @@ def runner_blacklist(args):
 	# Variables
 	is_allele_freq_thr = True if args['allelefreqthr'] else False
 	allele_freq_thr = float(args['allelefreqthr']) if is_allele_freq_thr else 1.
+	thr_bams = int(args['thr_bams']) if args['thr_bams'] else 1
+	thr_reads = int(args['thr_reads']) if args['thr_reads'] else 2
 	AF_unrel_thr = 0.01
 	MQ_thr, BQ_thr = -100., -100.
 
@@ -1166,7 +1168,7 @@ def runner_blacklist(args):
 		# Calculate statistics
 		if allele_freq <= allele_freq_thr: # hard filter on allele frequency
 			analyzed += 1
-			if not check_all_ADs(blacklist_bamfiles, vnt_obj.CHROM, int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, MQ_thr, BQ_thr, thr_samples=2, thr_reads=2):
+			if not check_all_ADs(blacklist_bamfiles, vnt_obj.CHROM, int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, MQ_thr, BQ_thr, thr_bams=thr_bams, thr_reads=thr_reads):
 				# Write variant
 				fo.write(vnt_obj.to_string())
 			#end if
@@ -1201,8 +1203,10 @@ if __name__ == "__main__":
 	parser.add_argument('-t', '--triobams', help='DE NOVO: tsv file containing ID<TAB>Path/to/file for family bam files, \
 												the PROBAND must be listed as LAST', required=False)
 	parser.add_argument('-p', '--postprobthr', help='DE NOVO: threshold to filter by posterior probabilty for de novo calls [0]', required=False)
-	parser.add_argument('-b', '--blacklist', help='OTHER: tsv file containing ID<TAB>Path/to/file for bam files \
+	parser.add_argument('-b', '--blacklist', help='BLACKLIST: tsv file containing ID<TAB>Path/to/file for bam files \
 												used to filter out shared variants/artifacts', required=False)
+	parser.add_argument('--thr_bams', help='BLACKLIST: minimum number of bam files with at least "--thr_reads" to blacklist the variant [2]', required=False)
+	parser.add_argument('--thr_reads', help='BLACKLIST: minimum number of reads to count the bam file in "--thr_bams" [1]', required=False)
 	parser.add_argument('-a', '--allelefreqthr', help='threshold to filter by population allele frequency [1]', required=False)
 
 	args = vars(parser.parse_args())
