@@ -29,7 +29,7 @@ class mpileupParser(object):
 
     class mpileupColumn(object):
         ''' class to manipulate mpileup column at position '''
-        def __init__(self, chr, pos, ref, cov, reads, BQs, *, MQs=None):
+        def __init__(self, chr, pos, ref, cov, reads, BQs):
             ''' '''
             self.chr = chr
             self.pos = int(pos)
@@ -37,7 +37,6 @@ class mpileupParser(object):
             self.cov = cov
             self.reads = reads
             self.BQs = BQs
-            self.MQs = MQs
             self.counts = {
                     'ref_fw': 0, 'alt_fw': 0, 'ref_rv': 0, 'alt_rv': 0,
                     'ins_fw': 0, 'ins_rv': 0, 'del_fw': 0, 'del_rv': 0
@@ -132,15 +131,13 @@ class mpileupParser(object):
 
     #end class
 
-    def generator(self, fi, is_MQs=False):
+    def generator(self, fi):
+        ''' '''
         for line in fi:
-            if not is_MQs:
-                chr, pos, ref, cov, reads, BQs = str(line, 'utf-8').rstrip().split()
-                yield self.mpileupColumn(chr, pos, ref, cov, reads, BQs)
-            else:
-                chr, pos, ref, cov, reads, BQs, MQs = str(line, 'utf-8').rstrip().split()
-                yield self.mpileupColumn(chr, pos, ref, cov, reads, BQs, MQs=MQs)
-            #end if
+            try: line = str(line, 'utf-8').rstrip()
+            except Exception: line = line.rstrip()
+            #end try
+            yield self.mpileupColumn(line.split())
         #end for
     #end def
 
@@ -150,30 +147,12 @@ class mpileupParser(object):
 #################################################################
 #   Functions
 #################################################################
-def main(args):
-
+def run_mpileupParser(fi, fo, ref_dict):
+    ''' '''
     mP = mpileupParser()
-    handler = fasta_parser.FastaHandler()
-
-    # Reading reference into generator
-    IT = handler.parse_generator(args['referencefile'])
-
-    ref_dict = {x: 'N' for x in range(10000010)}
-
-    fo = open(args['outputfile'], 'w')
-
-    h, s = next(IT)
-
-    for i, s in enumerate(s[:10000009]):
-        ref_dict[i] = s
-    #end for
-
-    pipe_in = subprocess.Popen(['samtools', 'mpileup', '-r', '1:1-10000000', args['inputfile']], stdout=subprocess.PIPE)
-    #pipe_in = subprocess.Popen(['samtools', 'mpileup', args['inputfile']], stdout=subprocess.PIPE)
-
     first = True
-    for mC in mP.generator(pipe_in.stdout):
-        mC.get_AD_noreference(ref_dict[mC.pos])
+    for mC in mP.generator(fi):
+        mC.get_AD_noreference(ref_dict[mC.chr][mC.pos])
         if first:
             first = False
             mC.write_AD(fo, header=True)
@@ -181,7 +160,83 @@ def main(args):
             mC.write_AD(fo)
         #end if
     #end for
+#end def
 
+def main(args):
+    ''' '''
+    # Initialize objects and variables
+    handler = fasta_parser.FastaHandler()
+    ref_dict = {} # {chr#: {pos#: REF, ...}, ...}
+    is_chr, is_region = False, False
+    chr, region = '', ''
+    strt, end = 0, 0
+
+    # Parsing region if available
+    if args['region']:
+        if ':' in args['region']:
+            try:
+                chr, region = args['region'].split(':')
+                strt, end = map(int, region.split('-'))
+                is_chr, is_region = True, True
+            except Exception:
+                sys.exit('ERROR in parsing region argument: the format is not recognized\n')
+            #end try
+        else:
+            try:
+                chr = args['region']
+                is_chr = True
+            except Exception:
+                sys.exit('ERROR in parsing region argument: the format is not recognized\n')
+            #end try
+        #end if
+    #end if
+
+    # Building command line
+    command_line = ['samtools', 'mpileup']
+    if is_chr: command_line += ['-r', args['region']]
+    #end if
+    if args['MQthr']: command_line += ['--min-MQ', args['MQthr']]
+    #end if
+    if args['BQthr']: command_line += ['--min-BQ', args['MQthr']]
+    #end if
+    command_line += [args['inputfile']]
+
+    # Reading reference into iterator
+    IT = handler.parse_generator(args['referencefile'])
+
+    # Output
+    fo = open(args['outputfile'], 'w')
+
+    # Reference headers example GRCh38 and 37
+    # >chr1  AC:CM000663.2  gi:568336023  LN:248956422  rl:Chromosome  M5:6aef897c3d6ff0c78aff06ac189178dd  AS:GRCh38
+    # >1 dna:chromosome chromosome:GRCh37:1:1:249250621:1
+
+    # Loading reference into dict
+    if is_chr:
+        for header, seq in IT:
+            if header.split()[0][1:] == chr:
+                if is_region:
+                    ref_dict = {chr: {k: v for k, v in enumerate(seq[strt: end+2])} }
+                else:
+                    ref_dict = {chr: {k: v for k, v in enumerate(seq)} }
+                #end if
+                break
+            #end if
+        #end for
+    else:
+        for header, seq in IT:
+            chr = header.split()[0][1:]
+            ref_dict.setdefault(chr, {k: v for k, v in enumerate(seq)})
+        #end for
+    #end if
+
+    # Running samtools
+    pipe_in = subprocess.Popen(command_line, stdout=subprocess.PIPE)
+
+    # Parsing mpileup
+    run_mpileupParser(pipe_in, fo, ref_dict)
+
+    # Closing files
     fo.close()
 #end def
 
@@ -191,11 +246,14 @@ def main(args):
 #################################################################
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='Use samtools to calculate statistics for pileup at each position')
+    parser = argparse.ArgumentParser(description='Use samtools to calculate statistics for pileup at each position in the specified region')
 
     parser.add_argument('-i', '--inputfile', help='I/O: input file', required=True)
     parser.add_argument('-o', '--outputfile', help='I/O: output file', required=True)
     parser.add_argument('-r', '--referencefile', help='OTHER: reference file', required=False)
+    parser.add_argument('--region', help='OTHER: region to be analyzed [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromsome name have to match the reference', required=False)
+    parser.add_argument('--MQthr', help='OTHER: minimum mapping quality for an alignment to be used [0]', required=False)
+    parser.add_argument('--BQthr', help='OTHER: minimum base quality for a base to be considered [13]', required=False)
 
     args = vars(parser.parse_args())
 
