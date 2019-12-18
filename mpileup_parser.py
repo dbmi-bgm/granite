@@ -139,7 +139,8 @@ class mpileupParser(object):
             try: line = str(line, 'utf-8').rstrip()
             except Exception: line = line.rstrip()
             #end try
-            yield self.mpileupColumn(line.split())
+            chr, pos, ref, cov, reads, BQs = line.split()
+            yield self.mpileupColumn(chr, pos, ref, cov, reads, BQs)
         #end for
     #end def
 
