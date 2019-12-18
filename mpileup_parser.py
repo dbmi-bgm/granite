@@ -239,7 +239,7 @@ def main(args):
     pipe_in = subprocess.Popen(command_line, stdout=subprocess.PIPE)
 
     # Parsing mpileup
-    run_mpileupParser(pipe_in, fo, ref_dict)
+    run_mpileupParser(pipe_in.stdout, fo, ref_dict)
 
     # Closing files
     fo.close()
