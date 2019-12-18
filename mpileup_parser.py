@@ -90,7 +90,9 @@ class mpileupParser(object):
                     'N+': 'ins_fw', 'N-': 'del_fw', 'n+': 'ins_rv', 'n-': 'del_rv'
                     }
             for read in self.__parser_reads():
-                if not '*' in read:
+                if '*' not in read and \
+                   '>' not in read and \
+                   '<' not in read:
                     try:
                         if read in encode:
                             self.counts[encode[read]] += 1
@@ -152,7 +154,10 @@ def run_mpileupParser(fi, fo, ref_dict):
     mP = mpileupParser()
     first = True
     for mC in mP.generator(fi):
-        mC.get_AD_noreference(ref_dict[mC.chr][mC.pos])
+        try: mC.get_AD_noreference(ref_dict[mC.chr][mC.pos])
+        except Exception:
+            sys.exit('ERROR in reading position information: chr format (mC.chr) is not matching reference\n')
+        #end if
         if first:
             first = False
             mC.write_AD(fo, header=True)
@@ -202,7 +207,7 @@ def main(args):
     command_line += [args['inputfile']]
 
     # Reading reference into iterator
-    IT = handler.parse_generator(args['referencefile'])
+    IT = handler.parse_generator(args['reference'])
 
     # Output
     fo = open(args['outputfile'], 'w')
@@ -216,9 +221,9 @@ def main(args):
         for header, seq in IT:
             if header.split()[0][1:] == chr:
                 if is_region:
-                    ref_dict = {chr: {k: v for k, v in enumerate(seq[strt: end+2])} }
+                    ref_dict = {chr: {strt+k: v for k, v in enumerate(seq[strt-1: end])} }
                 else:
-                    ref_dict = {chr: {k: v for k, v in enumerate(seq)} }
+                    ref_dict = {chr: {k+1: v for k, v in enumerate(seq)} }
                 #end if
                 break
             #end if
@@ -226,7 +231,7 @@ def main(args):
     else:
         for header, seq in IT:
             chr = header.split()[0][1:]
-            ref_dict.setdefault(chr, {k: v for k, v in enumerate(seq)})
+            ref_dict.setdefault(chr, {k+1: v for k, v in enumerate(seq)})
         #end for
     #end if
 
@@ -250,7 +255,7 @@ if __name__ == "__main__":
 
     parser.add_argument('-i', '--inputfile', help='I/O: input file', required=True)
     parser.add_argument('-o', '--outputfile', help='I/O: output file', required=True)
-    parser.add_argument('-r', '--referencefile', help='OTHER: reference file', required=False)
+    parser.add_argument('-r', '--reference', help='OTHER: reference file', required=False)
     parser.add_argument('--region', help='OTHER: region to be analyzed [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromsome name have to match the reference', required=False)
     parser.add_argument('--MQthr', help='OTHER: minimum mapping quality for an alignment to be used [0]', required=False)
     parser.add_argument('--BQthr', help='OTHER: minimum base quality for a base to be considered [13]', required=False)
