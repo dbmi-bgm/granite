@@ -220,7 +220,7 @@ def main(args):
     # Loading reference into dict
     if is_chr:
         for header, seq in IT:
-            if header.split()[0][1:] == chr:
+            if header.split()[0] == chr:
                 if is_region:
                     ref_dict = {chr: {strt+k: v for k, v in enumerate(seq[strt-1: end])} }
                 else:
@@ -231,7 +231,7 @@ def main(args):
         #end for
     else:
         for header, seq in IT:
-            chr = header.split()[0][1:]
+            chr = header.split()[0]
             ref_dict.setdefault(chr, {k+1: v for k, v in enumerate(seq)})
         #end for
     #end if
