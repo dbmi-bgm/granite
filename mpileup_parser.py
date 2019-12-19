@@ -155,7 +155,7 @@ def run_mpileupParser(fi, fo, ref_dict):
     mP = mpileupParser()
     first = True
     for mC in mP.generator(fi):
-        try: mC.get_AD_noreference(ref_dict[mC.chr][mC.pos])
+        try: mC.get_AD_noreference(ref_dict[mC.chr][mC.pos-1])
         except Exception:
             sys.exit('ERROR in reading position information: chr format (mC.chr) is not matching reference\n')
         #end if
@@ -217,14 +217,14 @@ def main(args):
     # >chr1  AC:CM000663.2  gi:568336023  LN:248956422  rl:Chromosome  M5:6aef897c3d6ff0c78aff06ac189178dd  AS:GRCh38
     # >1 dna:chromosome chromosome:GRCh37:1:1:249250621:1
 
-    # Loading reference into dict
+    # Loading reference
     if is_chr:
         for header, seq in IT:
             if header.split()[0] == chr:
                 if is_region:
-                    ref_dict = {chr: {strt+k: v for k, v in enumerate(seq[strt-1: end])} }
+                    ref_dict = {chr: seq[strt-1: end]}
                 else:
-                    ref_dict = {chr: {k+1: v for k, v in enumerate(seq)} }
+                    ref_dict = {chr: seq}
                 #end if
                 break
             #end if
@@ -232,7 +232,7 @@ def main(args):
     else:
         for header, seq in IT:
             chr = header.split()[0]
-            ref_dict.setdefault(chr, {k+1: v for k, v in enumerate(seq)})
+            ref_dict.setdefault(chr, seq)
         #end for
     #end if
 
