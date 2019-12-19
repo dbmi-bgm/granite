@@ -157,7 +157,8 @@ def run_mpileupParser(fi, fo, ref_dict):
     for mC in mP.generator(fi):
         try: mC.get_AD_noreference(ref_dict[mC.chr][mC.pos-1])
         except Exception:
-            sys.exit('ERROR in reading position information: chr format (mC.chr) is not matching reference\n')
+            sys.exit('ERROR in reading position information: chr format ({0}) is not matching reference\n'
+                      .format(mC.chr))
         #end if
         if first:
             first = False
