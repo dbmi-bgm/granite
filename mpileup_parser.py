@@ -174,24 +174,23 @@ def main(args):
     # Initialize objects and variables
     handler = fasta_parser.FastaHandler()
     ref_dict = {} # {chr#: {pos#: REF, ...}, ...}
-    is_chr, is_region = False, False
-    chr, region = '', ''
-    strt, end = 0, 0
+    is_chr, chr = False, ''
 
     # Parsing region if available
     if args['region']:
+        is_chr = True
         if ':' in args['region']:
             try:
                 chr, region = args['region'].split(':')
                 strt, end = map(int, region.split('-'))
-                is_chr, is_region = True, True
+                if strt >= end:
+                    sys.exit('ERROR in parsing region argument: start index is larger than end index\n')
             except Exception:
                 sys.exit('ERROR in parsing region argument: the format is not recognized\n')
             #end try
         else:
             try:
                 chr = args['region']
-                is_chr = True
             except Exception:
                 sys.exit('ERROR in parsing region argument: the format is not recognized\n')
             #end try
@@ -222,11 +221,7 @@ def main(args):
     if is_chr:
         for header, seq in IT:
             if header.split()[0] == chr:
-                if is_region:
-                    ref_dict = {chr: seq[strt-1: end]}
-                else:
-                    ref_dict = {chr: seq}
-                #end if
+                ref_dict = {chr: seq}
                 break
             #end if
         #end for
