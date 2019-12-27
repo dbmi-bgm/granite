@@ -90,9 +90,7 @@ class mpileupParser(object):
                     'N+': 'ins_fw', 'N-': 'del_fw', 'n+': 'ins_rv', 'n-': 'del_rv'
                     }
             for read in self.__parser_reads():
-                if '*' not in read and \
-                   '>' not in read and \
-                   '<' not in read:
+                if '*' not in read:
                     try:
                         if read in encode:
                             self.counts[encode[read]] += 1
