@@ -2,7 +2,7 @@
 
 #################################################################
 #
-#   TITLE
+#   to_bitarray
 #       contact: berselli.michele@gmail.com
 #
 #################################################################
@@ -94,9 +94,8 @@ def check_region(region):
         #end try
     else:
         chr = region
-        #end if
     #end if
-
+    # Get length for the chromosome
     if chr in build_38:
         return build_38[chr]
     elif chr in hg_19:
@@ -115,7 +114,6 @@ def main(args):
 
     # Check region
     region_len = check_region(region)
-    print(region_len)
 
     # Initialize bitarray
     bit_array_snv = bitarray.bitarray(region_len + 1) # +1 to index positions in bitarray by 1
@@ -184,8 +182,8 @@ def main(args):
     print('bit_array_snv', bit_array_snv[9996:10015])
     print('bit_array_ins', bit_array_ins[9996:10015])
     print('bit_array_del', bit_array_del[9996:10015])
-    bit_249240606 = bitarray.bitarray(249240607)
-    bit_249240606.setall(False)
+    bit_249240607 = bitarray.bitarray(249240607)
+    bit_249240607.setall(False)
     if bit_array_snv[10015:] == bit_249240607:
         print('YASS')
     if bit_array_ins[10015:] == bit_249240607:
@@ -195,8 +193,8 @@ def main(args):
     #end if block
 
     # Writing bitarrays to files
-    filename = 'blacklist_' + region + '_bams{0}'.format(thr_bams)
-    if thr_reads: filename += '_reads{0}'.format(thr_reads)
+    filename = 'blacklist_' + region + '_bamsthr-{0}'.format(thr_bams)
+    if thr_reads: filename += '_readsthr-{0}'.format(thr_reads)
     else: filename += '_allelebalance'
     #end if
     with open(filename + '_snv.bin', 'wb') as fo:

@@ -157,7 +157,7 @@ def run_mpileupParser(fi, fo, ref_dict):
         except Exception:
             sys.exit('ERROR in reading position information: chr format ({0}) is not matching reference\n'
                       .format(mC.chr))
-        #end if
+        #end try
         if first:
             first = False
             mC.write_AD(fo, header=True)
@@ -183,6 +183,7 @@ def main(args):
                 strt, end = map(int, region.split('-'))
                 if strt >= end:
                     sys.exit('ERROR in parsing region argument: start index is larger than end index\n')
+                #end if
             except Exception:
                 sys.exit('ERROR in parsing region argument: the format is not recognized\n')
             #end try
@@ -285,56 +286,3 @@ if __name__ == "__main__":
 # print(test_parser_reads(f) == ['A-'])
 # print(test_parser_reads(g, basic=False) == [',', ',', '.', '.', '.', '.', '*-A', '.-A', '.', '^.-A'])
 # print(test_parser_reads(g) == [',', ',', '.', '.', '.', '.', '*-', '.-', '.', '.-'])
-
-
-#################################################################
-#   Old
-#################################################################
-# def get_AD_noreference_fast(self, ref):
-#     ''' '''
-#     encode = {
-#             ref.upper(): 'ref_fw', ref.lower(): 'ref_rv',
-#             'A+': 'ins_fw', 'A-': 'del_fw', 'a+': 'ins_rv', 'a-': 'del_rv',
-#             'C+': 'ins_fw', 'C-': 'del_fw', 'c+': 'ins_rv', 'c-': 'del_rv',
-#             'T+': 'ins_fw', 'T-': 'del_fw', 't+': 'ins_rv', 't-': 'del_rv',
-#             'G+': 'ins_fw', 'G-': 'del_fw', 'g+': 'ins_rv', 'g-': 'del_rv',
-#             'N+': 'ins_fw', 'N-': 'del_fw', 'n+': 'ins_rv', 'n-': 'del_rv'
-#             }
-#     i, j = 0, 0
-#     reads, indls, r_tmp = self.reads, [], ''
-#     if '^' in reads or '$' in reads:
-#         reads = re.sub(r'\^.?|\$', '', reads)
-#     #end if
-#     if '+' in reads or '-' in reads:
-#         indls = re.findall('[\+-](\d+)[ACGTNacgtn*]+', reads)
-#     #end if
-#     while i < len(reads):
-#         r_tmp = reads[i]
-#         try:
-#             r_nex = reads[i+1]
-#             if r_nex in '+-':
-#                 r_tmp += r_nex
-#                 i += 1 + len(indls[j]) + int(indls[j]) + 1
-#                 j += 1
-#             else:
-#                 i += 1
-#             #end if
-#         except Exception:
-#             i += 1
-#         #end try
-#         if '*' not in r_tmp:
-#             try:
-#                 if r_tmp in encode:
-#                     self.counts[encode[r_tmp]] += 1
-#                 else:
-#                     if r_tmp.isupper(): self.counts['alt_fw'] += 1
-#                     else: self.counts['alt_rv'] += 1
-#                     #end if
-#                 #end if
-#             except Exception:
-#                 sys.exit('ERROR in mpileup parser: Unknown char {0} in reads\n'
-#                           .format(read))
-#             #end try
-#         #end if
-#     #end while
-# #end def
