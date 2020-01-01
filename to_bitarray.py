@@ -21,13 +21,15 @@ import tabix
 #   Functions
 #################################################################
 def tabix_IT(filename, region):
-    ''' '''
+    ''' open buffer to bgzip indexed file using tabix,
+    return an iterator to file content (tsv rows as lists) '''
     tb = tabix.open(filename)
     return tb.querys(region)
 #ene def
 
 def check_pos(thr_reads, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv, del_fw, del_rv):
-    ''' '''
+    ''' check if position can be called as snv, insertion or delition.
+    absolute reads counts or allelic balance can be used alternatively '''
     is_snv, is_ins, is_del = False, False, False
     if not thr_reads:
         is_snv = calc_allbal(ref_fw, ref_rv, alt_fw, alt_rv)
@@ -38,21 +40,20 @@ def check_pos(thr_reads, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv, de
         is_ins = calc_reads(thr_reads, ins_fw, ins_rv)
         is_del = calc_reads(thr_reads, del_fw, del_rv)
     #end if
-
     return is_snv, is_ins, is_del
 #end def
 
 def calc_allbal(ref_fw, ref_rv, alt_fw, alt_rv):
-    ''' '''
+    ''' check if position can be called as alternate based on allelic balance '''
     pass
 #end def
 
 def calc_reads(thr_reads, alt_fw, alt_rv):
-    ''' '''
+    ''' check if position can be called as alternate based on absolute
+    read counts '''
     if alt_fw + alt_rv >= thr_reads:
         return True
     #end if
-
     return False
 #end def
 
@@ -81,7 +82,7 @@ def check_region(region):
                 'chr17': 83257441, 'chr18': 80373285, 'chr19': 58617616, 'chr20': 64444167,
                 'chr21': 46709983, 'chr22': 50818468, 'chrX': 156040895, 'chrY': 57227415,
                 'chrM': 16569}
-    # Parse and check region to return the length
+    # Parse and check region
     if ':' in region:
         try:
             chr, strt_end = region.split(':')
@@ -129,14 +130,16 @@ def main(args):
     buffers = [tabix_IT(filename, region) for filename in args['inputfiles']]
 
     bams_snv, bams_ins, bams_del = 0, 0, 0
-    tmp_chr, tmp_pos = 0, 0
+    tmp_chr, tmp_pos = '', 0
     while True:
         bams_snv, bams_ins, bams_del = 0, 0, 0 # new position
                                                # reset bams counts
         # Check first bam
-        try: chr, pos, cov, ref_fw, ref_rv, alt_fw, alt_rv, \
-                 ins_fw, ins_rv, del_fw, del_rv = map(int, next(buffers[0]))
-        except: break
+        try:
+            line_split = next(buffers[0])
+            chr, pos, cov, ref_fw, ref_rv, alt_fw, alt_rv, \
+                ins_fw, ins_rv, del_fw, del_rv = line_split[0], map(int, line_split[1:])
+        except Exception: break
         #end try
         tmp_chr, tmp_pos = chr, pos
         # Check position and update bams counts
@@ -145,9 +148,10 @@ def main(args):
         bams_snv += int(is_snv); bams_ins += int(is_ins); bams_del += int(is_del)
         # Check ramaining bams
         for i, buffer in enumerate(buffers[1:]):
+            line_split = next(buffer)
             chr, pos, cov, ref_fw, ref_rv, alt_fw, alt_rv, \
-                ins_fw, ins_rv, del_fw, del_rv = map(int, next(buffer))
-            #Check consistency among the files
+                ins_fw, ins_rv, del_fw, del_rv = line_split[0], map(int, line_split[1:])
+            # Check consistency among the files
             if tmp_chr != chr or tmp_pos != pos:
                 sys.exit('ERROR in file: position {0}:{1} in file {2} is not consistent with other input files\n'
                         .format(chr, pos, args['inputfiles'][i+1]))
@@ -197,15 +201,9 @@ def main(args):
     if thr_reads: filename += '_readsthr-{0}'.format(thr_reads)
     else: filename += '_allelebalance'
     #end if
-    with open(filename + '_snv.bin', 'wb') as fo:
-        bit_array_snv.tofile(fo)
-    #end with
-    with open(filename + '_ins.bin', 'wb') as fo:
-        bit_array_ins.tofile(fo)
-    #end with
-    with open(filename + '_del.bin', 'wb') as fo:
-        bit_array_del.tofile(fo)
-    #end with
+    bitarray_tofile(bit_array_snv, filename + '_snv.bin')
+    bitarray_tofile(bit_array_ins, filename + '_ins.bin')
+    bitarray_tofile(bit_array_del, filename + '_del.bin')
 #end def
 
 
@@ -217,7 +215,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='')
 
     parser.add_argument('-i', '--inputfiles', help='I/O: consecutive list of bam files used to calculate the blacklist positions [e.g -i file_1 file_2 ...]', nargs='+')
-    parser.add_argument('-r', '--region', help='OTHER: region to be used [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromsome name have to match the reference', required=True)
+    parser.add_argument('-r', '--region', help='OTHER: region to be used [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromsome name must match the reference', required=True)
     parser.add_argument('--thr_bams', help='THRESHOLD: minimum number of bam files with at least "--thr_reads" for the alternate allele or having the variant (allelic balance call, default) to blacklist the variant', required=True)
     parser.add_argument('--thr_reads', help='THRESHOLD: minimum number of reads to count the bam file in "--thr_bams"', required=False)
 

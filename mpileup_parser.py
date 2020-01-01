@@ -171,7 +171,7 @@ def main(args):
     ''' '''
     # Initialize objects and variables
     handler = fasta_parser.FastaHandler()
-    ref_dict = {} # {chr#: {pos#: REF, ...}, ...}
+    ref_dict = {} # {chr: seq, ...}
     is_chr, chr = False, ''
 
     # Parsing region if available
@@ -202,7 +202,7 @@ def main(args):
     #end if
     if args['MQthr']: command_line += ['--min-MQ', args['MQthr']]
     #end if
-    if args['BQthr']: command_line += ['--min-BQ', args['MQthr']]
+    if args['BQthr']: command_line += ['--min-BQ', args['BQthr']]
     #end if
     command_line += [args['inputfile']]
 
@@ -212,15 +212,11 @@ def main(args):
     # Output
     fo = open(args['outputfile'], 'w')
 
-    # Reference headers example GRCh38 and 37
-    # >chr1  AC:CM000663.2  gi:568336023  LN:248956422  rl:Chromosome  M5:6aef897c3d6ff0c78aff06ac189178dd  AS:GRCh38
-    # >1 dna:chromosome chromosome:GRCh37:1:1:249250621:1
-
     # Loading reference
     if is_chr:
         for header, seq in IT:
             if header.split()[0] == chr:
-                ref_dict = {chr: seq}
+                ref_dict.setdefault(chr, seq)
                 break
             #end if
         #end for
@@ -252,7 +248,7 @@ if __name__ == "__main__":
     parser.add_argument('-i', '--inputfile', help='I/O: input file', required=True)
     parser.add_argument('-o', '--outputfile', help='I/O: output file', required=True)
     parser.add_argument('-r', '--reference', help='OTHER: reference file', required=False)
-    parser.add_argument('--region', help='OTHER: region to be analyzed [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromsome name have to match the reference', required=False)
+    parser.add_argument('--region', help='OTHER: region to be analyzed [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromsome name should match the reference', required=False)
     parser.add_argument('--MQthr', help='OTHER: minimum mapping quality for an alignment to be used [0]', required=False)
     parser.add_argument('--BQthr', help='OTHER: minimum base quality for a base to be considered [13]', required=False)
 
