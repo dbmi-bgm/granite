@@ -212,13 +212,12 @@ def main(args):
 #################################################################
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='')
+    parser = argparse.ArgumentParser(description='The program calls variants by reads counts or allelic balance for single bams or multiple bams (joint calls) in the specified region. Results are stored as binary files where bits corresponding to called positions are set to 1. Three different files are created for SNV, INSERTIONS and DELITIONS respectively')
 
-    parser.add_argument('-i', '--inputfiles', help='I/O: consecutive list of bam files used to calculate the blacklist positions [e.g -i file_1 file_2 ...]', nargs='+')
+    parser.add_argument('-i', '--inputfiles', help='I/O: list of files to be used for the joint calling [e.g -i file_1 file_2 ...]. Files need to follow mpileup_parser output format', nargs='+')
     parser.add_argument('-r', '--region', help='OTHER: region to be used [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromsome name must match the reference', required=True)
-    parser.add_argument('--thr_bams', help='THRESHOLD: minimum number of bam files with at least "--thr_reads" for the alternate allele or having the variant (allelic balance call, default) to blacklist the variant', required=True)
-    parser.add_argument('--thr_reads', help='THRESHOLD: minimum number of reads to count the bam file in "--thr_bams"', required=False)
-
+    parser.add_argument('--thr_bams', help='THRESHOLD: minimum number of bam files with at least "--thr_reads" for the alternate allele or having the variant (default call by allelic balance) to jointly call position', required=True)
+    parser.add_argument('--thr_reads', help='THRESHOLD: minimum number of reads to count the bam file in "--thr_bams", if not specified calls are made by allelic balance', required=False)
 
     args = vars(parser.parse_args())
 
