@@ -137,8 +137,9 @@ def main(args):
         # Check first bam
         try:
             line_split = next(buffers[0])
-            chr, pos, cov, ref_fw, ref_rv, alt_fw, alt_rv, \
-                ins_fw, ins_rv, del_fw, del_rv = line_split[0], map(int, line_split[1:])
+            chr = line_split[0]
+            pos, cov, ref_fw, ref_rv, alt_fw, alt_rv, \
+                ins_fw, ins_rv, del_fw, del_rv = map(int, line_split[1:])
         except Exception: break
         #end try
         tmp_chr, tmp_pos = chr, pos
@@ -149,8 +150,9 @@ def main(args):
         # Check ramaining bams
         for i, buffer in enumerate(buffers[1:]):
             line_split = next(buffer)
-            chr, pos, cov, ref_fw, ref_rv, alt_fw, alt_rv, \
-                ins_fw, ins_rv, del_fw, del_rv = line_split[0], map(int, line_split[1:])
+            chr = line_split[0]
+            pos, cov, ref_fw, ref_rv, alt_fw, alt_rv, \
+                ins_fw, ins_rv, del_fw, del_rv = map(int, line_split[1:])
             # Check consistency among the files
             if tmp_chr != chr or tmp_pos != pos:
                 sys.exit('ERROR in file: position {0}:{1} in file {2} is not consistent with other input files\n'
