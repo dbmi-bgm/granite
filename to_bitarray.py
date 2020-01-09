@@ -15,11 +15,13 @@ import sys, os
 import argparse
 import tabix
 import ctypes
-import bitarray
-import numpy as np
+import h5py
+# import bitarray
+import numpy
 import multiprocessing
 from multiprocessing import Process, Pool
 from multiprocessing.sharedctypes import Array
+from functools import partial
 
 
 #################################################################
@@ -62,12 +64,30 @@ def __routine_reads(thr_reads, alt_fw, alt_rv):
     return False
 #end def
 
-def bitarray_tofile(bit_array, filename):
-    ''' convert bitarray to bytes and write to filename,
-    positions are indexed by 1 in the bitarray '''
-    with open(filename, 'wb') as fo:
-        bit_array.tofile(fo)
-    #end with
+# def bitarray_tofile(bit_array, filename):
+#     ''' convert bitarray to bytes and write to filename,
+#     positions are indexed by 1 in the bitarray '''
+#     with open(filename, 'wb') as fo:
+#         bit_array.tofile(fo)
+#     #end with
+# #end def
+
+def bitarrays_toHDF5(filename):
+    ''' write bitarrays to file in HDF5 format '''
+    fo = h5py.File(filename, 'w')
+    # shared_arrays is in global scope
+    for chr in shared_arrays:
+        # Packing and writing snv
+        tmp_arr = numpy.array(shared_arrays[chr]['snv'][:], dtype=bool)
+        fo[chr + '_snv'] = numpy.packbits(tmp_arr.view(numpy.uint8))
+        # Packing and writing ins
+        tmp_arr = numpy.array(shared_arrays[chr]['ins'][:], dtype=bool)
+        fo[chr + '_ins'] = numpy.packbits(tmp_arr.view(numpy.uint8))
+        # Packing and writing del
+        tmp_arr = numpy.array(shared_arrays[chr]['del'][:], dtype=bool)
+        fo[chr + '_del'] = numpy.packbits(tmp_arr.view(numpy.uint8))
+    #end for
+    fo.close()
 #end def
 
 def check_region(region, chr_length):
@@ -95,7 +115,7 @@ def check_region(region, chr_length):
     #end if
 #end def
 
-def run_region(shared_arrays, files, region, thr_bams, thr_reads):
+def run_region(files, thr_bams, thr_reads, region):
     ''' '''
     # Variables
     snv, ins, dele = [], [], []
@@ -129,7 +149,7 @@ def run_region(shared_arrays, files, region, thr_bams, thr_reads):
             # Check consistency among the files
             if tmp_chr != chr or tmp_pos != pos:
                 sys.exit('ERROR in file: position {0}:{1} in file {2} is not consistent with other input files\n'
-                        .format(chr, pos, args['inputfiles'][i+1]))
+                        .format(chr, pos, files[i+1]))
             #end if
             # Check position and update bams counts
             is_snv, is_ins, is_del = \
@@ -147,7 +167,8 @@ def run_region(shared_arrays, files, region, thr_bams, thr_reads):
             dele.append(tmp_pos)
         #end if
     #end while
-    # Setting bits in shared bitarray
+    # Setting bits in shared bitarrays
+    # shared_arrays is in global scope
     for idx in snv:
         shared_arrays[tmp_chr]['snv'][idx] = 1
     #end for
@@ -159,62 +180,65 @@ def run_region(shared_arrays, files, region, thr_bams, thr_reads):
     #end for
 #end def
 
+
+#################################################################
+#   main (runner)
+#################################################################
 def main(args):
     ''' '''
+    # Global variables
+    global shared_arrays
+
     # Variables
     thr_bams = int(args['thr_bams'])
     thr_reads = int(args['thr_reads']) if args['thr_reads'] else 0
     nthreads = int(args['nthreads']) if args['nthreads'] else 1
     files = args['inputfiles']
 
-    # Getting regions
+    # Data structures
+    chr_length, shared_arrays = {}, {}
     regions = []
-    with open(args['regionfile']) as fi:
+
+    # Reading chrom.sizes file
+    with open(args['chromfile']) as fi:
         for line in fi:
             line = line.rstrip()
-            if line: regions.append(line)
+            if line:
+                chr, length = line.split('\t')
+                chr_length.setdefault(chr, int(length))
             #end if
         #end for
     #end with
 
-    # Initializing bitarray data structure
-    # with open() as fi:
-    #     pass
-
-    # Initialize bitarrays
-    bit_array_snv = Array(ctypes.c_bool, 115169878 + 1) # +1 to index positions in bitarray by 1
-    bit_array_ins = Array(ctypes.c_bool, 115169878 + 1)
-    bit_array_del = Array(ctypes.c_bool, 115169878 + 1)
-
-    shared_arrays = {}
-    shared_arrays.setdefault('13', {'snv': bit_array_snv, 'ins': bit_array_ins, 'del': bit_array_del})
+    # Getting regions
+    with open(args['regionfile']) as fi:
+        for line in fi:
+            line = line.rstrip() # line is a region
+            if line:
+                check_region(line, chr_length)
+                regions.append(line)
+            #end if
+        #end for
     #end with
 
-    # Multithreading
+    # Initializing bitarrays data structure
+    for chr, length in chr_length.items(): # +1 to index positions in bitarray by 1
+        shared_arrays.setdefault(chr, {'snv': Array(ctypes.c_bool, length + 1),
+                                       'ins': Array(ctypes.c_bool, length + 1),
+                                       'del': Array(ctypes.c_bool, length + 1)})
+    #end for
 
-
-    # proc = []
-    # for region in regions:
-    #     # Check region is valid
-    #     check_region(region, shared_arrays)
-    #     # Create and start process
-    #     p = multiprocessing.Process(target=run_region, args=(shared_arrays, files, region, thr_bams, thr_reads, ))
-    #     p.start()
-    #     proc.append(p)
-    # for p in proc:
-    #     p.join()
+    # Multiprocessing
+    with Pool(nthreads) as pool:
+        results = pool.map(partial(run_region, files, thr_bams, thr_reads), regions)
+    #end with
 
     # Writing bitarrays to files
-    filename = 'blacklist_' + 'TEST' + '_bamsthr-{0}'.format(thr_bams)
-    if thr_reads: filename += '_readsthr-{0}'.format(thr_reads)
-    else: filename += '_allelebalance'
+    filename = 'bitarrays_bamsthr-{0}'.format(thr_bams)
+    if thr_reads: filename += '_readsthr-{0}.hdf5'.format(thr_reads)
+    else: filename += '_allelebalance.hdf5'
     #end if
-    # a = np.array(shared_arrays['13']['snv'][:], dtype=np.bool)
-
-    bitarray_tofile(bitarray.bitarray(shared_arrays['13']['snv'][:]), filename + '_snv.bin')
-    bitarray_tofile(bitarray.bitarray(shared_arrays['13']['ins'][:]), filename + '_ins.bin')
-    bitarray_tofile(bitarray.bitarray(shared_arrays['13']['del'][:]), filename + '_del.bin')
-
+    bitarrays_toHDF5(filename)
 #end def
 
 
@@ -223,15 +247,17 @@ def main(args):
 #################################################################
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='The program calls variants by reads counts or allelic balance for single bams or multiple bams (joint calls) in the specified region. Results are stored as binary files where bits corresponding to called positions are set to 1. Three different files are created for SNV, INSERTIONS and DELITIONS respectively')
+    parser = argparse.ArgumentParser(description='The program calls variants by reads counts or allelic balance for single bams or multiple bams (joint calls) in the specified region. Results are stored in a binary format where bits corresponding to called positions are set to 1')
 
-    parser.add_argument('-i', '--inputfiles', help='I/O: list of files to be used for the joint calling [e.g -i file_1 file_2 ...]. Files need to follow mpileup_parser output format', nargs='+')
-    parser.add_argument('-r', '--regionfile', help='OTHER: file containing regions to be used [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromosome names must match the reference. Regions must be listed as a column', required=True)
-    parser.add_argument('-f', '--chromfile', help='OTHER: file containing chromosomes information', required=False)
-    parser.add_argument('--nthreads', help='OTHER: number of threads to be used [1]', required=False)
-    parser.add_argument('--thr_bams', help='THRESHOLD: minimum number of bam files with at least "--thr_reads" for the alternate allele or having the variant (default call by allelic balance) to jointly call position', required=True)
-    parser.add_argument('--thr_reads', help='THRESHOLD: minimum number of reads to count the bam file in "--thr_bams", if not specified calls are made by allelic balance', required=False)
+    parser.add_argument('-i', '--inputfiles', help='list of files to be used for the joint calling [e.g -i file_1 file_2 ...]. Files must follow mpileup_parser output format. Files must also have bgzip compression and a tabix generated index file', nargs='+')
+    parser.add_argument('-r', '--regionfile', help='file containing regions to be used [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromosome names must match the reference. Regions must be listed as a column', required=True)
+    parser.add_argument('-f', '--chromfile', help='chrom.sizes file containing chromosomes information', required=True)
+    parser.add_argument('--nthreads', help='number of threads to be used if multiple regions are specified [1]', required=False)
+    parser.add_argument('--thr_bams', help='minimum number of bam files with at least "--thr_reads" for the alternate allele or having the variant (default call by allelic balance) to jointly call position', required=True)
+    parser.add_argument('--thr_reads', help='minimum number of reads to count the bam file in "--thr_bams", if not specified calls are made by allelic balance', required=False)
 
     args = vars(parser.parse_args())
 
     main(args)
+
+#end if
