@@ -52,7 +52,7 @@ def check_pos(thr_reads, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv, de
 
 def __routine_allbal(ref_fw, ref_rv, alt_fw, alt_rv):
     ''' check if position can be called as alternate based on allelic balance '''
-    pass
+    sys.exit('TODO, allele balance calling not yet implemented\n')
 #end def
 
 def __routine_reads(thr_reads, alt_fw, alt_rv):
@@ -222,7 +222,7 @@ def main(args):
     #end with
 
     # Initializing bitarrays data structure
-    for chr, length in chr_length.items(): # +1 to index positions in bitarray by 1
+    for chr, length in chr_length.items(): # +1 to index positions in bitarrays by 1
         shared_arrays.setdefault(chr, {'snv': Array(ctypes.c_bool, length + 1),
                                        'ins': Array(ctypes.c_bool, length + 1),
                                        'del': Array(ctypes.c_bool, length + 1)})
