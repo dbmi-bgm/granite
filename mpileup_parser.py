@@ -15,7 +15,7 @@
 import sys, os
 import argparse
 import re, subprocess
-import fasta_parser
+from . import fasta_parser
 
 
 #################################################################
@@ -257,29 +257,3 @@ if __name__ == "__main__":
     main(args)
 
 #end if
-
-#################################################################
-#   Test
-#################################################################
-# a = '..+4ACAC.+4ACAC.+2AC' #=> ['.', '.+ACAC', '.+ACAC', '.+AC']
-# b = '.,,-7tttttgtt' #=> ['.', ',', ',-tttttgt', 't']
-# c = ',$.,,^>.' #=> [',$', '.', ',', ',', '^.']
-# d = ',.,.*.**.^*.' #=> [',', '.', ',', '.', '*', '.', '*', '*', '.', '^.']
-# e = ',..A$..,Tn.t' #=> [',', '.', '.', 'A$', '.', '.', ',', 'T', 'n', '.', 't']
-# f = 'A-1N' #=> ['A-N']
-# g = ',,....*-1A.-1A.^g.-1A' # => [',', ',', '.', '.', '.', '.', '*-A', '.-A', '.', '^.-A']
-#
-# print(test_parser_reads(a, basic=False) == ['.', '.+ACAC', '.+ACAC', '.+AC'])
-# print(test_parser_reads(a) == ['.', '.+', '.+', '.+'])
-# print(test_parser_reads(b, basic=False) == ['.', ',', ',-tttttgt', 't'])
-# print(test_parser_reads(b) == ['.', ',', ',-', 't'])
-# print(test_parser_reads(c, basic=False) == [',$', '.', ',', ',', '^.'])
-# print(test_parser_reads(c) == [',', '.', ',', ',', '.'])
-# print(test_parser_reads(d, basic=False) == [',', '.', ',', '.', '*', '.', '*', '*', '.', '^.'])
-# print(test_parser_reads(d) == [',', '.', ',', '.', '*', '.', '*', '*', '.', '.'])
-# print(test_parser_reads(e, basic=False) == [',', '.', '.', 'A$', '.', '.', ',', 'T', 'n', '.', 't'])
-# print(test_parser_reads(e) == [',', '.', '.', 'A', '.', '.', ',', 'T', 'n', '.', 't'])
-# print(test_parser_reads(f, basic=False) == ['A-N'])
-# print(test_parser_reads(f) == ['A-'])
-# print(test_parser_reads(g, basic=False) == [',', ',', '.', '.', '.', '.', '*-A', '.-A', '.', '^.-A'])
-# print(test_parser_reads(g) == [',', ',', '.', '.', '.', '.', '*-', '.-', '.', '.-'])
