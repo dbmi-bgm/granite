@@ -32,7 +32,7 @@ def tabix_IT(filename, region):
     return an iterator to file content (tsv rows as lists) '''
     tb = tabix.open(filename)
     return tb.querys(region)
-#ene def
+#end def
 
 def check_pos(thr_reads, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv, del_fw, del_rv):
     ''' check if position can be called as snv, insertion or delition.
@@ -117,7 +117,6 @@ def check_region(region, chr_length):
 
 def run_region(files, thr_bams, thr_reads, region):
     ''' '''
-    # Variables
     snv, ins, dele = [], [], []
     # Opening buffers to region
     buffers = [tabix_IT(filename, region) for filename in files]
@@ -247,7 +246,7 @@ def main(args):
 #################################################################
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='The program calls variants by reads counts or allelic balance for single bams or multiple bams (joint calls) in the specified region. Results are stored in a binary format where bits corresponding to called positions are set to 1')
+    parser = argparse.ArgumentParser(description='The program calls variants by reads counts or allelic balance for single bam or multiple bams (joint calls) in the specified region. Results are stored in a binary format where bits corresponding to called positions are set to 1')
 
     parser.add_argument('-i', '--inputfiles', help='list of files to be used for the joint calling [e.g -i file_1 file_2 ...]. Files must follow mpileup_parser output format. Files must also have bgzip compression and a tabix generated index file', nargs='+')
     parser.add_argument('-r', '--regionfile', help='file containing regions to be used [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromosome names must match the reference. Regions must be listed as a column', required=True)
