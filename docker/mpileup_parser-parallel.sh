@@ -31,13 +31,13 @@ for filename in ${sorted[@]};
     if [[ $filename =~ "M" ]]; then
       chr_M=$filename
     else
-      awk 'FNR>1' $filename >> mpileup.out
+      grep -v "^#" $filename >> mpileup.out
       rm -f $filename
     fi
   done
 
 if [[ -v  chr_M  ]]; then
-  awk 'FNR>1' $chr_M >> mpileup.out
+  grep -v "^#" $chr_M >> mpileup.out
   rm -f $chr_M
 fi
 
