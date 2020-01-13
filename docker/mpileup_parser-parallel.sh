@@ -24,23 +24,23 @@ array=(${directory}*.out)
 IFS=$'\n' sorted=($(sort -V <<<"${array[*]}"))
 unset IFS
 
-grep "^#" ${sorted[0]} > ${inputbam}_mpileup.out
+grep "^#" ${sorted[0]} > mpileup.out
 
 for filename in ${sorted[@]};
   do
     if [[ $filename =~ "M" ]]; then
       chr_M=$filename
     else
-      grep -v "^#" $filename >> ${inputbam}_mpileup.out
+      awk 'FNR>1' $filename >> mpileup.out
       rm -f $filename
     fi
   done
 
 if [[ -v  chr_M  ]]; then
-  grep -v "^#" $chr_M >> ${inputbam}_mpileup.out
+  awk 'FNR>1' $chr_M >> mpileup.out
   rm -f $chr_M
 fi
 
 # compress and index mpileup.out
-bgzip ${inputbam}_mpileup.out
-tabix -p vcf ${inputbam}_mpileup.out.gz
+bgzip mpileup.out
+tabix -p vcf mpileup.out.gz
