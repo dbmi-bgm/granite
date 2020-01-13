@@ -15,7 +15,9 @@
 import sys, os
 import argparse
 import re, subprocess
-from . import fasta_parser
+try: from . import fasta_parser # pytest fails with normal import
+except Exception: import fasta_parser
+#end try
 
 
 #################################################################
