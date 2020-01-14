@@ -28,13 +28,15 @@ RUN apt-get update -y && apt-get install -y \
 WORKDIR /usr/local/bin
 
 # python libraries
-RUN conda install -c bioconda -y pysam bitarray tabix h5py numpy
+RUN conda install -c bioconda -y pysam bitarray pytabix h5py numpy
 
 # novoCaller
 RUN git clone https://github.com/dbmi-bgm/novoCaller.git && \
     cd novoCaller && \
     git checkout new && \
     chmod +x mpileup_parser.py && \
+    chmod +x to_bitarray.py && \
+    chmod +x novoCaller_2.py && \
     cd ..
 
 # samtools
