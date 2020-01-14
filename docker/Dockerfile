@@ -27,7 +27,7 @@ RUN apt-get update -y && apt-get install -y \
 
 WORKDIR /usr/local/bin
 
-# gatk4 & picard
+# python libraries
 RUN conda install -c bioconda -y pysam bitarray tabix h5py numpy
 
 # novoCaller
