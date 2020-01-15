@@ -199,7 +199,7 @@ def main(args):
     #end if
 
     # Building command line
-    command_line = ['samtools', 'mpileup']
+    command_line = ['samtools', 'mpileup', '-a']
     if is_chr: command_line += ['-r', args['region']]
     #end if
     if args['MQthr']: command_line += ['--min-MQ', args['MQthr']]
