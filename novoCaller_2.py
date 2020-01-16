@@ -201,14 +201,14 @@ class Vcf(object):
 #################################################################
 def GT_ordering_alternate(ALT_count):
 	''' '''
-	combos=(ALT_count+1)*(ALT_count+2)//2
-	ordering=np.empty([combos,2])
-	count=0
-	for a1 in range(0,ALT_count+1):
-		for a2 in range(a1,ALT_count+1):
-			ordering[count,0]=a1
-			ordering[count,1]=a2
-			count=count+1
+	combos = (ALT_count + 1) * (ALT_count + 2) // 2
+	ordering = np.empty([combos, 2])
+	count = 0
+	for a1 in range(0, ALT_count + 1):
+		for a2 in range(a1, ALT_count + 1):
+			ordering[count, 0] = a1
+			ordering[count, 1] = a2
+			count += 1
 		#end for
 	#end for
 
@@ -218,44 +218,44 @@ def GT_ordering_alternate(ALT_count):
 #################################################################
 #	row_gen (original)
 #################################################################
-def row_gen(GT1,GT2,alt_count,mut_rate):
+def row_gen(GT1, GT2, alt_count, mut_rate):
 	''' '''
-	N=alt_count
-	combos=(N+1)*(N+2)//2
-	row=np.zeros(combos)
-	count=0
-	for a1 in range(N+1):
-		for a2 in range(N+1):
-			for a3 in range(N+1):
-				for a4 in range(N+1):
-					P=1.0
-					if a1==GT1[0]:
-						P=P*(1-mut_rate)
+	N = alt_count
+	combos = (N + 1) * (N + 2) // 2
+	row = np.zeros(combos)
+	count = 0
+	for a1 in range(N + 1):
+		for a2 in range(N + 1):
+			for a3 in range(N + 1):
+				for a4 in range(N + 1):
+					P = 1.0
+					if a1 == GT1[0]:
+						P = P * (1 - mut_rate)
 					else:
-						P=P*mut_rate/N
+						P = P * mut_rate / N
 					#end if
-					if a2==GT1[1]:
-						P=P*(1-mut_rate)
+					if a2 == GT1[1]:
+						P = P * (1 - mut_rate)
 					else:
-						P=P*mut_rate/N
+						P = P * mut_rate / N
 					#end if
-					if a3==GT2[0]:
-						P=P*(1-mut_rate)
+					if a3 == GT2[0]:
+						P = P * (1 - mut_rate)
 					else:
-						P=P*mut_rate/N
+						P = P * mut_rate / N
 					#end if
-					if a4==GT2[1]:
-						P=P*(1-mut_rate)
+					if a4 == GT2[1]:
+						P = P * (1 - mut_rate)
 					else:
-						P=P*mut_rate/N
+						P = P * mut_rate / N
 					#end if
-					count+=1
+					count += 1
 
-					for b1 in [a1,a2]:
-						for b2 in [a3,a4]:
-							gt_work=np.sort([b1,b2])
-							index=(2*N+3-gt_work[0])*gt_work[0]//2+gt_work[1]-gt_work[0]
-							row[index]=row[index]+0.25*P
+					for b1 in [a1, a2]:
+						for b2 in [a3, a4]:
+							gt_work = np.sort([b1, b2])
+							index = (2 * N + 3 - gt_work[0]) * gt_work[0] // 2 + gt_work[1] - gt_work[0]
+							row[index] = row[index] + 0.25 * P
 						#end for
 					#end for
 				#end for
@@ -269,29 +269,29 @@ def row_gen(GT1,GT2,alt_count,mut_rate):
 #################################################################
 #	table_gen (original)
 #################################################################
-def table_gen(alt_count,mut_rate):
+def table_gen(alt_count, mut_rate):
 	''' '''
-	N=alt_count
-	II_prev=-1
+	N = alt_count
+	II_prev = -1
 
-	combos=(N+1)*(N+2)//2
-	table=np.zeros([combos**2,combos])
-	for a1 in range(N+1):
-		for a2 in range(a1,N+1):
-			for a3 in range(N+1):
-				for a4 in range(a3,N+1):
-					GT1=[a1,a2]
-					GT2=[a3,a4]
-					I1=(2*N+3-GT1[0])*GT1[0]//2+GT1[1]-GT1[0]
-					I2=(2*N+3-GT2[0])*GT2[0]//2+GT2[1]-GT2[0]
-					II=I1*combos+I2
+	combos = (N + 1) * (N + 2) // 2
+	table = np.zeros([combos ** 2, combos])
+	for a1 in range(N + 1):
+		for a2 in range(a1, N + 1):
+			for a3 in range(N + 1):
+				for a4 in range(a3, N + 1):
+					GT1 = [a1, a2]
+					GT2 = [a3, a4]
+					I1 = (2 * N + 3 - GT1[0]) * GT1[0] // 2 + GT1[1] - GT1[0]
+					I2 = (2 * N + 3 - GT2[0]) * GT2[0] // 2 + GT2[1] - GT2[0]
+					II = I1 * combos + I2
 
-					if II<=II_prev:
+					if II <= II_prev:
 						sys.exit("error in II calc!!!\n")
 					#end if
 
-					row=row_gen(GT1,GT2,alt_count,mut_rate)
-					table[II,:]=row
+					row = row_gen(GT1, GT2, alt_count, mut_rate)
+					table[II, :] = row
 				#end for
 			#end for
 		#end for
@@ -305,38 +305,42 @@ def table_gen(alt_count,mut_rate):
 #################################################################
 def GT_likelihood_wrt_allele_calc(ALT_count):
 	''' '''
-	ordering=GT_ordering_alternate(ALT_count)
+	ordering = GT_ordering_alternate(ALT_count)
 
-	combos=(ALT_count+1)*(ALT_count+2)//2
-	table=np.zeros([combos,ALT_count+1])*1.
+	combos = (ALT_count + 1) * (ALT_count + 2) // 2
+	table = np.zeros([combos, ALT_count + 1]) * 1.
 
 	for i in range(combos):
-		a1=int(ordering[i,0]) # casting to int to be used as indexes
-		a2=int(ordering[i,1])
-		table[i,a1]=table[i,a1]+0.5
-		table[i,a2]=table[i,a2]+0.5
+		a1 = int(ordering[i, 0]) # casting to int to be used as indexes
+		a2 = int(ordering[i, 1])
+		table[i, a1] = table[i, a1] + 0.5
+		table[i, a2] = table[i, a2] + 0.5
 	#end for
 
 	return table
 #end def
 
 #################################################################
-#	encode_chrom
+#	check_chrom
 #################################################################
-def encode_chrom(chrom):
-	''' convert chr IDs to numbers to be used by other functions '''
-	encode = {'M': 0, 'MT': 0, 'X': 23, 'Y': 24}
+def check_chrom(chrom):
+	''' check if chromosome is canonical and in a valid format '''
 	chrom_repl = chrom.replace('chr', '')
 
-	if chrom_repl in encode:
-		return encode[chrom_repl]
+	if chrom_repl in {'M', 'MT', 'X', 'Y'}:
+		return True
 	else:
 		try:
-			return int(chrom_repl)
+			int_chrom_repl = int(chrom_repl)
 		except Exception:
-			return 25
+			return False
 		#end try
+		if int_chrom_repl > 0 and int_chrom_repl < 23:
+			return True
+		#end if
 	#end if
+
+	return False
 #end def
 
 #################################################################
@@ -367,131 +371,64 @@ def buffering_bams(bams_infofile):
 #end def
 
 #################################################################
-#	get_ADs (original)
+#	get_ADs
 #################################################################
-def get_ADs(samfile,chrom,position_actual,REF,MQ_thresh,BQ_thresh):
-	''' '''
-	position=position_actual-1
-	ADf=np.array([0.,0])
-	ADr=np.array([0.,0])
-	try:
-		if chrom==0:
-			CC="M"
-		#end if
-		if chrom>0 and chrom<=22:
-			CC=str(chrom)
-		#end if
-		if chrom==23:
-			CC="X"
-		#end if
-		if chrom==24:
-			CC="Y"
-		#end if
-		SP=samfile.pileup("chr"+CC, position, position+1)
-	except ValueError:
-		if chrom==0:
-			CC="MT"
-		#end if
-		if chrom>0 and chrom<=22:
-			CC=str(chrom)
-		#end if
-		if chrom==23:
-			CC="X"
-		#end if
-		if chrom==24:
-			CC="Y"
-		#end if
-		SP=samfile.pileup(CC, position, position+1)
+def get_ADs(bamfile, chrom, pos, REF, MQ_thr, BQ_thr, deletion=False, insertion=False):
+	''' access bam file and return AD counts by strand for reference and alternate allele for variant,
+	the way pileup is used depend on variant type (insertion, delition or snv) '''
+	position = pos - 1
+	REF_upper = REF.upper()
+	ADf, ADr = np.array([0., 0]), np.array([0., 0])
+
+	# Getting pileup info
+	try: SP = bamfile.pileup(chrom, position, position + 1)
+	except Exception:
+		sys.exit('ERROR in accessing bam file, variant and bam file chromosome formats are not matching\n')
 	#end try
 
+	# Getting AD info
 	for pileupcolumn in SP:
-		if(pileupcolumn.pos==position):
-			for pileupread in pileupcolumn.pileups:
-				if not pileupread.is_del and not pileupread.is_refskip :
-					MQ=pileupread.alignment.mapping_quality
-					BQ=pileupread.alignment.query_qualities[pileupread.query_position]
-					if MQ>=MQ_thresh and BQ>=BQ_thresh:
-						if pileupread.alignment.query_sequence[pileupread.query_position].upper()==REF.upper():
-							if pileupread.alignment.is_reverse:
-								ADr[0]=ADr[0]+1
-							else:
-								ADf[0]=ADf[0]+1
-							#end if
-						else:
-							if pileupread.alignment.is_reverse:
-								ADr[1]=ADr[1]+1
-							else:
-								ADf[1]=ADf[1]+1
-							#end if
-						#end if
-					#end if
-				#end if
-			#end for
-		#end if
-	#end for
-
-	return ADf,ADr
-#end def
-
-#################################################################
-#	get_ADs_deletion (original)
-#################################################################
-def get_ADs_deletion(samfile,chrom,position_actual,REF_0,MQ_thresh,BQ_thresh):
-	''' '''
-	REF=REF_0
-	position=position_actual-1
-	ADf=np.array([0.,0])
-	ADr=np.array([0.,0])
-	try:
-		if chrom==0:
-			CC="M"
-		#end if
-		if chrom>0 and chrom<=22:
-			CC=str(chrom)
-		#end if
-		if chrom==23:
-			CC="X"
-		#end if
-		if chrom==24:
-			CC="Y"
-		#end if
-		SP=samfile.pileup("chr"+CC, position, position+1)
-	except ValueError:
-		if chrom==0:
-			CC="MT"
-		#end if
-		if chrom>0 and chrom<=22:
-			CC=str(chrom)
-		#end if
-		if chrom==23:
-			CC="X"
-		#end if
-		if chrom==24:
-			CC="Y"
-		#end if
-		SP=samfile.pileup(CC, position, position+1)
-	#end try
-
-	for pileupcolumn in SP:
-		if(pileupcolumn.pos==position):
+		if(pileupcolumn.pos == position):
 			for pileupread in pileupcolumn.pileups:
 				if not pileupread.is_del and not pileupread.is_refskip:
-					MQ=pileupread.alignment.mapping_quality
-					BQ=pileupread.alignment.query_qualities[pileupread.query_position]
-					if MQ>=MQ_thresh and BQ>=BQ_thresh:
-						indel_val=pileupread.indel
-						if pileupread.alignment.query_sequence[pileupread.query_position].upper()==REF.upper() and indel_val>=0:
-							if pileupread.alignment.is_reverse:
-								ADr[0]=ADr[0]+1
-							else:
-								ADf[0]=ADf[0]+1
+					qp = pileupread.query_position
+					MQ = pileupread.alignment.mapping_quality
+					BQ = pileupread.alignment.query_qualities[qp]
+					if MQ >= MQ_thr and BQ >= BQ_thr:
+						seq = pileupread.alignment.query_sequence[qp].upper()
+						# DELETION
+						if deletion:
+							indel_val = pileupread.indel
+							if seq == REF_upper and indel_val >= 0:
+								if pileupread.alignment.is_reverse: ADr[0] += 1
+								else: ADf[0] += 1
+								#end if
+							elif seq == REF_upper and indel_val < 0:
+								if pileupread.alignment.is_reverse: ADr[1] += 1
+								else: ADf[1] += 1
+								#end if
 							#end if
+						# INSERTION
+						elif insertion:
+							indel_val = pileupread.indel
+							if seq == REF_upper and indel_val <= 0:
+								if pileupread.alignment.is_reverse: ADr[0] += 1
+								else: ADf[0] += 1
+								#end if
+							elif seq == REF_upper and indel_val > 0:
+								if pileupread.alignment.is_reverse: ADr[1] += 1
+								else: ADf[1] += 1
+								#end if
+							#end if
+						# SNV
 						else:
-							if pileupread.alignment.query_sequence[pileupread.query_position].upper()==REF.upper() and indel_val<0:
-								if pileupread.alignment.is_reverse:
-									ADr[1]=ADr[1]+1
-								else:
-									ADf[1]=ADf[1]+1
+							if seq == REF_upper:
+								if pileupread.alignment.is_reverse: ADr[0] += 1
+								else: ADf[0] += 1
+								#end if
+							else:
+								if pileupread.alignment.is_reverse: ADr[1] += 1
+								else: ADf[1] += 1
 								#end if
 							#end if
 						#end if
@@ -501,132 +438,72 @@ def get_ADs_deletion(samfile,chrom,position_actual,REF_0,MQ_thresh,BQ_thresh):
 		#end if
 	#end for
 
-	return ADf,ADr
+	return ADf, ADr
 #end def
 
 #################################################################
-#	get_ADs_insertion (original)
+#	get_ADs_caller
 #################################################################
-def get_ADs_insertion(samfile,chrom,position_actual,REF_0,MQ_thresh,BQ_thresh):
-	''' '''
-	REF=REF_0
-	position=position_actual-1
-	ADf=np.array([0.,0])
-	ADr=np.array([0.,0])
-	try:
-		if chrom==0:
-			CC="M"
-		#end if
-		if chrom>0 and chrom<=22:
-			CC=str(chrom)
-		#end if
-		if chrom==23:
-			CC="X"
-		#end if
-		if chrom==24:
-			CC="Y"
-		#end if
-		SP=samfile.pileup("chr"+CC, position, position+1)
-	except ValueError:
-		if chrom==0:
-			CC="MT"
-		#end if
-		if chrom>0 and chrom<=22:
-			CC=str(chrom)
-		#end if
-		if chrom==23:
-			CC="X"
-		#end if
-		if chrom==24:
-			CC="Y"
-		#end if
-		SP=samfile.pileup(CC, position, position+1)
-	#end try
+def get_ADs_caller(bamfile, chrom, pos, REF, ALT, MQ_thr, BQ_thr):
+	''' define variant type and run the appropriate function to access the bam file
+	to retrieve AD counts by strand for reference and alternate allele for variant'''
+	split_ALT = ALT.split(',')
+	if len(split_ALT) > 1:
+		return get_ADs(bamfile, chrom, pos, REF[0], MQ_thr, BQ_thr)
+	elif len(REF) > 1:
+		return get_ADs(bamfile, chrom, pos, REF[0], MQ_thr, BQ_thr, deletion=True)
+	elif len(ALT) > 1:
+		return get_ADs(bamfile, chrom, pos, REF[0], MQ_thr, BQ_thr, insertion=True)
+	#end if
 
-	for pileupcolumn in SP:
-		if(pileupcolumn.pos==position):
-			for pileupread in pileupcolumn.pileups:
-				if not pileupread.is_del and not pileupread.is_refskip:
-					MQ=pileupread.alignment.mapping_quality
-					BQ=pileupread.alignment.query_qualities[pileupread.query_position]
-					if MQ>=MQ_thresh and BQ>=BQ_thresh:
-						indel_val=pileupread.indel
-						if pileupread.alignment.query_sequence[pileupread.query_position].upper()==REF.upper() and indel_val<=0:
-							if pileupread.alignment.is_reverse:
-								ADr[0]=ADr[0]+1
-							else:
-								ADf[0]=ADf[0]+1
-							#end if
-						else:
-							if pileupread.alignment.query_sequence[pileupread.query_position].upper()==REF.upper() and indel_val>0:
-								if pileupread.alignment.is_reverse:
-									ADr[1]=ADr[1]+1
-								else:
-									ADf[1]=ADf[1]+1
-								#end if
-							#end if
-						#end if
-					#end if
-				#end if
-			#end for
-		#end if
-	#end for
-
-	return ADf,ADr
+	return get_ADs(bamfile, chrom, pos, REF[0], MQ_thr, BQ_thr)
 #end def
 
 #################################################################
-#	get_ADs_combined (original)
+#	get_all_ADs
 #################################################################
-def get_ADs_combined(samfile,chrom,position_actual,REF,ALT,MQ_thresh,BQ_thresh):
-	''' '''
-	split_ALT=ALT.split(",")
-	if len(split_ALT)>1:
-		ADf,ADr = get_ADs(samfile,chrom,position_actual,REF[0],MQ_thresh,BQ_thresh)
-		return ADf,ADr
-	#end if
-	if len(REF)>1:
-		ADf,ADr = get_ADs_deletion(samfile,chrom,position_actual,REF[0],MQ_thresh,BQ_thresh)
-		return ADf,ADr
-	#end if
-	if len(ALT)>1:
-		ADf,ADr = get_ADs_insertion(samfile,chrom,position_actual,REF[0],MQ_thresh,BQ_thresh)
-		return ADf,ADr
-	#end if
-	ADf,ADr = get_ADs(samfile,chrom,position_actual,REF[0],MQ_thresh,BQ_thresh)
-
-	return ADf,ADr
-#end def
-
-#################################################################
-#	get_all_ADs_combined (original)
-#################################################################
-def get_all_ADs_combined(unrelated_samfiles,chrom,position_actual,REF,ALT,MQ_thresh,BQ_thresh):
-	''' '''
-	ADfs=[]
-	ADrs=[]
-	for samfile in unrelated_samfiles:
-		ADf,ADr = get_ADs_combined(samfile,chrom,position_actual,REF,ALT,MQ_thresh,BQ_thresh)
+def get_all_ADs(bamfiles, chrom, pos, REF, ALT, MQ_thr, BQ_thr):
+	''' return the AD counts by strand for reference and alternate allele for variant
+	in all the bam files '''
+	ADfs, ADrs = [], []
+	for bamfile in bamfiles:
+		ADf, ADr = get_ADs_caller(bamfile, chrom, pos, REF, ALT, MQ_thr, BQ_thr)
 		ADfs.append(ADf)
 		ADrs.append(ADr)
 	#end for
 
-	ADfs=np.array(ADfs)
-	ADrs=np.array(ADrs)
+	return np.array(ADfs), np.array(ADrs)
+#end def
 
-	return ADfs,ADrs
+#################################################################
+#	check_all_ADs
+#################################################################
+def check_all_ADs(bamfiles, chrom, pos, REF, ALT, MQ_thr, BQ_thr, thr_bams=2, thr_reads=1):
+	''' check if more than thr_samples bam files have more than thr_reads for the alternate allele '''
+	count = 0
+	for bamfile in bamfiles:
+		ADf, ADr = get_ADs_caller(bamfile, chrom, pos, REF, ALT, MQ_thr, BQ_thr)
+		if ADf[1] + ADr[1] >= thr_reads:
+			count += 1
+		#end if
+		if count >= thr_bams:
+			return True
+		#end if
+	#end for
+
+	return False
 #end def
 
 #################################################################
 #	M1_L_calc_aux (original)
 #################################################################
-def M1_L_calc_aux(rho,k):
+def M1_L_calc_aux(rho, k):
 	''' '''
-	ALT_count=1
-	M1_L_k=np.zeros(ALT_count+1)
-	default=np.log((1.-rho)/ALT_count)
-	M1_L_k=M1_L_k+default
-	M1_L_k[k]=np.log(rho)
+	ALT_count = 1
+	M1_L_k = np.zeros(ALT_count + 1)
+	default = np.log((1. - rho) / ALT_count)
+	M1_L_k = M1_L_k + default
+	M1_L_k[k] = np.log(rho)
 
 	return M1_L_k
 #end def
@@ -634,15 +511,15 @@ def M1_L_calc_aux(rho,k):
 #################################################################
 #	M1_L_calc (original)
 #################################################################
-def M1_L_calc(AD,rho):
+def M1_L_calc(AD, rho):
 	''' '''
-	ALT_count=1
-	if AD.size-1 != ALT_count:
+	ALT_count = 1
+	if AD.size - 1 != ALT_count:
 		sys.exit("ERROR in M1_L_calc\n")
 	#end if
-	M1_L=[]
-	for k in range(ALT_count+1):
-		M1_L_k=M1_L_calc_aux(rho,k)
+	M1_L = []
+	for k in range(ALT_count + 1):
+		M1_L_k = M1_L_calc_aux(rho,k)
 		M1_L.append(M1_L_k)
 	#end for
 
@@ -652,20 +529,20 @@ def M1_L_calc(AD,rho):
 #################################################################
 #	M2_L_calc_aux (original)
 #################################################################
-def M2_L_calc_aux(M1_L_k,GT_likelihood_wrt_allele_L):
+def M2_L_calc_aux(M1_L_k, GT_likelihood_wrt_allele_L):
 	''' '''
-	ALT_count=1
-	if M1_L_k.size-1 != ALT_count:
+	ALT_count = 1
+	if M1_L_k.size - 1 != ALT_count:
 		sys.exit("ERROR in M2_L_calc_aux\n")
 	#end if
-	combos=(ALT_count+1)*(ALT_count+2)//2
-	temp_table=GT_likelihood_wrt_allele_L+np.tile(M1_L_k.reshape([1,ALT_count+1]),[combos,1])
-	M2_L_k=np.zeros(combos)
+	combos = (ALT_count + 1) * (ALT_count + 2) // 2
+	temp_table = GT_likelihood_wrt_allele_L + np.tile(M1_L_k.reshape([1, ALT_count + 1]),[combos, 1])
+	M2_L_k = np.zeros(combos)
 	for i in range(combos):
-		row=temp_table[i,:]
-		row_max=np.max(row)
-		row=row-row_max
-		M2_L_k[i]=np.log(np.sum(np.exp(row)))+row_max
+		row = temp_table[i, :]
+		row_max = np.max(row)
+		row = row - row_max
+		M2_L_k[i] = np.log(np.sum(np.exp(row))) + row_max
 	#end for
 
 	return M2_L_k
@@ -674,16 +551,16 @@ def M2_L_calc_aux(M1_L_k,GT_likelihood_wrt_allele_L):
 #################################################################
 #	M2_L_calc (original)
 #################################################################
-def M2_L_calc(M1_L,GT_likelihood_wrt_allele_L):
+def M2_L_calc(M1_L, GT_likelihood_wrt_allele_L):
 	''' '''
-	ALT_count=1
-	if (M1_L[0]).size-1 != ALT_count:
+	ALT_count = 1
+	if (M1_L[0]).size - 1 != ALT_count:
 		sys.exit("ERROR in M2_L_calc\n")
 	#end if
-	M2_L=[]
-	for k in range(ALT_count+1):
-		M1_L_k=M1_L[k]
-		M2_L_k=M2_L_calc_aux(M1_L_k,GT_likelihood_wrt_allele_L)
+	M2_L = []
+	for k in range(ALT_count + 1):
+		M1_L_k = M1_L[k]
+		M2_L_k = M2_L_calc_aux(M1_L_k,GT_likelihood_wrt_allele_L)
 		M2_L.append(M2_L_k)
 	#end for
 
@@ -693,20 +570,20 @@ def M2_L_calc(M1_L,GT_likelihood_wrt_allele_L):
 #################################################################
 #	GT_marg_L_calc (original)
 #################################################################
-def GT_marg_L_calc(M2_L_f,M2_L_r,ADf,ADr,prior_L):
+def GT_marg_L_calc(M2_L_f, M2_L_r, ADf, ADr, prior_L):
 	''' '''
-	GT_marg_L=prior_L
-	ALT_count=1
-	if ADf.size-1 != ALT_count or ADr.size-1 != ALT_count:
+	GT_marg_L = prior_L
+	ALT_count = 1
+	if ADf.size - 1 != ALT_count or ADr.size - 1 != ALT_count:
 		sys.exit("ERROR in GT_marg_L_calc\n")
 	#end if
-	for k in range(ALT_count+1):
-		M2_L_k=M2_L_f[k]
-		GT_marg_L=GT_marg_L+ADf[k]*M2_L_k
+	for k in range(ALT_count + 1):
+		M2_L_k = M2_L_f[k]
+		GT_marg_L = GT_marg_L + ADf[k] * M2_L_k
 	#end for
-	for k in range(ALT_count+1):
-		M2_L_k=M2_L_r[k]
-		GT_marg_L=GT_marg_L+ADr[k]*M2_L_k
+	for k in range(ALT_count + 1):
+		M2_L_k = M2_L_r[k]
+		GT_marg_L = GT_marg_L + ADr[k] * M2_L_k
 	#end for
 
 	return GT_marg_L
@@ -715,9 +592,9 @@ def GT_marg_L_calc(M2_L_f,M2_L_r,ADf,ADr,prior_L):
 #################################################################
 #	M3_L_calc_aux (original)
 #################################################################
-def M3_L_calc_aux(GT_marg_L,M2_L_k):
+def M3_L_calc_aux(GT_marg_L, M2_L_k):
 	''' '''
-	M3_L_k=GT_marg_L-M2_L_k
+	M3_L_k = GT_marg_L - M2_L_k
 
 	return M3_L_k
 #end def
@@ -725,16 +602,16 @@ def M3_L_calc_aux(GT_marg_L,M2_L_k):
 #################################################################
 #	M3_L_calc (original)
 #################################################################
-def M3_L_calc(GT_marg_L,M2_L):
+def M3_L_calc(GT_marg_L, M2_L):
 	''' '''
-	ALT_count=1
-	if len(M2_L)-1 != ALT_count:
+	ALT_count = 1
+	if len(M2_L) - 1 != ALT_count:
 		sys.exit("ERROR in M3_L_calc\n")
 	#end if
-	M3_L=[]
-	for k in range(ALT_count+1):
-		M2_L_k=M2_L[k]
-		M3_L_k=M3_L_calc_aux(GT_marg_L,M2_L_k)
+	M3_L = []
+	for k in range(ALT_count + 1):
+		M2_L_k = M2_L[k]
+		M3_L_k = M3_L_calc_aux(GT_marg_L, M2_L_k)
 		M3_L.append(M3_L_k)
 	#end for
 
@@ -744,20 +621,20 @@ def M3_L_calc(GT_marg_L,M2_L):
 #################################################################
 #	M4_L_calc_aux (original)
 #################################################################
-def M4_L_calc_aux(M3_L_k,GT_likelihood_wrt_allele_L):
+def M4_L_calc_aux(M3_L_k, GT_likelihood_wrt_allele_L):
 	''' '''
-	ALT_count=1
-	if (GT_likelihood_wrt_allele_L.shape)[1]-1 != 1:
+	ALT_count = 1
+	if (GT_likelihood_wrt_allele_L.shape)[1] - 1 != 1:
 		sys.exit("ERROR in M4_L_calc_aux\n")
 	#end if
-	combos=(ALT_count+1)*(ALT_count+2)//2
-	temp_table=GT_likelihood_wrt_allele_L+np.tile(M3_L_k.reshape([combos,1]),[1,ALT_count+1])
-	M4_L_k=np.zeros(ALT_count+1)
-	for i in range(ALT_count+1):
-		column=temp_table[:,i]
-		column_max=np.max(column)
-		column=column-column_max
-		M4_L_k[i]=np.log(np.sum(np.exp(column)))+column_max
+	combos = (ALT_count + 1) * (ALT_count + 2) // 2
+	temp_table = GT_likelihood_wrt_allele_L + np.tile(M3_L_k.reshape([combos, 1]), [1, ALT_count + 1])
+	M4_L_k = np.zeros(ALT_count + 1)
+	for i in range(ALT_count + 1):
+		column = temp_table[:, i]
+		column_max = np.max(column)
+		column = column - column_max
+		M4_L_k[i] = np.log(np.sum(np.exp(column))) + column_max
 	#end for
 
 	return M4_L_k
@@ -766,16 +643,16 @@ def M4_L_calc_aux(M3_L_k,GT_likelihood_wrt_allele_L):
 #################################################################
 #	M4_L_calc (original)
 #################################################################
-def M4_L_calc(M3_L,GT_likelihood_wrt_allele_L):
+def M4_L_calc(M3_L, GT_likelihood_wrt_allele_L):
 	''' '''
-	ALT_count=1
-	if (GT_likelihood_wrt_allele_L.shape)[1]-1 != ALT_count:
+	ALT_count = 1
+	if (GT_likelihood_wrt_allele_L.shape)[1] - 1 != ALT_count:
 		sys.exit("ERROR in M4_L_calc\n")
 	#end if
-	M4_L=[]
-	for k in range(ALT_count+1):
-		M3_L_k=M3_L[k]
-		M4_L_k=M4_L_calc_aux(M3_L_k,GT_likelihood_wrt_allele_L)
+	M4_L = []
+	for k in range(ALT_count + 1):
+		M3_L_k = M3_L[k]
+		M4_L_k = M4_L_calc_aux(M3_L_k, GT_likelihood_wrt_allele_L)
 		M4_L.append(M4_L_k)
 	#end for
 
@@ -785,17 +662,17 @@ def M4_L_calc(M3_L,GT_likelihood_wrt_allele_L):
 #################################################################
 #	A_marg_L_calc (original)
 #################################################################
-def A_marg_L_calc(M1_L,M4_L):
+def A_marg_L_calc(M1_L, M4_L):
 	''' '''
-	ALT_count=1
-	if len(M1_L)-1 != ALT_count:
+	ALT_count = 1
+	if len(M1_L) - 1 != ALT_count:
 		sys.exit("ERROR in A_marg_L_calc\n")
 	#end if
-	A_marg_L=[]
-	for k in range(ALT_count+1):
-		M1_L_k=M1_L[k]
-		M4_L_k=M4_L[k]
-		A_marg_L_k=M1_L_k+M4_L_k
+	A_marg_L = []
+	for k in range(ALT_count + 1):
+		M1_L_k = M1_L[k]
+		M4_L_k = M4_L[k]
+		A_marg_L_k = M1_L_k + M4_L_k
 		A_marg_L.append(A_marg_L_k)
 	#end for
 
@@ -805,23 +682,23 @@ def A_marg_L_calc(M1_L,M4_L):
 #################################################################
 #	T_term_calc_for_rho (original)
 #################################################################
-def T_term_calc_for_rho(A_marg_L,AD):
+def T_term_calc_for_rho(A_marg_L, AD):
 	''' '''
-	if len(A_marg_L)!=AD.size:
+	if len(A_marg_L) != AD.size:
 		sys.exit("ERROR in T_term_calc\n")
 	#end if
-	ALT_count=AD.size-1
-	T1_term=0.
-	T2_term=0.
-	for k in range(ALT_count+1):
-		A_marg_L_k=A_marg_L[k]
-		A_marg_temp=np.exp(A_marg_L_k-np.max(A_marg_L_k))
-		A_marg=A_marg_temp/np.sum(A_marg_temp)
-		T1_term=T1_term+A_marg[k]*AD[k]
-		T2_term=T2_term+(1.-A_marg[k])*AD[k]
+	ALT_count = AD.size - 1
+	T1_term = 0.
+	T2_term = 0.
+	for k in range(ALT_count + 1):
+		A_marg_L_k = A_marg_L[k]
+		A_marg_temp = np.exp(A_marg_L_k - np.max(A_marg_L_k))
+		A_marg = A_marg_temp / np.sum(A_marg_temp)
+		T1_term = T1_term + A_marg[k] * AD[k]
+		T2_term = T2_term + (1. - A_marg[k]) * AD[k]
 	#end for
 
-	return T1_term,T2_term
+	return T1_term, T2_term
 #end def
 
 #################################################################
@@ -829,69 +706,69 @@ def T_term_calc_for_rho(A_marg_L,AD):
 #################################################################
 def GT_marg_L_to_GT_marg(GT_marg_L):
 	''' '''
-	M=np.max(GT_marg_L)
-	GT_marg_L=GT_marg_L-M
-	GT_marg=np.exp(GT_marg_L)
-	S=np.sum(GT_marg)
-	GT_marg=GT_marg/S
-	joint_probty_term=np.log(S)+M
+	M = np.max(GT_marg_L)
+	GT_marg_L = GT_marg_L - M
+	GT_marg = np.exp(GT_marg_L)
+	S = np.sum(GT_marg)
+	GT_marg = GT_marg / S
+	joint_probty_term = np.log(S) + M
 
-	return GT_marg,joint_probty_term
+	return GT_marg, joint_probty_term
 #end def
 
 #################################################################
 #	EM_step (original)
 #################################################################
-def EM_step(ADf_list,ADr_list,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_allele_L,a,b,D_original,allele_freq):
+def EM_step(ADf_list, ADr_list, rho_f_old, rho_r_old, prior_L_old, GT_likelihood_wrt_allele_L, a, b, D_original, allele_freq):
 	''' '''
-	D=np.zeros(3)
-	D[0]=D_original[0]
-	D[1]=D_original[1]
-	D[2]=D_original[2]
+	D = np.zeros(3)
+	D[0] = D_original[0]
+	D[1] = D_original[1]
+	D[2] = D_original[2]
 
-	if allele_freq<=0.:
-		AF=0.
+	if allele_freq <= 0.:
+		AF = 0.
 	else:
-		AF=allele_freq
+		AF = allele_freq
 	#end if
 
-	f0=(1.-AF)**2.
-	f2=AF**2.
-	f1=1.-f0-f2
-	D=np.array([f0,f1,f2])*1000.+2.
+	f0 = (1. - AF) ** 2.
+	f2 = AF ** 2.
+	f1 = 1. - f0 - f2
+	D = np.array([f0, f1, f2]) * 1000. + 2.
 
-	T1_f=a-1.
-	T2_f=b-1.
-	T1_r=a-1.
-	T2_r=b-1.
-	T_for_prior=D-1.
-	joint_probty=             (a-1.)*np.log(rho_f_old)+(b-1.)*np.log(1.-rho_f_old)
-	joint_probty=joint_probty+(a-1.)*np.log(rho_r_old)+(b-1.)*np.log(1.-rho_r_old)
+	T1_f = a - 1.
+	T2_f = b - 1.
+	T1_r = a - 1.
+	T2_r = b - 1.
+	T_for_prior = D - 1.
+	joint_probty =                (a - 1.) * np.log(rho_f_old) + (b - 1.) * np.log(1. - rho_f_old)
+	joint_probty = joint_probty + (a - 1.) * np.log(rho_r_old) + (b - 1.) * np.log(1. - rho_r_old)
 	for i in range(3):
-		joint_probty=joint_probty+(D[i]-1)*prior_L_old[i]
+		joint_probty = joint_probty + (D[i] - 1) * prior_L_old[i]
 	#end for
 
-	if len(ADf_list)!=len(ADr_list):
+	if len(ADf_list) != len(ADr_list):
 		sys.exit("ERROR1 in EM_step\n")
 	#end if
 
 	for i in range(len(ADf_list)):
-		ADf=ADf_list[i]
-		ADr=ADr_list[i]
-		M1_L_f = M1_L_calc(ADf,rho_f_old)
-		M1_L_r = M1_L_calc(ADr,rho_r_old)
-		M2_L_f = M2_L_calc(M1_L_f,GT_likelihood_wrt_allele_L)
-		M2_L_r = M2_L_calc(M1_L_r,GT_likelihood_wrt_allele_L)
-		GT_marg_L = GT_marg_L_calc(M2_L_f,M2_L_r,ADf,ADr,prior_L_old)
-		M3_L_f = M3_L_calc(GT_marg_L,M2_L_f)
-		M3_L_r = M3_L_calc(GT_marg_L,M2_L_r)
-		M4_L_f = M4_L_calc(M3_L_f,GT_likelihood_wrt_allele_L)
-		M4_L_r = M4_L_calc(M3_L_r,GT_likelihood_wrt_allele_L)
-		A_marg_L_f = A_marg_L_calc(M1_L_f,M4_L_f)
-		A_marg_L_r = A_marg_L_calc(M1_L_r,M4_L_r)
+		ADf = ADf_list[i]
+		ADr = ADr_list[i]
+		M1_L_f = M1_L_calc(ADf, rho_f_old)
+		M1_L_r = M1_L_calc(ADr, rho_r_old)
+		M2_L_f = M2_L_calc(M1_L_f, GT_likelihood_wrt_allele_L)
+		M2_L_r = M2_L_calc(M1_L_r, GT_likelihood_wrt_allele_L)
+		GT_marg_L = GT_marg_L_calc(M2_L_f, M2_L_r, ADf, ADr, prior_L_old)
+		M3_L_f = M3_L_calc(GT_marg_L, M2_L_f)
+		M3_L_r = M3_L_calc(GT_marg_L, M2_L_r)
+		M4_L_f = M4_L_calc(M3_L_f, GT_likelihood_wrt_allele_L)
+		M4_L_r = M4_L_calc(M3_L_r, GT_likelihood_wrt_allele_L)
+		A_marg_L_f = A_marg_L_calc(M1_L_f, M4_L_f)
+		A_marg_L_r = A_marg_L_calc(M1_L_r, M4_L_r)
 
-		T1_term_f,T2_term_f = T_term_calc_for_rho(A_marg_L_f,ADf)
-		T1_term_r,T2_term_r = T_term_calc_for_rho(A_marg_L_r,ADr)
+		T1_term_f, T2_term_f = T_term_calc_for_rho(A_marg_L_f, ADf)
+		T1_term_r, T2_term_r = T_term_calc_for_rho(A_marg_L_r, ADr)
 
 		T1_f = T1_f + T1_term_f
 		T2_f = T2_f + T2_term_f
@@ -904,53 +781,56 @@ def EM_step(ADf_list,ADr_list,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_
 		T_for_prior = T_for_prior + GT_marg
 	#end for
 
-	rho_f_new=1./(1.+T2_f/T1_f)
-	rho_r_new=1./(1.+T2_r/T1_r)
-	prior_new=T_for_prior/np.sum(T_for_prior)
-	prior_L_new=np.log(prior_new)
+	rho_f_new = 1. / (1. + T2_f / T1_f)
+	rho_r_new = 1. / (1. + T2_r / T1_r)
+	prior_new = T_for_prior / np.sum(T_for_prior)
+	prior_L_new = np.log(prior_new)
 
-	return rho_f_new,rho_r_new,prior_L_new,joint_probty
+	return rho_f_new, rho_r_new, prior_L_new, joint_probty
 #end def
 
 #################################################################
 #	EM_full (original)
 #################################################################
-def EM_full(ADfs,ADrs,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_allele_L,a,b,D,allele_freq):
+def EM_full(ADfs, ADrs, rho_f_old, rho_r_old, prior_L_old, GT_likelihood_wrt_allele_L, a, b, D, allele_freq):
 	''' '''
-	joint_probty_s=[]
-	joint_probty_new=np.nan
+	joint_probty_s = []
+	joint_probty_new = np.nan
 	for i in range(3):
-		joint_probty_old=joint_probty_new
-		rho_f_new,rho_r_new,prior_L_new,joint_probty_new = EM_step(ADfs,ADrs,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_allele_L,a,b,D,allele_freq)
-		rho_f_old=rho_f_new
-		rho_r_old=rho_r_new
-		prior_L_old=prior_L_new
+		joint_probty_old = joint_probty_new
+		rho_f_new, rho_r_new, prior_L_new, joint_probty_new = \
+			EM_step(ADfs, ADrs, rho_f_old, rho_r_old, prior_L_old, GT_likelihood_wrt_allele_L, a, b, D, allele_freq)
+		rho_f_old = rho_f_new
+		rho_r_old = rho_r_new
+		prior_L_old = prior_L_new
 		joint_probty_s.append(joint_probty_new)
 	#end for
-	while np.abs(joint_probty_old-joint_probty_new)>10**-7:
-		joint_probty_old=joint_probty_new
-		rho_f_new,rho_r_new,prior_L_new,joint_probty_new = EM_step(ADfs,ADrs,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_allele_L,a,b,D,allele_freq)
-		rho_f_old=rho_f_new
-		rho_r_old=rho_r_new
-		prior_L_old=prior_L_new
+
+	while np.abs(joint_probty_old - joint_probty_new) > 10 ** -7:
+		joint_probty_old = joint_probty_new
+		rho_f_new, rho_r_new, prior_L_new, joint_probty_new = \
+			EM_step(ADfs, ADrs, rho_f_old, rho_r_old, prior_L_old, GT_likelihood_wrt_allele_L, a, b, D, allele_freq)
+		rho_f_old = rho_f_new
+		rho_r_old = rho_r_new
+		prior_L_old = prior_L_new
 		joint_probty_s.append(joint_probty_new)
 	#end while
 
-	return rho_f_new,rho_r_new,prior_L_new,joint_probty_s
+	return rho_f_new, rho_r_new, prior_L_new, joint_probty_s
 #end def
 
 #################################################################
 #	GTL_L_calc (original)
 #################################################################
-def GTL_L_calc(ADf,ADr,rho_f,rho_r,GT_likelihood_wrt_allele_L):
+def GTL_L_calc(ADf, ADr, rho_f, rho_r, GT_likelihood_wrt_allele_L):
 	''' '''
-	M1_L_f = M1_L_calc(ADf,rho_f)
-	M1_L_r = M1_L_calc(ADr,rho_r)
-	M2_L_f = M2_L_calc(M1_L_f,GT_likelihood_wrt_allele_L)
-	M2_L_r = M2_L_calc(M1_L_r,GT_likelihood_wrt_allele_L)
+	M1_L_f = M1_L_calc(ADf, rho_f)
+	M1_L_r = M1_L_calc(ADr, rho_r)
+	M2_L_f = M2_L_calc(M1_L_f, GT_likelihood_wrt_allele_L)
+	M2_L_r = M2_L_calc(M1_L_r, GT_likelihood_wrt_allele_L)
 	prior_L = np.zeros(3)
-	GTL_L = GT_marg_L_calc(M2_L_f,M2_L_r,ADf,ADr,prior_L)
-	GTL_L=GTL_L-np.max(GTL_L)
+	GTL_L = GT_marg_L_calc(M2_L_f, M2_L_r, ADf, ADr, prior_L)
+	GTL_L = GTL_L - np.max(GTL_L)
 
 	return GTL_L
 #end def
@@ -958,104 +838,144 @@ def GTL_L_calc(ADf,ADr,rho_f,rho_r,GT_likelihood_wrt_allele_L):
 #################################################################
 #	posterior_probty_calc_exact (original)
 #################################################################
-def posterior_probty_calc_exact(prior_L,table_L,C_GL_L,M_GL_L,D_GL_L):
+def posterior_probty_calc_exact(prior_L, table_L, C_GL_L, M_GL_L, D_GL_L):
 	''' '''
-	combos=3
-	work_column=np.empty(combos**2)
+	combos = 3
+	work_column = np.empty(combos ** 2)
 	for I1 in range(combos):
 		for I2 in range(combos):
-			II=I1*combos+I2
-			work_column[II]=prior_L[I1]+prior_L[I2]+M_GL_L[I1]+D_GL_L[I2]
+			II = I1 * combos + I2
+			work_column[II] = prior_L[I1] + prior_L[I2] + M_GL_L[I1] + D_GL_L[I2]
 		#end for
 	#end for
 
-	work_table=table_L+np.tile(C_GL_L,[combos**2,1])+np.tile(np.reshape(work_column,[combos**2,1]),[1,combos])
-	work_table=work_table-np.max(work_table)
-	work_table=np.exp(work_table)
-	work_table=work_table/np.sum(work_table)
-	PP=np.max(np.array([work_table[0][1],work_table[0][2]]))
+	work_table = table_L + np.tile(C_GL_L, [combos ** 2, 1]) + np.tile(np.reshape(work_column, [combos ** 2, 1]), [1, combos])
+	work_table = work_table - np.max(work_table)
+	work_table = np.exp(work_table)
+	work_table = work_table / np.sum(work_table)
+	PP = np.max(np.array([work_table[0][1], work_table[0][2]]))
 
-	return PP,work_table
+	return PP, work_table
 #end def
 
 #################################################################
 #	denovo_P_calc (original)
 #################################################################
-def denovo_P_calc(ADfs,ADrs,rho_f,rho_r,GT_likelihood_wrt_allele_L,table_L,prior_L):
+def denovo_P_calc(ADfs, ADrs, rho_f, rho_r, GT_likelihood_wrt_allele_L, table_L, prior_L):
 	''' '''
-	M_GL_L=GTL_L_calc(ADfs[0],ADrs[0],rho_f,rho_r,GT_likelihood_wrt_allele_L)
-	D_GL_L=GTL_L_calc(ADfs[1],ADrs[1],rho_f,rho_r,GT_likelihood_wrt_allele_L)
-	C_GL_L=GTL_L_calc(ADfs[2],ADrs[2],rho_f,rho_r,GT_likelihood_wrt_allele_L) # child is the last one
-	PP,work_table = posterior_probty_calc_exact(prior_L,table_L,C_GL_L,M_GL_L,D_GL_L)
+	M_GL_L = GTL_L_calc(ADfs[0], ADrs[0], rho_f, rho_r, GT_likelihood_wrt_allele_L)
+	D_GL_L = GTL_L_calc(ADfs[1], ADrs[1], rho_f, rho_r, GT_likelihood_wrt_allele_L)
+	C_GL_L = GTL_L_calc(ADfs[2], ADrs[2], rho_f, rho_r, GT_likelihood_wrt_allele_L) # child is the last one
+	PP, work_table = posterior_probty_calc_exact(prior_L, table_L, C_GL_L, M_GL_L, D_GL_L)
 
-	return PP,work_table
+	return PP, work_table
 #end def
 
 #################################################################
 #	PP_calc (original)
 #################################################################
-def PP_calc(trio_samfiles,unrelated_samfiles,chrom,pos,REF,ALT,allele_freq,MQ_thresh,BQ_thresh):
+def PP_calc(trio_samfiles, unrelated_samfiles, chrom, pos, REF, ALT, allele_freq, MQ_thresh, BQ_thresh):
 	''' '''
-	ADfs,ADrs = get_all_ADs_combined(unrelated_samfiles,chrom,pos,REF,ALT,MQ_thresh,BQ_thresh)
-	ADfs_U=ADfs
-	ADrs_U=ADrs
-	rho_f_old=0.8
-	rho_r_old=0.8
-	prior_old=np.array([1./3,1./3,1./3])
-	prior_old=prior_old/np.sum(prior_old)
-	prior_L_old=np.log(prior_old)
+	ADfs_U, ADrs_U = get_all_ADs(unrelated_samfiles, chrom, pos, REF, ALT, MQ_thresh, BQ_thresh)
+	rho_f_old, rho_r_old = 0.8, 0.8
+	prior_old = np.array([1. / 3, 1. / 3, 1. / 3])
+	prior_old = prior_old / np.sum(prior_old)
+	prior_L_old = np.log(prior_old)
 	GT_likelihood_wrt_allele = GT_likelihood_wrt_allele_calc(1)
-	GT_likelihood_wrt_allele_L=np.log(GT_likelihood_wrt_allele)
-	a=2.
-	b=2.
-	D=np.array([2.,2,2])
+	GT_likelihood_wrt_allele_L = np.log(GT_likelihood_wrt_allele)
+	a, b, D = 2., 2., np.array([2., 2, 2])
 
-	rho_f_new,rho_r_new,prior_L_new,joint_probty_s = EM_full(ADfs,ADrs,rho_f_old,rho_r_old,prior_L_old,GT_likelihood_wrt_allele_L,a,b,D,allele_freq)
+	rho_f_new, rho_r_new, prior_L_new, joint_probty_s = \
+		EM_full(ADfs_U, ADrs_U, rho_f_old, rho_r_old, prior_L_old, GT_likelihood_wrt_allele_L, a, b, D, allele_freq)
 
-	AF_unrel=0.
-	for i in range(ADfs.shape[0]):
-		temp1=GTL_L_calc(ADfs[i],ADrs[i],rho_f_new,rho_r_new,GT_likelihood_wrt_allele_L)
-		temp=temp1+prior_L_new
-		temp=temp-np.max(temp)
-		temp=np.exp(temp)
-		temp=temp/np.sum(temp)
+	AF_unrel = 0.
+	for i in range(ADfs_U.shape[0]):
+		temp1 = GTL_L_calc(ADfs_U[i], ADrs_U[i], rho_f_new, rho_r_new, GT_likelihood_wrt_allele_L)
+		temp = temp1 + prior_L_new
+		temp = temp - np.max(temp)
+		temp = np.exp(temp)
+		temp = temp / np.sum(temp)
 
-		AF_unrel=AF_unrel+temp[1]+temp[2]*2.
+		AF_unrel = AF_unrel + temp[1] + temp[2] * 2.
 	#end for
 
-	AF_unrel=AF_unrel/2./ADfs.shape[0]
+	AF_unrel = AF_unrel / 2. / ADfs_U.shape[0]
 
-	ADfs,ADrs = get_all_ADs_combined(trio_samfiles,chrom,pos,REF,ALT,MQ_thresh,BQ_thresh)
+	ADfs, ADrs = get_all_ADs(trio_samfiles, chrom, pos, REF, ALT, MQ_thresh, BQ_thresh)
 
-	table=table_gen(1,1e-8)
-	table_L=np.log(table)
-	PP,work_table = denovo_P_calc(ADfs,ADrs,rho_f_new,rho_r_new,GT_likelihood_wrt_allele_L,table_L,prior_L_new)
+	table = table_gen(1, 1e-8)
+	table_L = np.log(table)
+	PP, work_table = denovo_P_calc(ADfs, ADrs, rho_f_new, rho_r_new, GT_likelihood_wrt_allele_L, table_L, prior_L_new)
 
-	return PP,ADfs,ADrs,ADfs_U,ADrs_U,rho_f_new,rho_r_new,prior_L_new,AF_unrel
+	return PP, ADfs, ADrs, ADfs_U, ADrs_U, rho_f_new, rho_r_new, prior_L_new, AF_unrel
 #end def
 
 #################################################################
-#	ALT_read_check_in_parents
+#	ALT_count_check_parents
 #################################################################
-def ALT_read_check_in_parents(ADfs, ADrs, thr=3):
-	''' check if parents have alternate reads over threshold '''
+def ALT_count_check_parents(ADfs, ADrs, thr=3):
+	''' check if total alternate reads count in parents is over threshold '''
 	if len(ADfs) != 3 or len(ADrs) != 3:
 		sys.exit("ERROR in retrieving stranded AD counts, missing information for trio\n")
 	#end if
 	alt_count = ADfs[0][1] + ADfs[1][1] + ADrs[0][1] + ADrs[1][1]
 
-	if alt_count > thr:
-		return False
-	else:
-		return True
+	if alt_count > thr: return True
+	else: return False
 	#end if
 #end def
 
 #################################################################
-# RUNNER (main function)
+#	ALT_count_check_samples
 #################################################################
-def runner(args):
-	''' read the input vcf file and calls the functions to run the analysis '''
+def ALT_count_check_samples(ADfs, ADrs, thr=3):
+	''' check if total alternate reads count in samples is over threshold '''
+	if len(ADfs) != len(ADrs):
+		sys.exit("ERROR in retrieving stranded AD counts\n")
+	#end if
+	alt_count = 0
+	for i in range(len(ADfs)):
+		alt_count += ADfs[i][1] + ADrs[i][1]
+	#end for
+
+	if alt_count > thr: return True
+	else: return False
+	#end if
+#end def
+
+#################################################################
+#	get_allele_freq
+#################################################################
+def get_allele_freq(vnt_obj, is_required=False, tag_AF='novoAF='):
+	''' '''
+	is_tag_AF, allele_freq = False, 0. # by default allele_freq set to 0.
+	for tag in vnt_obj.INFO.split(";"):
+		if tag.startswith(tag_AF):
+			is_tag_AF = True
+			try:
+				allele_freq = float(tag.split('=')[1])
+			except Exception: # tag_AF field is not a float as expected
+				sys.exit('ERROR in input parsing, allele frequency INFO field is in the wrong format\n')
+			#end try
+			break
+		#end if
+	#end for
+
+	if not is_tag_AF and is_required:
+		sys.exit('ERROR in input parsing, allele frequency INFO field is missing\n')
+	#end if
+
+	return allele_freq
+#end def
+
+#################################################################
+# RUNNERS (main functions)
+#################################################################
+#################################################################
+# runner_novo
+#################################################################
+def runner_novo(args):
+	''' read the input vcf file and calls the functions to run de novo variants analysis '''
 
 	# Variables
 	is_allele_freq_thr = True if args['allelefreqthr'] else False
@@ -1073,7 +993,7 @@ def runner(args):
 	variants_passed = []
 
 	# Opening bam files and getting bam associated IDs
-	sys.stderr.write('Reading unrelated and trio bamfiles...\n')
+	sys.stderr.write('Buffering unrelated and trio bam files...\n')
 	sys.stderr.flush()
 
 	unrelated_bamfiles, IDs_unrelated = buffering_bams(args['unrelatedbams'])
@@ -1095,45 +1015,32 @@ def runner(args):
 	#end if
 
 	# Reading variants
+	analyzed = 0
 	for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
-		sys.stderr.write('Analyzing variant... ' + str(i) + '\n')
+		sys.stderr.write('Analyzing variant... ' + str(i + 1) + '\n')
 		sys.stderr.flush()
 
-		# Getting allele frequency from novoAF tag
-		is_novoAF, allele_freq = False, 0.
-		for tag in vnt_obj.INFO.split(";"):
-			if tag.startswith('novoAF='):
-				is_novoAF = True
-				try:
-					allele_freq = float(tag.split('=')[1])
-				except Exception: # novo_AF field is not a float as expected
-					if is_allele_freq_thr: # error if allele frequency threshold was provided
-						sys.exit('ERROR in input parsing, novoAF field is in the wrong format but looks like you expect to filter based on allele frequency\n')
-					else: # set to 0. if no filtering by allele frequency is requested
-						allele_freq = 0.
-					#end if
-				#end try
-				break
-			#end if
-		#end for
-
-		# Check if novo_AF field missing, error if allele frequency threshold was provided
-		if not is_novoAF and is_allele_freq_thr:
-			sys.exit('ERROR in input parsing, novoAF field missing but looks like you expect to filter based on allele frequency\n')
+		# Check if chromosome is canonical and in valid format
+		if not check_chrom(vnt_obj.CHROM): # skip variant if not
+			continue
 		#end if
+
+		# Getting allele frequency from novoAF tag
+		allele_freq = get_allele_freq(vnt_obj, is_required=is_allele_freq_thr)
 
 		# Calculate statistics
 		if allele_freq <= allele_freq_thr: # hard filter on allele frequency
+			analyzed += 1
 			PP, ADfs, ADrs, ADfs_U, ADrs_U, _, _, _, AF_unrel = \
-				PP_calc(trio_bamfiles, unrelated_bamfiles, encode_chrom(vnt_obj.CHROM), int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, allele_freq, MQ_thr, BQ_thr)
-			if AF_unrel < AF_unrel_thr and PP >= PP_thr and ALT_read_check_in_parents(ADfs, ADrs): # hard filter on AF_unrel
+				PP_calc(trio_bamfiles, unrelated_bamfiles, vnt_obj.CHROM, int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, allele_freq, MQ_thr, BQ_thr)
+			if AF_unrel < AF_unrel_thr and PP >= PP_thr and not ALT_count_check_parents(ADfs, ADrs): # hard filter on AF_unrel, PP, total alternate reads count
 				variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj])
 			#end if
 		#end if
 	#end if
 
 	# Writing output
-	sys.stderr.write('\n...Writing results for ' + str(i) + ' analyzed variants\n')
+	sys.stderr.write('\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(i + 1) + ' total variants\n')
 	sys.stderr.flush()
 
 	# Header definitions
@@ -1200,7 +1107,7 @@ def runner(args):
 		if unrelated_genotypes:
 			fo.write(vnt_obj.to_string().rstrip() + '\t' + '\t'.join(unrelated_genotypes) + '\n')
 		else:
-			fo.write(vnt_obj.to_string().rstrip() + '\n')
+			fo.write(vnt_obj.to_string())
 		#end if
 	# end for
 
@@ -1210,6 +1117,71 @@ def runner(args):
 		buffer.close()
 	#end for
 	for buffer in trio_bamfiles:
+		buffer.close()
+	#end for
+#end def
+
+#################################################################
+# runner_blacklist
+#################################################################
+def runner_blacklist(args):
+	''' read the input vcf file and calls the functions to blacklist variants '''
+
+	# Variables
+	is_allele_freq_thr = True if args['allelefreqthr'] else False
+	allele_freq_thr = float(args['allelefreqthr']) if is_allele_freq_thr else 1.
+	thr_bams = int(args['thr_bams']) if args['thr_bams'] else 2
+	thr_reads = int(args['thr_reads']) if args['thr_reads'] else 1
+	AF_unrel_thr = 0.01
+	MQ_thr, BQ_thr = -100., -100.
+
+	# Buffers
+	fo = open(args['outputfile'], 'w')
+
+	# Opening bam files and getting bam associated IDs
+	sys.stderr.write('Buffering blacklist bam files...\n')
+	sys.stderr.flush()
+
+	blacklist_bamfiles, IDs_blacklist = buffering_bams(args['blacklist'])
+
+	# Creating Vcf object
+	vcf_obj = Vcf(args['inputfile'])
+
+	# Writing header
+	fo.write(vcf_obj.header.definitions)
+	fo.write(vcf_obj.header.columns)
+
+	# Reading variants
+	analyzed = 0
+	for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
+		sys.stderr.write('Analyzing variant... ' + str(i + 1) + '\n')
+		sys.stderr.flush()
+
+		# Check if chromosome is canonical and in valid format
+		if not check_chrom(vnt_obj.CHROM):
+			continue
+		#end if
+
+		# Getting allele frequency from novoAF tag
+		allele_freq = get_allele_freq(vnt_obj, is_required=is_allele_freq_thr)
+
+		# Calculate statistics
+		if allele_freq <= allele_freq_thr: # hard filter on allele frequency
+			analyzed += 1
+			if not check_all_ADs(blacklist_bamfiles, vnt_obj.CHROM, int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, MQ_thr, BQ_thr, thr_bams=thr_bams, thr_reads=thr_reads):
+				# Write variant
+				fo.write(vnt_obj.to_string())
+			#end if
+		#end if
+	#end for
+
+	# Writing output
+	sys.stderr.write('\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(i + 1) + ' total variants\n')
+	sys.stderr.flush()
+
+	# Closing files buffers
+	fo.close()
+	for buffer in blacklist_bamfiles:
 		buffer.close()
 	#end for
 #end def
@@ -1224,17 +1196,29 @@ if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser(description='Bayesian de novo variant caller')
 
-	parser.add_argument('-i', '--inputfile', help='input vcf file, must contain novoAF=<float> in INFO field to filter by allele frequency', required=True)
-	parser.add_argument('-o', '--outputfile', help='output file to write results, vcf format', required=True)
-	parser.add_argument('-u', '--unrelatedbams', help='tsv file containing ID<TAB>Path/to/file for unrelated bam files \
-													used to train the model', required=True)
-	parser.add_argument('-t', '--triobams', help='tsv file containing ID<TAB>Path/to/file for family bam files, \
-												the PROBAND must be listed as LAST', required=True)
+	parser.add_argument('-i', '--inputfile', help='I/O: input vcf file, must contain novoAF=<float> in INFO field to filter by allele frequency', required=True)
+	parser.add_argument('-o', '--outputfile', help='I/O: output file to write results, vcf format', required=True)
+	parser.add_argument('-u', '--unrelatedbams', help='DE NOVO: tsv file containing ID<TAB>Path/to/file for unrelated bam files \
+													used to train the model', required=False)
+	parser.add_argument('-t', '--triobams', help='DE NOVO: tsv file containing ID<TAB>Path/to/file for family bam files, \
+												the PROBAND must be listed as LAST', required=False)
+	parser.add_argument('-p', '--postprobthr', help='DE NOVO: threshold to filter by posterior probabilty for de novo calls [0]', required=False)
+	parser.add_argument('-b', '--blacklist', help='BLACKLIST: tsv file containing ID<TAB>Path/to/file for bam files \
+												used to filter out shared variants/artifacts', required=False)
+	parser.add_argument('--thr_bams', help='BLACKLIST: minimum number of bam files with at least "--thr_reads" to blacklist the variant [2]', required=False)
+	parser.add_argument('--thr_reads', help='BLACKLIST: minimum number of reads to count the bam file in "--thr_bams" [1]', required=False)
 	parser.add_argument('-a', '--allelefreqthr', help='threshold to filter by population allele frequency [1]', required=False)
-	parser.add_argument('-p', '--postprobthr', help='threshold to filter by posterior probabilty [1]', required=False)
 
 	args = vars(parser.parse_args())
 
-	runner(args)
+	# Check running mode
+	if not args['blacklist']:
+		if not args['unrelatedbams'] or not args['triobams']:
+			sys.exit('ERROR in bams info files, missing file information for trio or unrelated samples necessary for de novo calls\n')
+		#end if
+		runner_novo(args)
+	else:
+		runner_blacklist(args)
+	#end if
 
 #end if
