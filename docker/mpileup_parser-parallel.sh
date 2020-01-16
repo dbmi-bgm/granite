@@ -43,4 +43,4 @@ fi
 
 # compress and index mpileup.out
 bgzip mpileup.out
-tabix -p vcf mpileup.out.gz
+tabix -f -b 2 -s 1 -e 0 -c "#" mpileup.out.gz
