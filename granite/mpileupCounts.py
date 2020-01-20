@@ -4,8 +4,9 @@
 #
 #    mpileupCounts
 #        note: require samtools available in environment
-#        Michele Berselli, berselli.michele@gmail.com
+#        Michele Berselli
 #        Harvard Medical School
+#        berselli.michele@gmail.com
 #
 #################################################################
 

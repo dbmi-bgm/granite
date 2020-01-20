@@ -3,8 +3,9 @@
 #################################################################
 #
 #    mpileup_parser
-#        Michele Berselli, berselli.michele@gmail.com
+#        Michele Berselli
 #        Harvard Medical School
+#        berselli.michele@gmail.com
 #
 #################################################################
 
@@ -133,7 +134,7 @@ class mpileupParser(object):
     #end class mpileupColumn
 
     def generator(self, fi):
-        ''' parse mpileup format and return mpileupColumn objects as genertor '''
+        ''' parse mpileup format and return mpileupColumn objects as generator '''
         for line in fi:
             try: line = str(line, 'utf-8').rstrip()
             except Exception: line = line.rstrip()
