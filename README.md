@@ -1,105 +1,91 @@
-# novoCaller 2
-
-
-## About
-novoCaller 2 is a Bayesian variant calling algorithm for *de novo* mutations that uses information from read-level data both in pedigree and unrelated samples.
-The program represents an updated and improved implementation of the original algorithm described in [paper](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
-
-novoCaller 2 has been extended with new functionalities:
-
-  - the program can now use a compressed tabular format () that encodes read-level information in a more accessible and portable way as compared with bam
-  - the program can *blacklist* and filter-out commonly shared variants and sequencing artifacts using read-level data in unrelated samples
-
-novoCaller 2 is accompanied by additional scripts to format data and create bitarrays used to fast blacklist commonly shared positions, *mpileup_parser* and *to_bitarray*.
+# Granite (in development)
+Granite (Genomic vaRiANts calling and fIltering uTilitiEs) is a collection of software to call, filter and work with genomic variants.
 
 
 ## Requirements
-novoCaller 2 and accompanying scripts are available as a docker image ready-to-use. Dockerfile is available inside docker folder.
+A ready-to-use docker image is available to download.
 
-To run locally novocaller 2 requires Python (version 3.X), *numpy*, *pysam* and *bitarray* libraries.
+    docker pull IMAGE
 
-To install [*numpy*](https://docs.scipy.org/doc/ "numpy documentation") under unix environment (linux, osx):
+To run locally Python (3.x) is required together with the following libraries:
+
+  - [*numpy*](https://docs.scipy.org/doc/ "numpy documentation")
+  - [*pysam*](https://pysam.readthedocs.io/en/latest/ "pysam documentation")
+  - [*bitarray*](https://pypi.org/project/bitarray/ "bitarray documentation")
+  - [*pytabix*](https://pypi.org/project/pytabix/ "pytabix documentation")
+  - [*h5py*](https://www.h5py.org/ "h5py documentation")
 
     pip install numpy
-
-To install [*pysam*](https://pysam.readthedocs.io/en/latest/ "pysam documentation") under unix environment (linux, osx):
-
     pip install pysam
-
-To install [*bitarray*](https://pypi.org/project/bitarray/ "bitarray documentation") under unix environment (linux, osx):
-
     pip install bitarray
-
-to_bitarray additionally requires *pytabix* and *h5py* libraries.
-
-To install [*pytabix*](https://pypi.org/project/pytabix/ "pytabix documentation") under unix environment (linux, osx):
-
     pip install --user pytabix
-
-To install [*h5py*](https://www.h5py.org/ "h5py documentation") under unix environment (linux, osx):
-
     pip install h5py
 
+Additional software needs to be available in the environment:
 
-## novoCaller_2
-To run novoCaller_2 locally under unix environment (linux, osx):
+  - [*samtools*](http://www.htslib.org/ "samtools documentation")
+  - [*bgzip*](http://www.htslib.org/doc/bgzip.1.html "bgzip documentation")
+  - [*tabix*](http://www.htslib.org/doc/tabix.1.html "tabix documentation")
 
-    # move to novoCaller_2 folder
-    cd PATH/TO/NOVOCALLER_2/FOLDER/
 
-    # make novoCaller_2 executable
-    sudo chmod +x novoCaller_2.py
+# Callers
 
-    # run novoCaller_2
-    ./novoCaller_2.py [-h] -i INPUTFILE -o OUTPUTFILE [-u UNRELATEDBAMS]
-                       [-t TRIOBAMS] [-p POSTPROBTHR] [-b BLACKLIST]
-                       [--thr_bams THR_BAMS] [--thr_reads THR_READS]
-                       [-a ALLELEFREQTHR]
-
-    # !!! if the above is not working run
-    python novoCaller_2.py [-h] -i INPUTFILE -o OUTPUTFILE [-u UNRELATEDBAMS]
-                       [-t TRIOBAMS] [-p POSTPROBTHR] [-b BLACKLIST]
-                       [--thr_bams THR_BAMS] [--thr_reads THR_READS]
-                       [-a ALLELEFREQTHR]
-
-### Input
-The program accepts files in VCF format (VCFv4.x).
-
-*De novo* analysis, input files must contain genotype information for the trio in addition to standard VCF columns. Columns IDs for trio must match the IDs provided together with the list of bam files (TRIOBAMS).
-
-    #CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  HG002   HG003   HG004   ...
-
-*Blacklist* analysis, input files must contain genotype information for the proband but do not require additional information for trio or family.
+## novoCaller
+novoCaller is a Bayesian variant calling algorithm for *de novo* mutations that uses information from read-level data both in pedigree and unrelated samples.
+The software represents an updated and improved implementation of the original algorithm described in [paper](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
 
 ### Arguments
-  - **-i**, **--inputfile**, *I/O*: path to input file in vcf format
-  - **-o**, **--outputfile**, *I/O*: path to output file to write results, vcf format
-  - [**-u**, **--unrelatedbams**], *DE NOVO*: path to tsv file listing `ID<TAB>Path/to/file` for unrelated bam files used to train the model
-  - [**-t**, **--triobams**], *DE NOVO*: path to tsv file listing `ID<TAB>Path/to/file` for family bam files, **PROBAND must be listed as LAST**
-  - [**-p**, **--postprobthr**], *DE NOVO*: threshold to filter by posterior probabilty for de novo calls [0]
-  - [**-b**, **--blacklist**], *BLACKLIST*: path to tsv file listing `ID<TAB>Path/to/file` for unrelated bam files used to filter out shared variants/artifacts
-  - [**--thr_reads**], *BLACKLIST*: minimum number of reads to count the bam file in "--thr_bams" [1]
-  - [**--thr_bams**], *BLACKLIST*: minimum number of bam files with at least "--thr_reads" to blacklist the variant [2]
-  - [**-a**, **--allelefreqthr**], threshold to filter by population allele frequency. If specified, the allele frequency for each variant must be provided as annotation in the INFO field using the tag `novoAF=<float>;` [1]
+  - **-i**, **--inputfile**, path to input file in VCF format
+  - **-o**, **--outputfile**, path to output file to write results in VCF format
+  - **-u**, **--unrelated**, path to TSV file listing `ID<TAB>Path/to/file` for unrelated files used to train the model
+  - **-t**, **--trio**, path to TSV file listing `ID<TAB>Path/to/file` for trio files (pedigree), **PROBAND must be listed as LAST**
+  - [**--bam**], by default the program expect family and unrelated files in XX format, if you want to use bam files instead use this flag
+  - [**-p**, **--postprobthr**], threshold to filter calls by posterior probabilty [0]
+  - [**-a**, **--allelefreqthr**], threshold to filter calls by population allele frequency. If specified, the allele frequency for each variant must be provided as annotation in the INFO field using the tag `novoAF=<float>;` [1]
+
+### Input
+The program accepts files in VCF format (VCFv4.x) as input. Files must contain genotype information for trio in addition to standard VCF columns. Columns IDs for trio must match the IDs provided together with the list of bam files (*--triobams*).
+
+Required VCF format structure:
+
+    #CHROM   POS   ID   REF   ALT   QUAL   FILTER   INFO   FORMAT   PROBAND_ID   MOTHER_ID   FATHER_ID   ...
 
 ### Output
 The program generates output in VCF format.
 
 
-## mpileup_parser
-mpileup_parser uses [*samtools*](http://www.htslib.org/ "samtools documentation") to calculate statistics for pileup at each position in specified region and returns counts in TSV format. Counts by strand (ForWard or ReVerse) are provided for reads that support REFerence allele, ALTernate alleles, INSertions or DELetions at POSition. The file can be compressed with bgzip and tabix indexed for storage, portability and speeding-up random access.
+# Utilities
+
+## blackList
+blackList allows to filter-out commonly shared variants and sequencing artifacts using read-level data or blacklisted positions in unrelated samples.
+
+### Arguments
+  - **-i**, **--inputfile**, path to input file in VCF format
+  - **-o**, **--outputfile**, path to output file to write results in VCF format
+  - **-u**, **--unrelated**,
+  - **-b**, **--blacklist**,
+  - [**-a**, **--allelefreqthr**], threshold to filter calls by population allele frequency
+
+### Input
+The program accepts files in VCF format (VCFv4.x) as input. Files must contain genotype information for the proband but do not require additional information for trio or family.
+
+Required VCF format structure:
+
+    #CHROM   POS   ID   REF   ALT   QUAL   FILTER   INFO   FORMAT   PROBAND_ID   ...
+
+
+## mpileupCounts
+mpileupCounts uses *samtools* to calculate statistics for reads pileup at each position in the specified region and returns counts in TSV format. Counts by strand (ForWard or ReVerse) are provided for reads that support REFerence allele, ALTernate alleles, INSertions or DELetions at POSition. The file can be further compressed with *bgzip* and indexed with *tabix* for storage, portability and speeding-up random access.
 
 TSV format structure:
 
-    #CHR    POS    COVERAGE    REF_FW    REF_RV    ALT_FW    ALT_RV    INS_FW    INS_RV    DEL_FW    DEL_REV
+    #CHR   POS   COVERAGE   REF_FW   REF_RV   ALT_FW   ALT_RV   INS_FW   INS_RV   DEL_FW   DEL_REV
 
 To compress and index the file:
 
     bgzip PATH/TO/FILE
     tabix -b 2 -s 1 -e 0 -c "#" PATH/TO/FILE.gz
 
-mpileup_parser-parallel script based on [*parallel*](https://www.gnu.org/software/parallel/ 'parallel documentation') is available in docker folder to speed up computation by splitting the bam and parallelizing by regions.
-
 
 ## to_bitarray
-to_bitarray calls positions by reads counts or allelic balance (TO DO) for single bam or multiple bams (joint calls) in the specified region. Results are stored in a binary format where bits corresponding to called positions are set to 1.
+to_bitarray calls positions by reads counts or allelic balance (TO DO) for single bam or multiple bams (joint calls) in specified region. Results are stored in a binary format where bits corresponding to called positions are set to 1.
