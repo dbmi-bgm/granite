@@ -131,17 +131,6 @@ def main(args):
 #################################################################
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='The program uses samtools to calculate statistics for pileup at each position in the specified region. Returns counts in a tsv format')
-
-    parser.add_argument('-i', '--inputfile', help='I/O: input file in bam format', required=True)
-    parser.add_argument('-o', '--outputfile', help='I/O: output file', required=True)
-    parser.add_argument('-r', '--reference', help='OTHER: reference file', required=False)
-    parser.add_argument('--region', help='OTHER: region to be analyzed [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromosome name must match the reference', required=False)
-    parser.add_argument('--MQthr', help='OTHER: minimum mapping quality for an alignment to be used [0]', required=False)
-    parser.add_argument('--BQthr', help='OTHER: minimum base quality for a base to be considered [13]', required=False)
-
-    args = vars(parser.parse_args())
-
-    main(args)
+    main()
 
 #end if

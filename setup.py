@@ -10,6 +10,11 @@ requires = [
 
 setup(
     name="granite",
-    description='',
+    description='granite is a collection of software to call, filter and work with genomic variants',
+    entry_points = {
+        'console_scripts': [
+            'granite = granite.granite:main',
+        ]
+    },
     packages=find_packages()
     )

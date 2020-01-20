@@ -1028,23 +1028,6 @@ def runner_blacklist(args):
 #################################################################
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='Bayesian de novo variant caller')
-
-    parser.add_argument('-i', '--inputfile', help='I/O: input vcf file, must contain novoAF=<float> in INFO field to filter by allele frequency', required=True)
-    parser.add_argument('-o', '--outputfile', help='I/O: output file to write results, vcf format', required=True)
-    parser.add_argument('-u', '--unrelatedbams', help='DE NOVO: tsv file containing ID<TAB>Path/to/file for unrelated bam files \
-                                                    used to train the model', required=False)
-    parser.add_argument('-t', '--triobams', help='DE NOVO: tsv file containing ID<TAB>Path/to/file for family bam files, \
-                                                the PROBAND must be listed as LAST', required=False)
-    parser.add_argument('-p', '--postprobthr', help='DE NOVO: threshold to filter by posterior probabilty for de novo calls [0]', required=False)
-    parser.add_argument('-b', '--blacklist', help='BLACKLIST: tsv file containing ID<TAB>Path/to/file for bam files \
-                                                used to filter out shared variants/artifacts', required=False)
-    parser.add_argument('--thr_bams', help='BLACKLIST: minimum number of bam files with at least "--thr_reads" to blacklist the variant [2]', required=False)
-    parser.add_argument('--thr_reads', help='BLACKLIST: minimum number of reads to count the bam file in "--thr_bams" [1]', required=False)
-    parser.add_argument('-a', '--allelefreqthr', help='threshold to filter by population allele frequency [1]', required=False)
-
-    args = vars(parser.parse_args())
-
     # Check running mode
     if not args['blacklist']:
         if not args['unrelatedbams'] or not args['triobams']:
