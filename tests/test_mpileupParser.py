@@ -3,10 +3,11 @@
 #################################################################
 import sys, os
 import pytest
-from .mpileup_parser import (mpileupParser,
-                            main as main_mP,
-                            run_mpileupParser)
-from .fasta_parser import *
+from granite.lib import mpileup_parser
+from granite.mpileupCounts import (
+                            run_mpileupParser
+                            )
+from granite.lib import fasta_parser
 
 
 #################################################################
@@ -25,7 +26,7 @@ def test_mpileupColumn__parser_reads():
                           [',', '.', ',', ',', '.'], [',', '.', ',', '.', '*', '.', '*', '*', '.', '.'],
                           [',', '.', '.', 'A', '.', '.', ',', 'T', 'n', '.', 't'], ['A-'],
                           [',', ',', '.', '.', '.', '.', '*-', '.-', '.', '.-']]
-    mP = mpileupParser()
+    mP = mpileup_parser.mpileupParser()
     # Tests
     for i, read in enumerate(reads):
         mc = mP.mpileupColumn('chr', 0, 'ref', 'cov', read, 'BQs')
@@ -37,12 +38,12 @@ def test_mpileupColumn__parser_reads():
 def test_run_mpileupParser():
     ''' '''
     # Variables
-    args = {'inputfile': 'files/input_noREF.mpileup', 'region': '1',
-            'reference': 'files/ref_37_chr1_50Mb.fa', 'outputfile': 'files/main_test.out',
+    args = {'inputfile': 'tests/files/input_noREF.mpileup', 'region': '1',
+            'reference': 'tests/files/ref_37_chr1_50Mb.fa', 'outputfile': 'tests/files/main_test.out',
             'MQthr': None, 'BQthr': None}
     ref_dict = {} # {chr: seq, ...}
     # Fasta reader init
-    handler = FastaHandler()
+    handler = fasta_parser.FastaHandler()
     IT = handler.parse_generator(args['reference'])
     # Output file
     fi = open(args['inputfile'])
@@ -57,7 +58,7 @@ def test_run_mpileupParser():
     # Closing files
     fo.close()
     # Tests
-    assert [row for row in open('files/main_test.out')] == [row for row in open('files/input_noREF.out')]
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_noREF.out')]
     # Clean
-    os.remove('files/main_test.out')
+    os.remove('tests/files/main_test.out')
 #end def
