@@ -37,8 +37,8 @@ def test_mpileupColumn__parser_reads():
 def test_run_mpileupParser():
     ''' '''
     # Variables
-    args = {'inputfile': 'test_files/input_noREF.mpileup', 'region': '1',
-            'reference': 'test_files/ref_37_chr1_50Mb.fa', 'outputfile': 'test_files/main_test.out',
+    args = {'inputfile': 'files/input_noREF.mpileup', 'region': '1',
+            'reference': 'files/ref_37_chr1_50Mb.fa', 'outputfile': 'files/main_test.out',
             'MQthr': None, 'BQthr': None}
     ref_dict = {} # {chr: seq, ...}
     # Fasta reader init
@@ -57,7 +57,7 @@ def test_run_mpileupParser():
     # Closing files
     fo.close()
     # Tests
-    assert [row for row in open('test_files/main_test.out')] == [row for row in open('test_files/input_noREF.out')]
+    assert [row for row in open('files/main_test.out')] == [row for row in open('files/input_noREF.out')]
     # Clean
-    os.remove('test_files/main_test.out')
+    os.remove('files/main_test.out')
 #end def
