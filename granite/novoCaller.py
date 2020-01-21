@@ -829,8 +829,8 @@ def runner_novo(args):
     sys.stderr.write('Buffering unrelated and trio bam files...\n')
     sys.stderr.flush()
 
-    unrelated_bamfiles, IDs_unrelated = buffering_bams(args['unrelatedbams'])
-    trio_bamfiles, IDs_trio = buffering_bams(args['triobams']) # [parent, parent, child]
+    unrelated_bamfiles, IDs_unrelated = buffering_bams(args['unrelatedfiles'])
+    trio_bamfiles, IDs_trio = buffering_bams(args['triofiles']) # [parent, parent, child]
 
     # Checking bam info files for trio is complete
     if len(trio_bamfiles) != 3:
@@ -1029,7 +1029,7 @@ if __name__ == "__main__":
 
     # Check running mode
     if not args['blacklist']:
-        if not args['unrelatedbams'] or not args['triobams']:
+        if not args['unrelatedfiles'] or not args['triofiles']:
             sys.exit('ERROR in bams info files, missing file information for trio or unrelated samples necessary for de novo calls\n')
         #end if
         runner_novo(args)

@@ -20,6 +20,11 @@
 import sys, os
 import argparse
 
+# Tools
+import novoCaller
+import mpileupCounts
+import rckTobgi
+
 
 #################################################################
 #
@@ -29,11 +34,12 @@ import argparse
 def main():
     ''' command line wrapper around available tools '''
     # Adding parser and subparsers
-    parser = argparse.ArgumentParser(prog='granite')
+    parser = argparse.ArgumentParser(prog='granite', description='GRANITE is a collection of software to call, filter and work with genomic variants')
     subparsers = parser.add_subparsers(dest='func')
 
     # Add novoCaller to subparsers
-    novoCaller_parser = subparsers.add_parser('novoCaller', description='Bayesian de novo variant caller')
+    novoCaller_parser = subparsers.add_parser('novoCaller', description='Bayesian de novo variant caller',
+                                                help='Bayesian de novo variant caller')
 
     novoCaller_parser.add_argument('-i', '--inputfile', help='input VCF file, must contain novoAF=<float> in INFO field to filter by allele frequency', required=True)
     novoCaller_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', required=True)
@@ -43,7 +49,8 @@ def main():
     novoCaller_parser.add_argument('--afthr', help='threshold to filter by population allele frequency [1]', required=False)
 
     # Add mpileupCounts to subparsers
-    mpileupCounts_parser = subparsers.add_parser('mpileupCounts', description='Samtools wrapper to calculate reads statistics for pileup at each position in the specified region')
+    mpileupCounts_parser = subparsers.add_parser('mpileupCounts', description='Samtools wrapper to calculate reads statistics for pileup at each position in the specified region',
+                                                    help='Samtools wrapper to calculate reads statistics for pileup at each position in the specified region')
 
     mpileupCounts_parser.add_argument('-i', '--inputfile', help='input file in BAM format', required=True)
     mpileupCounts_parser.add_argument('-o', '--outputfile', help='output file to write results as RCK format (TSV), use .rck as extension', required=True)
@@ -51,6 +58,8 @@ def main():
     mpileupCounts_parser.add_argument('--region', help='region to be analyzed [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromosome name must match the reference', required=False)
     mpileupCounts_parser.add_argument('--MQthr', help='minimum mapping quality for an alignment to be used [0]', required=False)
     mpileupCounts_parser.add_argument('--BQthr', help='minimum base quality for a base to be considered [13]', required=False)
+
+    # Add whiteList to subparsers
 
     # Add blackList to subparsers
     # blackList_parser = subparsers.add_parser('blackList', description='')
@@ -60,7 +69,8 @@ def main():
     # parser.add_argument('--thr_reads', help='BLACKLIST: minimum number of reads to count the bam file in "--thr_bams" [1]', required=False)
 
     # Add rckTobgi to subparsers
-    rckTobgi_parser = subparsers.add_parser('rckTobgi', description='Utility that converts counts from bgzip and tabix indexed RCK format into BGI format. Positions are called by reads counts or allelic balance for single or multiple files (joint calls) in the specified region')
+    rckTobgi_parser = subparsers.add_parser('rckTobgi', description='Utility that converts counts from bgzip and tabix indexed RCK format into BGI format. Positions are called by reads counts or allelic balance for single or multiple files (joint calls) in the specified region',
+                                                help='Utility that converts counts from bgzip and tabix indexed RCK format into BGI format')
 
     rckTobgi_parser.add_argument('-i', '--inputfiles', help='list of files to be used for the single/joint calling [e.g -i file_1 file_2 ...], expected bgzip and tabix indexed RCK files', nargs='+')
     rckTobgi_parser.add_argument('-o', '--outputfile', help='output file to write results as BGI format (binary hdf5), use .bgi as extension', required=True)
@@ -70,13 +80,30 @@ def main():
     rckTobgi_parser.add_argument('--bmthr', help='minimum number of bam files with at least "--rdthr" for the alternate allele or having the variant, if calls by allelic balance, to jointly call position', required=True)
     rckTobgi_parser.add_argument('--rdthr', help='minimum number of reads to count the bam file in "--bmthr", if not specified calls are made by allelic balance', required=False)
 
+    # Subparsers map
+    subparser_map = {
+                    'novoCaller': novoCaller_parser,
+                    'mpileupCounts': mpileupCounts_parser,
+                    'rckTobgi': rckTobgi_parser
+                    }
+
     # Checking arguments
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
+    elif len(sys.argv) == 2:
+        if sys.argv[1] in subparser_map:
+            subparser_map[sys.argv[1]].print_help(sys.stderr)
+            sys.exit(1)
+        else:
+            parser.print_help(sys.stderr)
+            sys.exit(1)
+        #end if
+    #end if
     args = parser.parse_args()
-
 #end def
+
+    # Call the right tools
 
 
 #################################################################
