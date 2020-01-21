@@ -16,7 +16,6 @@
 #
 #################################################################
 import sys, os
-import argparse
 import pysam
 import numpy as np
 # vcf_parser
@@ -812,9 +811,9 @@ def runner_novo(args):
     ''' read the input vcf file and calls the functions to run de novo variants analysis '''
 
     # Variables
-    is_allele_freq_thr = True if args['allelefreqthr'] else False
-    allele_freq_thr = float(args['allelefreqthr']) if is_allele_freq_thr else 1.
-    PP_thr = float(args['postprobthr']) if args['postprobthr'] else 0.
+    is_allele_freq_thr = True if args['afthr'] else False
+    allele_freq_thr = float(args['afthr']) if is_allele_freq_thr else 1.
+    PP_thr = float(args['ppthr']) if args['ppthr'] else 0.
     AF_unrel_thr = 0.01
     MQ_thr, BQ_thr = -100., -100.
     RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
@@ -962,8 +961,8 @@ def runner_blacklist(args):
     ''' read the input vcf file and calls the functions to blacklist variants '''
 
     # Variables
-    is_allele_freq_thr = True if args['allelefreqthr'] else False
-    allele_freq_thr = float(args['allelefreqthr']) if is_allele_freq_thr else 1.
+    is_allele_freq_thr = True if args['afthr'] else False
+    allele_freq_thr = float(args['afthr']) if is_allele_freq_thr else 1.
     thr_bams = int(args['thr_bams']) if args['thr_bams'] else 2
     thr_reads = int(args['thr_reads']) if args['thr_reads'] else 1
     AF_unrel_thr = 0.01

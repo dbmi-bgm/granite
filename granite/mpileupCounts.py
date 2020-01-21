@@ -17,7 +17,6 @@
 #
 #################################################################
 import sys, os
-import argparse
 import subprocess
 # mpileup_parser
 try: from .lib import mpileup_parser
