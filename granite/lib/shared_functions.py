@@ -33,8 +33,7 @@ def tabix_IT(filename, region):
 #   Functions to write
 #################################################################
 def bitarray_tofile(bit_array, filename):
-    ''' convert bitarray to bytes and write to filename,
-    positions are indexed by 1 in the bitarray '''
+    ''' convert bit_array (bitarray) to bytes and write to filename '''
     with open(filename, 'wb') as fo:
         bit_array.tofile(fo)
     #end with

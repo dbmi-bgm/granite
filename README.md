@@ -15,11 +15,10 @@ To run locally Python (3.x) is required together with the following libraries:
   - [*pytabix*](https://pypi.org/project/pytabix/ "pytabix documentation")
   - [*h5py*](https://www.h5py.org/ "h5py documentation")
 
-    pip install numpy
-    pip install pysam
-    pip install bitarray
+To install with pip:
+
+    pip install numpy pysam bitarray h5py
     pip install --user pytabix
-    pip install h5py
 
 Additional software needs to be available in the environment:
 
