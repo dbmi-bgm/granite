@@ -68,7 +68,7 @@ class Vcf(object):
             ''' initialize Variant object '''
             line_split = line_strip.split('\t')
             self.CHROM = line_split[0]
-            self.POS = line_split[1]
+            self.POS = int(line_split[1])
             self.ID = line_split[2]
             self.REF = line_split[3]
             self.ALT = line_split[4]
@@ -135,8 +135,26 @@ class Vcf(object):
         #end def
 
         def add_tag_info(self, tag_to_add, sep=';'):
-            ''' add tag field to INFO '''
+            ''' add tag field and value (tag_to_add) to INFO '''
+            # tag_to_add -> tag=<value>
             self.INFO += tag_to_add + sep
+        #end def
+
+        def get_tag_value(self, tag_to_get, sep=';'):
+            ''' get value from tag (tag_to_get) in INFO '''
+            for tag in self.INFO.split(sep):
+                if tag.startswith(tag_to_get):
+                    try:
+                        return tag.split('=')[1]
+                    except Exception: # tag field is in a wrong format
+                        raise ValueError('ERROR in variant INFO field, {0} tag is in the wrong format\n'
+                                    .format(tag_to_get))
+                    #end try
+                #end if
+            #end for
+
+            # tag_to_get not found
+            raise ValueError('ERROR in variant INFO field, {0} tag is missing\n'.format(tag_to_get))
         #end def
 
     #end class Variant
@@ -164,7 +182,7 @@ class Vcf(object):
         if definitions and columns and IDs_genotypes:
             return self.Header(definitions, columns, IDs_genotypes)
         else:
-            sys.exit('ERROR in vcf header structure, missing essential lines\n')
+            raise ValueError('ERROR in VCF header structure, missing essential lines\n')
         #end if
     #end def
 
@@ -178,7 +196,7 @@ class Vcf(object):
                         try:
                             yield self.Variant(line_strip, self.header.IDs_genotypes)
                         except Exception:
-                            sys.exit('ERROR in variant vcf structure, missing essential columns\n')
+                            raise ValueError('ERROR in variant VCF structure, missing essential columns\n')
                         #end try
                     #end if
                 #end if

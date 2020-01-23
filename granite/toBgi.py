@@ -34,14 +34,14 @@ except Exception: from lib.shared_functions import *
 #    FUNCTIONS
 #
 #################################################################
-def check_pos(rdthr, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv, del_fw, del_rv):
+def check_pos(rdthr, abthr, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv, del_fw, del_rv):
     ''' check if position can be called as snv, insertion or delition.
     absolute reads counts or allelic balance can be used alternatively '''
     is_snv, is_ins, is_del = False, False, False
     if not rdthr:
-        is_snv = __routine_allbal(ref_fw, ref_rv, alt_fw, alt_rv)
-        is_ins = __routine_allbal(ref_fw, ref_rv, ins_fw, ins_rv)
-        is_del = __routine_allbal(ref_fw, ref_rv, del_fw, del_rv)
+        is_snv = __routine_allbal(abthr, ref_fw, ref_rv, alt_fw, alt_rv)
+        is_ins = __routine_allbal(abthr, ref_fw, ref_rv, ins_fw, ins_rv)
+        is_del = __routine_allbal(abthr, ref_fw, ref_rv, del_fw, del_rv)
     else:
         is_snv = __routine_reads(rdthr, alt_fw, alt_rv)
         is_ins = __routine_reads(rdthr, ins_fw, ins_rv)
@@ -50,9 +50,15 @@ def check_pos(rdthr, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv, del_fw
     return is_snv, is_ins, is_del
 #end def
 
-def __routine_allbal(ref_fw, ref_rv, alt_fw, alt_rv):
+def __routine_allbal(abthr, ref_fw, ref_rv, alt_fw, alt_rv):
     ''' check if position can be called as alternate based on allelic balance '''
-    sys.exit('TODO, allele balance calling not yet implemented\n')
+    ref_tot = ref_fw + ref_rv
+    alt_tot = alt_fw + alt_rv
+    prc_alt = alt_tot / ref_tot * 100
+    if prc_alt >= abthr:
+        return True
+    #end if
+    return False
 #end def
 
 def __routine_reads(rdthr, alt_fw, alt_rv):
@@ -82,7 +88,7 @@ def bitarrays_toHDF5(filename):
     fo.close()
 #end def
 
-def run_region(files, bmthr, rdthr, region):
+def run_region(files, bmthr, rdthr, abthr, region):
     ''' '''
     snv, ins, dele = [], [], []
     # Opening buffers to region
@@ -104,7 +110,7 @@ def run_region(files, bmthr, rdthr, region):
         tmp_chr, tmp_pos = chr, pos
         # Check position and update bams counts
         is_snv, is_ins, is_del = \
-            check_pos(rdthr, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv, del_fw, del_rv)
+            check_pos(rdthr, abthr, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv, del_fw, del_rv)
         bams_snv += int(is_snv); bams_ins += int(is_ins); bams_del += int(is_del)
         # Check ramaining bams
         for i, buffer in enumerate(buffers[1:]):
@@ -119,7 +125,7 @@ def run_region(files, bmthr, rdthr, region):
             #end if
             # Check position and update bams counts
             is_snv, is_ins, is_del = \
-                check_pos(rdthr, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv, del_fw, del_rv)
+                check_pos(rdthr, abthr, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv, del_fw, del_rv)
             bams_snv += int(is_snv); bams_ins += int(is_ins); bams_del += int(is_del)
         #end for
         # Check thresholds
@@ -157,6 +163,7 @@ def main(args):
     # Variables
     bmthr = int(args['bmthr'])
     rdthr = int(args['rdthr']) if args['rdthr'] else 0
+    abthr = int(args['abthr']) if args['abthr'] else 15
     ncores = int(args['ncores']) if args['ncores'] else 1
     files = args['inputfiles']
 
@@ -196,7 +203,7 @@ def main(args):
     # Multiprocessing
     # -> TODO, sometimes when a process die the master hang in wait, to check
     with Pool(ncores) as pool:
-        results = pool.map(partial(run_region, files, bmthr, rdthr), regions)
+        results = pool.map(partial(run_region, files, bmthr, rdthr, abthr), regions)
     #end with
 
     # Writing bitarrays to files

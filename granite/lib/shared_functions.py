@@ -42,15 +42,15 @@ def tabix_IT(filename, region):
 #    Functions to load
 #################################################################
 def load_bgi(filename):
-    ''' read bgi filename into dict_bitarrays with the following
+    ''' read bgi filename into bitarrays_dict with the following
     structure {key: bitarray, ...} '''
     bgi = h5py.File(filename)
-    dict_bitarrays = {k: bitarray.bitarray() for k in bgi.keys()}
+    bitarrays_dict = {k: bitarray.bitarray() for k in bgi.keys()}
     for k in bgi.keys():
-        dict_bitarrays[k].frombytes(bgi[k][:].tostring())
+        bitarrays_dict[k].frombytes(bgi[k][:].tostring())
     #end for
     bgi.close()
-    return dict_bitarrays
+    return bitarrays_dict
 #end def
 
 #################################################################
@@ -62,7 +62,6 @@ def bitarray_tofile(bit_array, filename):
         bit_array.tofile(fo)
     #end with
 #end def
-
 
 #################################################################
 #    Functions to check
@@ -76,11 +75,11 @@ def check_region(region, chr_dict):
             chr, strt_end = region.split(':')
             strt, end = map(int, strt_end.split('-'))
             if strt >= end:
-                sys.exit('ERROR in parsing region: in region {0} starting index is larger than ending index\n'
+                raise ValueError('ERROR in parsing region, in region {0} starting index is larger than ending index\n'
                         .format(region))
             #end if
         except Exception:
-            sys.exit('ERROR in parsing region: region {0} format is not recognized\n'
+            raise ValueError('ERROR in parsing region, region {0} format is not recognized\n'
                     .format(region))
         #end try
     else:
@@ -88,7 +87,40 @@ def check_region(region, chr_dict):
     #end if
     # Check if chr is valid
     if not chr in chr_dict:
-        sys.exit('ERROR in parsing region: {0} is not a valid chromosome format\n'
+        raise ValueError('ERROR in parsing region, {0} is not a valid chromosome format\n'
                 .format(chr))
     #end if
+#end def
+
+def check_chrom(chrom):
+    ''' check if chromosome is canonical and in a valid format '''
+    chrom_repl = chrom.replace('chr', '')
+    if chrom_repl in {'M', 'MT', 'X', 'Y'}:
+        return True
+    else:
+        try:
+            int_chrom_repl = int(chrom_repl)
+        except Exception:
+            return False
+        #end try
+        if int_chrom_repl > 0 and int_chrom_repl < 23:
+            return True
+        #end if
+    #end if
+    return False
+#end de
+
+#################################################################
+#    Functions to get info
+#################################################################
+def variant_type(REF, ALT):
+    ''' return variant type as snv, ins, del '''
+    if len(ALT.split(',')) > 1:
+        return 'snv' # TO DECIDE WHAT TO DO, as snv for now
+    elif len(REF) > 1:
+        return 'del'
+    elif len(ALT) > 1:
+        return 'ins'
+    #end if
+    return 'snv'
 #end def
