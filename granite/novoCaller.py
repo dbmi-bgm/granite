@@ -802,10 +802,10 @@ def get_allele_freq(vnt_obj, is_required=False, tag_AF='novoAF='):
 #end def
 
 #################################################################
-# RUNNERS (main functions)
+#    RUNNERS (main functions)
 #################################################################
 #################################################################
-# runner_novo
+#    runner_novo
 #################################################################
 def runner_novo(args):
     ''' read the input vcf file and calls the functions to run de novo variants analysis '''
@@ -955,7 +955,7 @@ def runner_novo(args):
 #end def
 
 #################################################################
-# runner_blacklist
+#    runner_blacklist
 #################################################################
 def runner_blacklist(args):
     ''' read the input vcf file and calls the functions to blacklist variants '''
@@ -1022,7 +1022,7 @@ def runner_blacklist(args):
 
 #################################################################
 #
-# MAIN
+#    MAIN
 #
 #################################################################
 if __name__ == "__main__":

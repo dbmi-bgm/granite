@@ -2,16 +2,18 @@
 
 #################################################################
 #
-#   rckTobgi
-#       Michele Berselli
-#       Harvard Medical School
-#       berselli.michele@gmail.com
+#    toBgi
+#        Michele Berselli
+#        Harvard Medical School
+#        berselli.michele@gmail.com
 #
 #################################################################
 
 
 #################################################################
-#   Libraries
+#
+#    LIBRARIES
+#
 #################################################################
 import sys, os
 import ctypes
@@ -28,7 +30,9 @@ except Exception: from lib.shared_functions import *
 
 
 #################################################################
-#   Functions
+#
+#    FUNCTIONS
+#
 #################################################################
 def check_pos(rdthr, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv, del_fw, del_rv):
     ''' check if position can be called as snv, insertion or delition.
@@ -142,9 +146,8 @@ def run_region(files, bmthr, rdthr, region):
     #end for
 #end def
 
-
 #################################################################
-#   main (runner)
+#    runner
 #################################################################
 def main(args):
     ''' '''
@@ -202,7 +205,9 @@ def main(args):
 
 
 #################################################################
-# MAIN
+#
+#    MAIN
+#
 #################################################################
 if __name__ == "__main__":
 

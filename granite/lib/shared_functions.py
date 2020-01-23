@@ -11,26 +11,50 @@
 
 
 #################################################################
-#   Libraries
+#
+#    LIBRARIES
+#
 #################################################################
 import sys, os
 import bitarray
 import tabix
+import h5py
+import numpy
 
 
 #################################################################
-#   Functions to buffer
+#
+#    FUNCTIONS
+#
+#################################################################
+#################################################################
+#    Functions to buffer
 #################################################################
 def tabix_IT(filename, region):
-    ''' open buffer to bgzip indexed file using tabix,
-    return an iterator to file content (tsv rows as lists) '''
+    ''' open buffer to bgzip indexed filename using tabix,
+    return an iterator to file content (tsv rows as lists)
+    for region '''
     tb = tabix.open(filename)
     return tb.querys(region)
 #end def
 
+#################################################################
+#    Functions to load
+#################################################################
+def load_bgi(filename):
+    ''' read bgi filename into dict_bitarrays with the following
+    structure {key: bitarray, ...} '''
+    bgi = h5py.File(filename)
+    dict_bitarrays = {k: bitarray.bitarray() for k in bgi.keys()}
+    for k in bgi.keys():
+        dict_bitarrays[k].frombytes(bgi[k][:].tostring())
+    #end for
+    bgi.close()
+    return dict_bitarrays
+#end def
 
 #################################################################
-#   Functions to write
+#    Functions to write
 #################################################################
 def bitarray_tofile(bit_array, filename):
     ''' convert bit_array (bitarray) to bytes and write to filename '''
@@ -41,11 +65,11 @@ def bitarray_tofile(bit_array, filename):
 
 
 #################################################################
-#   Functions to check
+#    Functions to check
 #################################################################
 def check_region(region, chr_dict):
     ''' check if chromosme and region format are valid,
-    chr_dict follow the structure {'chrID': ..., ...} '''
+    chr_dict follow the structure {chrID: ..., ...} '''
     # Parse and check if region is valid
     if ':' in region:
         try:
