@@ -864,7 +864,7 @@ def main(args):
     for ID in IDs_trio:
         if ID not in vcf_obj.header.IDs_genotypes:
             sys.exit('ERROR in VCF file: missing information for some family member\n')
-        #end diff
+        #end if
     #end if
 
     # Reading variants

@@ -88,7 +88,7 @@ def bitarrays_toHDF5(filename):
     fo.close()
 #end def
 
-def run_region(files, bmthr, rdthr, abthr, region):
+def run_region(files, fithr, rdthr, abthr, region):
     ''' '''
     snv, ins, dele = [], [], []
     # Opening buffers to region
@@ -129,13 +129,13 @@ def run_region(files, bmthr, rdthr, abthr, region):
             bams_snv += int(is_snv); bams_ins += int(is_ins); bams_del += int(is_del)
         #end for
         # Check thresholds
-        if bams_snv >= bmthr:
+        if bams_snv >= fithr:
             snv.append(tmp_pos)
         #end if
-        if bams_ins >= bmthr:
+        if bams_ins >= fithr:
             ins.append(tmp_pos)
         #end if
-        if bams_del >= bmthr:
+        if bams_del >= fithr:
             dele.append(tmp_pos)
         #end if
     #end while
@@ -161,7 +161,7 @@ def main(args):
     global shared_arrays
 
     # Variables
-    bmthr = int(args['bmthr'])
+    fithr = int(args['fithr'])
     rdthr = int(args['rdthr']) if args['rdthr'] else 0
     abthr = int(args['abthr']) if args['abthr'] else 15
     ncores = int(args['ncores']) if args['ncores'] else 1
@@ -203,7 +203,7 @@ def main(args):
     # Multiprocessing
     # -> TODO, sometimes when a process die the master hang in wait, to check
     with Pool(ncores) as pool:
-        results = pool.map(partial(run_region, files, bmthr, rdthr, abthr), regions)
+        results = pool.map(partial(run_region, files, fithr, rdthr, abthr), regions)
     #end with
 
     # Writing bitarrays to files

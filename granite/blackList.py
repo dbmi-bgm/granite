@@ -84,7 +84,7 @@ def main(args):
         # Get allele frequency from aftag tag if requested
         if is_afthr:
             try:
-                af = float(vnt_obj.get_tag_value(aftag)))
+                af = float(vnt_obj.get_tag_value(aftag))
             except Exception:
                 sys.exit('ERROR in parsing VCF: TAG is missing or in the wrong format for variant:\n\t{0}\n'
                             .format(vnt_obj.to_string()))
@@ -97,7 +97,12 @@ def main(args):
 
         if is_bgifile:
             vtype = variant_type(vnt_obj.REF, vnt_obj.ALT)
-            is_blacklist = bgi_dict[vnt_obj.CHROM + '_' + vtype][vnt_obj.POS]
+            try:
+                key = vnt_obj.CHROM + '_' + vtype
+                is_blacklist = bgi_dict[key][vnt_obj.POS]
+            except:
+                sys.exit('ERROR in blacklist check: {0} missing in BGI file'.format(key))
+            #end try
             if is_blacklist:
                 continue
             #end if
