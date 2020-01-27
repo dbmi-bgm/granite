@@ -88,9 +88,9 @@ def main(args):
     command_line = ['samtools', 'mpileup', '-a']
     if is_chr: command_line += ['-r', args['region']]
     #end if
-    if args['MQthr']: command_line += ['--min-MQ', args['MQthr']]
+    if args['MQthr']: command_line += ['--min-MQ', str(args['MQthr'])]
     #end if
-    if args['BQthr']: command_line += ['--min-BQ', args['BQthr']]
+    if args['BQthr']: command_line += ['--min-BQ', str(args['BQthr'])]
     #end if
     command_line += [args['inputfile']]
 
