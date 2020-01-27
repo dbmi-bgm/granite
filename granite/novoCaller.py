@@ -293,7 +293,7 @@ def get_ADs_rck(rckfile, chrom, pos, deletion=False, insertion=False):
     region = chrom + ':' + str(pos) + '-' + str(pos)
     chr, rec_pos, cov, ref_fw, ref_rv, alt_fw, alt_rv, \
         ins_fw, ins_rv, del_fw, del_rv = next(rckfile.querys(region))
-    if pos != rec_pos:
+    if pos != int(rec_pos):
         raise IndexError('ERROR in RCK file indexing: position received is not consistent with position called\n')
     #end if
     if deletion:
@@ -885,7 +885,7 @@ def main(args):
         if af <= afthr: # hard filter on allele frequency
             analyzed += 1
             PP, ADfs, ADrs, ADfs_U, ADrs_U, _, _, _, AF_unrel = \
-                PP_calc(trio_files, unrelated_files, vnt_obj.CHROM, int(vnt_obj.POS), vnt_obj.REF, vnt_obj.ALT, af, MQthr, BQthr, is_bam)
+                PP_calc(trio_files, unrelated_files, vnt_obj.CHROM, vnt_obj.POS, vnt_obj.REF, vnt_obj.ALT, af, MQthr, BQthr, is_bam)
             if AF_unrel < afthr_unrelated and PP >= ppthr and not ALT_count_check_parents(ADfs, ADrs): # hard filter on AF_unrel, PP, total alternate reads count
                 variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj])
             #end if
