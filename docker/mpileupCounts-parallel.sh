@@ -13,7 +13,7 @@ directory=mpileups/
 mkdir -p $directory
 
 # creating basic command
-command="mpileup_parser.py -i $inputbam -r $reference --region {} -o ${directory}bam_{}.out"
+command="granite mpileupCounts -i $inputbam -r $reference --region {} -o ${directory}bam_{}.out"
 
 # running command
 cat $chromosomefile | parallel --halt 2 --jobs $nthreads $command || exit 1

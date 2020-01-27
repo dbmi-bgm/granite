@@ -33,9 +33,8 @@ RUN conda install -c bioconda -y pysam bitarray pytabix h5py numpy
 # novoCaller
 RUN git clone https://github.com/dbmi-bgm/novoCaller.git && \
     cd novoCaller && \
-    chmod +x mpileup_parser.py && \
-    chmod +x to_bitarray.py && \
-    chmod +x novoCaller_2.py && \
+    git checkout granite && \
+    python setup.py install && \
     cd ..
 
 # samtools
