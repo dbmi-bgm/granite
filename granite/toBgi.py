@@ -24,9 +24,7 @@ from multiprocessing import Process, Pool
 from multiprocessing.sharedctypes import Array
 from functools import partial
 # shared_functions as *
-try: from .lib.shared_functions import *
-except Exception: from lib.shared_functions import *
-#end try
+from granite.lib.shared_functions import *
 
 
 #################################################################

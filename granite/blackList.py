@@ -17,13 +17,9 @@
 #################################################################
 import sys, os
 # shared_functions as *
-try: from .lib.shared_functions import *
-except Exception: from lib.shared_functions import *
-#end try
+from granite.lib.shared_functions import *
 # vcf_parser
-try: from .lib import vcf_parser
-except Exception: from lib import vcf_parser
-#end try
+from granite.lib import vcf_parser
 
 
 #################################################################

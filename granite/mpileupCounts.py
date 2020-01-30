@@ -19,13 +19,10 @@
 import sys, os
 import subprocess
 # mpileup_parser
-try: from .lib import mpileup_parser
-except Exception: from lib import mpileup_parser
-#end try
+from granite.lib import mpileup_parser
 # fasta_parser
-try: from .lib import fasta_parser
-except Exception: from lib import fasta_parser
-#end try
+from granite.lib import fasta_parser
+
 
 
 #################################################################

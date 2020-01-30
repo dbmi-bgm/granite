@@ -20,10 +20,10 @@
 import sys, os
 import argparse
 # Tools
-from . import novoCaller
-from . import blackList
-from . import mpileupCounts
-from . import toBgi
+from granite import novoCaller
+from granite import blackList
+from granite import mpileupCounts
+from granite import toBgi
 
 
 #################################################################
