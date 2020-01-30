@@ -85,7 +85,7 @@ def main(args):
     #end if
 
     # Building command line
-    command_line = ['samtools', 'mpileup', '-a']
+    command_line = ['samtools', 'mpileup', '-aa']
     if is_chr: command_line += ['-r', args['region']]
     #end if
     if args['MQthr']: command_line += ['--min-MQ', str(args['MQthr'])]
