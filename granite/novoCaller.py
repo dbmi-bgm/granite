@@ -800,14 +800,14 @@ def get_allele_freq(vnt_obj, is_required=False, tag_AF='novoAF'):
             try:
                 allele_freq = float(tag.split('=')[1])
             except Exception: # tag_AF field is not a float as expected
-                sys.exit('ERROR in variant parsing: allele frequency TAG in INFO field is in the wrong format\n')
+                sys.exit('ERROR in variant parsing: allele frequency tag in INFO field is in the wrong format\n')
             #end try
             break
         #end if
     #end for
 
     if not is_tag_AF and is_required:
-        sys.exit('ERROR in variant parsing: allele frequency TAG in INFO field is missing\n')
+        sys.exit('ERROR in variant parsing: allele frequency tag in INFO field is missing\n')
     #end if
 
     return allele_freq

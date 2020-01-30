@@ -76,7 +76,7 @@ class mpileupParser(object):
                     #end if
                     i += 1 + len(re_match.group(1)) + indl_len
                 else:
-                    raise ValueError('ERROR in mpileup parser, Unknown char {0} in {1}\n'
+                    raise ValueError('ERROR in mpileup parser, unknown char {0} in {1}\n'
                               .format(reads[i], reads))
                 #end if
             #end while
@@ -104,7 +104,7 @@ class mpileupParser(object):
                             #end if
                         #end if
                     except Exception:
-                        raise ValueError('ERROR in mpileup parser, Unknown char {0} in reads\n'
+                        raise ValueError('ERROR in mpileup parser, unknown char {0} in reads\n'
                                   .format(read))
                     #end try
                 #end if
