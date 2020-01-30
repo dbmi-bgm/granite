@@ -101,7 +101,7 @@ def main(args):
                 key = vnt_obj.CHROM + '_' + vtype
                 is_blacklist = bgi_dict[key][vnt_obj.POS]
             except:
-                sys.exit('ERROR in blacklist check: {0} missing in BGI file'.format(key))
+                sys.exit('ERROR in blacklist check: {0}:{1} missing in BGI file'.format(key, vnt_obj.POS))
             #end try
             if is_blacklist:
                 continue

@@ -44,7 +44,7 @@ def tabix_IT(filename, region):
 def load_bgi(filename):
     ''' read bgi filename into bitarrays_dict with the following
     structure {key: bitarray, ...} '''
-    bgi = h5py.File(filename)
+    bgi = h5py.File(filename, 'r')
     bitarrays_dict = {k: bitarray.bitarray() for k in bgi.keys()}
     for k in bgi.keys():
         bitarrays_dict[k].frombytes(bgi[k][:].tostring())
