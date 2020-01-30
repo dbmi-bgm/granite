@@ -172,7 +172,7 @@ def buffering_bams(bams_infofile):
                     IDs.append(ID)
                     bamfiles.append(bamfile)
                 except Exception:
-                    sys.exit('ERROR in parsing bams info file: expected two columns\n')
+                    sys.exit('ERROR in parsing BAMs info file: expected two columns\n')
                 #end try
             #end if
         #end for
@@ -198,7 +198,7 @@ def buffering_rcks(rcks_infofile):
                     IDs.append(ID)
                     rckfiles.append(rckfile)
                 except Exception:
-                    sys.exit('ERROR in parsing rcks info file: expected two columns\n')
+                    sys.exit('ERROR in parsing RCKs info file: expected two columns\n')
                 #end try
             #end if
         #end for
@@ -222,7 +222,7 @@ def get_ADs_bam(bamfile, chrom, pos, REF, MQthr, BQthr, deletion=False, insertio
     # Getting pileup info
     try: SP = bamfile.pileup(chrom, position, position + 1)
     except Exception:
-        sys.exit('ERROR in accessing bam file: variant and bam file chromosome formats are not matching\n')
+        sys.exit('ERROR in accessing BAM file: variant and file chromosome formats are not matching\n')
     #end try
 
     # Getting AD info
@@ -853,7 +853,7 @@ def main(args):
 
     # Checking info files for trio is complete
     if len(trio_files) != 3:
-        sys.exit('ERROR in bams info file for trio: missing information for some family member\n')
+        sys.exit('ERROR in BAMs info file for trio: missing information for some family member\n')
     #end if
 
     # Checking information for trio is complete in the vcf
