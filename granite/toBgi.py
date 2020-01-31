@@ -37,9 +37,9 @@ def check_pos(rdthr, abthr, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv,
     absolute reads counts or allelic balance can be used alternatively '''
     is_snv, is_ins, is_del = False, False, False
     if not rdthr:
-        is_snv = __routine_allbal(abthr, ref_fw, ref_rv, alt_fw, alt_rv)
-        is_ins = __routine_allbal(abthr, ref_fw, ref_rv, ins_fw, ins_rv)
-        is_del = __routine_allbal(abthr, ref_fw, ref_rv, del_fw, del_rv)
+        is_snv = __routine_allbal(abthr, cov, alt_fw, alt_rv)
+        is_ins = __routine_allbal(abthr, cov, ins_fw, ins_rv)
+        is_del = __routine_allbal(abthr, cov, del_fw, del_rv)
     else:
         is_snv = __routine_reads(rdthr, alt_fw, alt_rv)
         is_ins = __routine_reads(rdthr, ins_fw, ins_rv)
@@ -48,11 +48,10 @@ def check_pos(rdthr, abthr, cov, ref_fw, ref_rv, alt_fw, alt_rv, ins_fw, ins_rv,
     return is_snv, is_ins, is_del
 #end def
 
-def __routine_allbal(abthr, ref_fw, ref_rv, alt_fw, alt_rv):
+def __routine_allbal(abthr, cov, alt_fw, alt_rv):
     ''' check if position can be called as alternate based on allelic balance '''
-    ref_tot = ref_fw + ref_rv
     alt_tot = alt_fw + alt_rv
-    prc_alt = alt_tot / ref_tot * 100
+    prc_alt = alt_tot / cov * 100
     if prc_alt >= abthr:
         return True
     #end if
