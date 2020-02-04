@@ -68,7 +68,7 @@ def main(args):
     # Reading variants and writing passed
     analyzed = 0
     for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
-        sys.stderr.write('Analyzing variant... ' + str(i + 1) + '\n')
+        sys.stderr.write('\rAnalyzing variant... ' + str(i + 1))
         sys.stderr.flush()
 
         # # Check if chromosome is canonical and in valid format
@@ -107,7 +107,7 @@ def main(args):
         # All good, pass and write variant
         fo.write(vnt_obj.to_string())
     #end for
-    sys.stderr.write('\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(i + 1) + ' total variants\n')
+    sys.stderr.write('\n\n...Wrote results for ' + str(analyzed) + ' analyzed variants out of ' + str(i + 1) + ' total variants\n')
     sys.stderr.flush()
 
     # Closing buffers

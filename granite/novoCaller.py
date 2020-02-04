@@ -866,7 +866,7 @@ def main(args):
     # Reading variants
     analyzed = 0
     for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
-        sys.stderr.write('Analyzing variant... ' + str(i + 1) + '\n')
+        sys.stderr.write('\rAnalyzing variant... ' + str(i + 1))
         sys.stderr.flush()
 
         # # Check if chromosome is canonical and in valid format
@@ -889,7 +889,7 @@ def main(args):
     #end if
 
     # Writing output
-    sys.stderr.write('\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(i + 1) + ' total variants\n')
+    sys.stderr.write('\n\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(i + 1) + ' total variants\n')
     sys.stderr.flush()
 
     # Header definitions
