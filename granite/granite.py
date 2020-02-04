@@ -84,7 +84,7 @@ def main():
     whiteList_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     whiteList_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
     whiteList_parser.add_argument('--spliceAI', help='threshold to whitelist variants by spliceAI value (>=) [0.8]', type=float, required=False)
-    whiteList_parser.add_argument('--CLINVAR', help='flag to whitelist variants with a CLINVAR Id', type=float, action='store_true', required=False)
+    whiteList_parser.add_argument('--CLINVAR', help='flag to whitelist variants with a CLINVAR Id', action='store_true', required=False)
 
     # Add toBgi to subparsers
     toBgi_parser = subparsers.add_parser('toBgi', description='utility that converts counts from bgzip and tabix indexed RCK format into BGI format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions',

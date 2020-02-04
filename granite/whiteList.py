@@ -138,7 +138,7 @@ def main(args):
 
         # Check SpliceAI
         if SpliceAI_thr:
-            if check_spliceAI(vnt_obj, SpliceAI_thr)):
+            if check_spliceAI(vnt_obj, SpliceAI_thr):
                 fo.write(vnt_obj.to_string())
                 continue
             #end if
