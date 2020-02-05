@@ -59,6 +59,31 @@ class Vcf(object):
             self.definitions = new_definitions
         #end def
 
+        def get_tag_field_idx(self, tag, field, sep='|'):
+            ''' get idx for value field in tag from definition
+            in INFO block in header '''
+            for line in self.definitions.split('\n')[:-1]:
+                if line.startswith('##INFO=<ID=' + tag + ','):
+                    try:
+                        format = line.split('Format:')[1]
+                        # Cleaning format
+                        format = format.replace('\'', '')
+                        format = format.replace('\"', '')
+                        format = format.replace('>', '')
+                    except Exception:
+                        raise ValueError('ERROR in VCF header structure, {0} tag definition has no format specification\n'
+                                            .format(tag))
+                    #end try
+                    for i, field_i in enumerate(format.split(sep)):
+                        if field == field_i.strip(): return i
+                        #end if
+                    #end for
+                #end if
+            #end for
+            raise ValueError('ERROR in VCF header structure, {0} tag definition is missing\n'
+                                .format(tag))
+        #end def
+
     #end class Header
 
     class Variant(object):
