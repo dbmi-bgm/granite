@@ -374,7 +374,7 @@ def test_run_toBgi_rdthr_2_all_miss_pos():
     # Variables
     args = {'inputfiles': ['tests/files/input_toBgi_1.rck.gz', 'tests/files/input_toBgi_2.rck.gz',
             'tests/files/input_toBgi_3.rck.gz', 'tests/files/input_toBgi_miss_pos.rck.gz'], 'outputfile': 'tests/files/main_test.out',
-            'fithr': '3', 'rdthr': '2', 'ncores': '2', 'abthr': None,
+            'fithr': '4', 'rdthr': '2', 'ncores': '2', 'abthr': None,
             'regionfile': 'tests/files/input_toBgi.regions',
             'chromfile': 'tests/files/input_toBgi.chrom.size'}
     # Run and Tests
