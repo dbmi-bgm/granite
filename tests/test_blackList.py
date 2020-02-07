@@ -111,4 +111,6 @@ def test_aftag_missing():
     with pytest.raises(SystemExit) as e:
         assert main_blackList(args)
     assert '27100779' in str(e.value)
+    # Clean
+    os.remove('tests/files/main_test.out')
 #end def
