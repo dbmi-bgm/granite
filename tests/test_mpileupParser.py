@@ -62,3 +62,35 @@ def test_run_mpileupParser():
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
+
+
+#################################################################
+#   Errors
+#################################################################
+def test_run_mpileupParser_wrong_chr():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_noREF_wrong_chr.mpileup', 'region': '1',
+            'reference': 'tests/files/ref_37_chr1_50Mb.fa', 'outputfile': 'tests/files/main_test.out',
+            'MQthr': None, 'BQthr': None}
+    ref_dict = {} # {chr: seq, ...}
+    # Fasta reader init
+    handler = fasta_parser.FastaHandler()
+    IT = handler.parse_generator(args['reference'])
+    # Output file
+    fi = open(args['inputfile'])
+    fo = open(args['outputfile'], 'w')
+    # Load reference
+    for header, seq in IT:
+        chr = header.split()[0]
+        ref_dict.setdefault(chr, seq)
+    #end for
+    # Run and Tests
+    with pytest.raises(SystemExit) as e:
+        assert run_mpileupParser(fi, fo, ref_dict)
+    assert str(e.value) == 'ERROR in reading position information: chr format (chr1) is not matching reference\n'
+    # Closing files
+    fo.close()
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def

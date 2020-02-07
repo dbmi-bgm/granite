@@ -364,3 +364,21 @@ def test_run_toBgi_rdthr_2_2_single():
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
+
+
+#################################################################
+#   Errors
+#################################################################
+def test_run_toBgi_rdthr_2_all_miss_pos():
+    ''' '''
+    # Variables
+    args = {'inputfiles': ['tests/files/input_toBgi_1.rck.gz', 'tests/files/input_toBgi_2.rck.gz',
+            'tests/files/input_toBgi_3.rck.gz', 'tests/files/input_toBgi_miss_pos.rck.gz'], 'outputfile': 'tests/files/main_test.out',
+            'fithr': '3', 'rdthr': '2', 'ncores': '2', 'abthr': None,
+            'regionfile': 'tests/files/input_toBgi.regions',
+            'chromfile': 'tests/files/input_toBgi.chrom.size'}
+    # Run and Tests
+    with pytest.raises(Exception) as e:
+        assert main_toBgi(args)
+    assert str(e.value) == 'ERROR in file: position 13:11006 in file tests/files/input_toBgi_miss_pos.rck.gz is not consistent with other files\n'
+#end def
