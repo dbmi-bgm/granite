@@ -962,10 +962,10 @@ def main(args):
 
     # Closing files buffers
     fo.close()
-    for buffer in unrelated_bamfiles:
+    for buffer in unrelated_files:
         buffer.close()
     #end for
-    for buffer in trio_bamfiles:
+    for buffer in trio_files:
         buffer.close()
     #end for
 #end def
