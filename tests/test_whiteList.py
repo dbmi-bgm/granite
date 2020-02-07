@@ -118,7 +118,7 @@ def test_run_SpliceAI_0081_CLINVAR():
 def test_run_whiteList_VEP():
     ''' '''
     # Variables
-    args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
+    args = {'inputfile': 'tests/files/input_whiteList_VEP.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None}
     # Run
     main_whiteList(args)
@@ -131,7 +131,7 @@ def test_run_whiteList_VEP():
 def test_run_whiteList_VEP_splice_region_variant():
     ''' '''
     # Variables
-    args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
+    args = {'inputfile': 'tests/files/input_whiteList_VEP.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': ['splice_region_variant']}
     # Run
     main_whiteList(args)
@@ -144,7 +144,7 @@ def test_run_whiteList_VEP_splice_region_variant():
 def test_run_whiteList_VEP_non_coding_transcript_variant():
     ''' '''
     # Variables
-    args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
+    args = {'inputfile': 'tests/files/input_whiteList_VEP.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': ['non_coding_transcript_variant']}
     # Run
     main_whiteList(args)
@@ -157,7 +157,7 @@ def test_run_whiteList_VEP_non_coding_transcript_variant():
 def test_run_whiteList_VEP_rescue():
     ''' '''
     # Variables
-    args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
+    args = {'inputfile': 'tests/files/input_whiteList_VEP.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': ['splice_region_variant', 'non_coding_transcript_variant']}
     # Run
     main_whiteList(args)
@@ -170,7 +170,7 @@ def test_run_whiteList_VEP_rescue():
 def test_run_whiteList_VEP_CLINVAR():
     ''' '''
     # Variables
-    args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
+    args = {'inputfile': 'tests/files/input_whiteList_VEP.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': None, 'CLINVAR': True, 'VEP': True, 'VEPrescue': None}
     # Run
     main_whiteList(args)

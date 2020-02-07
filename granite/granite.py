@@ -63,7 +63,7 @@ def main():
     mpileupCounts_parser.add_argument('-i', '--inputfile', help='input file in BAM format', type=str, required=True)
     mpileupCounts_parser.add_argument('-o', '--outputfile', help='output file to write results as RCK format (TSV), use .rck as extension', type=str, required=True)
     mpileupCounts_parser.add_argument('-r', '--reference', help='reference file in FASTA format', type=str, required=True)
-    mpileupCounts_parser.add_argument('--region', help='region to be analyzed [e.g chr1:1-10000000, 1:1-10000000, chr1, 1], chromosome name must match the reference', type=str, required=False)
+    mpileupCounts_parser.add_argument('--region', help='region to be analyzed [e.g. chr1:1-10000000, 1:1-10000000, chr1, 1], chromosome name must match the reference', type=str, required=False)
     mpileupCounts_parser.add_argument('--MQthr', help='minimum mapping quality for an alignment to be used (>=) [0]', type=int, required=False)
     mpileupCounts_parser.add_argument('--BQthr', help='minimum base quality for a base to be considered (>=) [13]', type=int, required=False)
 
@@ -85,16 +85,16 @@ def main():
     whiteList_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
     whiteList_parser.add_argument('--SpliceAI', help='threshold to whitelist variants by spliceAI value (>=)', type=float, required=False)
     whiteList_parser.add_argument('--CLINVAR', help='flag to whitelist variants with a CLINVAR Id', action='store_true', required=False)
-    whiteList_parser.add_argument('--VEP', help='use VEP annotation to whitelist variants not flagged as "intron_variant" or "intergenic_variant"', action='store_true', required=False)
-    whiteList_parser.add_argument('--VEPrescue', help='additional terms to overrule "intron_variant" and "intergenic_variant" flag to rescue and whitelist variants', nargs='+', required=False)
+    whiteList_parser.add_argument('--VEP', help='use VEP annotations to whitelist exonic and functional relevant variants (removed by default variants flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant" or "regulatory_region_variant")', action='store_true', required=False)
+    whiteList_parser.add_argument('--VEPrescue', help='additional terms to overrule removed flags and/or to rescue and whitelist variants when in combination (e.g. intro_variant~splice_region_variant)', nargs='+', required=False)
 
     # Add toBgi to subparsers
     toBgi_parser = subparsers.add_parser('toBgi', description='utility that converts counts from bgzip and tabix indexed RCK format into BGI format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions',
                                                 help='utility that converts counts from bgzip and tabix indexed RCK format into BGI format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions')
 
-    toBgi_parser.add_argument('-i', '--inputfiles', help='list of files to be used for the single/joint calling [e.g -i file_1 file_2 ...], expected bgzip and tabix indexed RCK files', nargs='+')
+    toBgi_parser.add_argument('-i', '--inputfiles', help='list of files to be used for the single/joint calling [e.g. -i file_1 file_2 ...], expected bgzip and tabix indexed RCK files', nargs='+')
     toBgi_parser.add_argument('-o', '--outputfile', help='output file to write results as BGI format (binary hdf5), use .bgi as extension', type=str, required=True)
-    toBgi_parser.add_argument('-r', '--regionfile', help='file containing regions to be used [e.g chr1:1-10000000, 1:1-10000000, chr1, 1] listed as a column, chromosomes names must match the reference', type=str, required=True)
+    toBgi_parser.add_argument('-r', '--regionfile', help='file containing regions to be used [e.g. chr1:1-10000000, 1:1-10000000, chr1, 1] listed as a column, chromosomes names must match the reference', type=str, required=True)
     toBgi_parser.add_argument('-f', '--chromfile', help='chrom.sizes file containing chromosomes size information', type=str, required=True)
     toBgi_parser.add_argument('--ncores', help='number of cores to be used if multiple regions are specified [1]', type=int, required=False)
     toBgi_parser.add_argument('--fithr', help='minimum number of files with at least "--rdthr" for the alternate allele or having the variant, "calls" by allelic balance, to jointly "call" position (>=)', type=int, required=True)

@@ -77,7 +77,9 @@ def check_CLINVAR(vnt_obj):
 def main(args):
     ''' '''
     # Variables
-    VEPremove = {'intron_variant', 'intergenic_variant'}
+    VEPremove = {'intron_variant', 'intergenic_variant',
+                 'downstream_gene_variant', 'upstream_gene_variant',
+                 'regulatory_region_variant'}
     VEPrescue, consequence_idx = {}, 0
     is_VEP = True if args['VEP'] else False
     is_CLINVAR = True if args['CLINVAR'] else False
