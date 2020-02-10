@@ -28,6 +28,7 @@ from granite.lib import vcf_parser
 import warnings
 warnings.filterwarnings("ignore")
 
+
 #################################################################
 #
 #    FUNCTIONS
@@ -175,7 +176,7 @@ def buffering_bams(bams_infofile):
                     IDs.append(ID)
                     bamfiles.append(bamfile)
                 except Exception:
-                    sys.exit('\nERROR in parsing BAMs info file: expected two columns\n')
+                    sys.exit('\nERROR in parsing BAMs info file\n')
                 #end try
             #end if
         #end for
@@ -201,7 +202,7 @@ def buffering_rcks(rcks_infofile):
                     IDs.append(ID)
                     rckfiles.append(rckfile)
                 except Exception:
-                    sys.exit('\nERROR in parsing RCKs info file: expected two columns\n')
+                    sys.exit('\nERROR in parsing RCKs info file\n')
                 #end try
             #end if
         #end for
@@ -967,12 +968,14 @@ def main(args):
 
     # Closing files buffers
     fo.close()
-    for buffer in unrelated_files:
-        buffer.close()
-    #end for
-    for buffer in trio_files:
-        buffer.close()
-    #end for
+    if is_bam:
+        for buffer in unrelated_files:
+            buffer.close()
+        #end for
+        for buffer in trio_files:
+            buffer.close()
+        #end for
+    #end if
 #end def
 
 

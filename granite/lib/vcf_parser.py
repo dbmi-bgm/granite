@@ -162,7 +162,11 @@ class Vcf(object):
         def add_tag_info(self, tag_to_add, sep=';'):
             ''' add tag field and value (tag_to_add) to INFO '''
             # tag_to_add -> tag=<value>
-            self.INFO += tag_to_add + sep
+            if self.INFO.endswith(sep):
+                self.INFO += tag_to_add + sep
+            else:
+                self.INFO += sep + tag_to_add + sep
+            #end if
         #end def
 
         def get_tag_value(self, tag_to_get, sep=';'):
