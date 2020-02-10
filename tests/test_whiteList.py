@@ -192,7 +192,7 @@ def test_args_VEP_conflict():
     # Run and Tests
     with pytest.raises(SystemExit) as e:
         assert main_whiteList(args)
-    assert str(e.value) == 'ERROR in parsing arguments: specify the flag "--VEP" to filter by VEP annotations to apply rescue terms\n'
+    assert str(e.value) == '\nERROR in parsing arguments: specify the flag "--VEP" to filter by VEP annotations to apply rescue terms\n'
 #end def
 
 def test_missing_VEP():

@@ -43,11 +43,11 @@ def main(args):
         afthr = float(args['afthr'])
         if args['aftag']: aftag = args['aftag']
         else:
-            sys.exit('ERROR in parsing arguments: to filter by population allele frequency please specify the TAG to use\n')
+            sys.exit('\nERROR in parsing arguments: to filter by population allele frequency please specify the TAG to use\n')
         #end if
     else:
         if not is_bgifile:
-            sys.exit('ERROR in parsing arguments: to blacklist specify a BGI file and/or a threshold for population allele frequency and the TAG to use\n')
+            sys.exit('\nERROR in parsing arguments: to blacklist specify a BGI file and/or a threshold for population allele frequency and the TAG to use\n')
         #end if
     #end if
 
@@ -82,7 +82,7 @@ def main(args):
             try:
                 af = float(vnt_obj.get_tag_value(aftag))
             except Exception:
-                sys.exit('ERROR in parsing VCF: TAG is missing or in the wrong format for variant:\n\t{0}\n'
+                sys.exit('\nERROR in parsing VCF: TAG is missing or in the wrong format for variant:\n\t{0}\n'
                             .format(vnt_obj.to_string()))
             #end try
             # Check allele frequency
@@ -97,7 +97,7 @@ def main(args):
                 key = vnt_obj.CHROM + '_' + vtype
                 is_blacklist = bgi_dict[key][vnt_obj.POS]
             except:
-                sys.exit('ERROR in blacklist check: {0}:{1} missing in BGI file'.format(key, vnt_obj.POS))
+                sys.exit('\nERROR in blacklist check: {0}:{1} missing in BGI file'.format(key, vnt_obj.POS))
             #end try
             if is_blacklist:
                 continue

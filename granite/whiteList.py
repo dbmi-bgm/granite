@@ -31,7 +31,7 @@ def check_VEP(vnt_obj, idx, VEPremove, VEPrescue):
     ''' '''
     try: val_get = vnt_obj.get_tag_value('VEP')
     except Exception:
-        sys.exit('ERROR in whitelist check: VEP tag missing for variant:\n\t{0}\n'
+        sys.exit('\nERROR in whitelist check: VEP tag missing for variant:\n\t{0}\n'
                     .format(vnt_obj.to_string()))
     #end try
     trscrpt_list = val_get.split(',')
@@ -101,7 +101,7 @@ def main(args):
         if args['VEPrescue']: VEPrescue = {term for term in args['VEPrescue']}
         #end if
     elif args['VEPrescue']:
-        sys.exit('ERROR in parsing arguments: specify the flag "--VEP" to filter by VEP annotations to apply rescue terms\n')
+        sys.exit('\nERROR in parsing arguments: specify the flag "--VEP" to filter by VEP annotations to apply rescue terms\n')
     #end if
 
     # Reading variants and writing passed

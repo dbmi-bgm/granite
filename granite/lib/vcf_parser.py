@@ -71,7 +71,7 @@ class Vcf(object):
                         format = format.replace('\"', '')
                         format = format.replace('>', '')
                     except Exception:
-                        raise ValueError('ERROR in VCF header structure, {0} tag definition has no format specification\n'
+                        raise ValueError('\nERROR in VCF header structure, {0} tag definition has no format specification\n'
                                             .format(tag))
                     #end try
                     for i, field_i in enumerate(format.split(sep)):
@@ -80,7 +80,7 @@ class Vcf(object):
                     #end for
                 #end if
             #end for
-            raise ValueError('ERROR in VCF header structure, {0} tag definition is missing\n'
+            raise ValueError('\nERROR in VCF header structure, {0} tag definition is missing\n'
                                 .format(tag))
         #end def
 
@@ -172,14 +172,14 @@ class Vcf(object):
                     try:
                         return tag.split('=')[1]
                     except Exception: # tag field is in a wrong format
-                        raise ValueError('ERROR in variant INFO field, {0} tag is in the wrong format\n'
+                        raise ValueError('\nERROR in variant INFO field, {0} tag is in the wrong format\n'
                                     .format(tag_to_get))
                     #end try
                 #end if
             #end for
 
             # tag_to_get not found
-            raise ValueError('ERROR in variant INFO field, {0} tag is missing\n'.format(tag_to_get))
+            raise ValueError('\nERROR in variant INFO field, {0} tag is missing\n'.format(tag_to_get))
         #end def
 
     #end class Variant
@@ -207,7 +207,7 @@ class Vcf(object):
         if definitions and columns and IDs_genotypes:
             return self.Header(definitions, columns, IDs_genotypes)
         else:
-            raise ValueError('ERROR in VCF header structure, missing essential lines\n')
+            raise ValueError('\nERROR in VCF header structure, missing essential lines\n')
         #end if
     #end def
 
@@ -221,7 +221,7 @@ class Vcf(object):
                         try:
                             yield self.Variant(line_strip, self.header.IDs_genotypes)
                         except Exception:
-                            raise ValueError('ERROR in variant VCF structure, missing essential columns\n')
+                            raise ValueError('\nERROR in variant VCF structure, missing essential columns\n')
                         #end try
                     #end if
                 #end if

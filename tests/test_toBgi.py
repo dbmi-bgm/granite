@@ -380,5 +380,5 @@ def test_run_toBgi_rdthr_2_all_miss_pos():
     # Run and Tests
     with pytest.raises(Exception) as e:
         assert main_toBgi(args)
-    assert str(e.value) == 'ERROR in file: position 13:11006 in file tests/files/input_toBgi_miss_pos.rck.gz is not consistent with other files\n'
+    assert str(e.value) == '\nERROR in file: position 13:11006 in file tests/files/input_toBgi_miss_pos.rck.gz is not consistent with other files\n'
 #end def

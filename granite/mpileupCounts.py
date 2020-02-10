@@ -37,7 +37,7 @@ def run_mpileupParser(fi, fo, ref_dict):
     for mC in mP.generator(fi):
         try: mC.get_AD_noreference(ref_dict[mC.chr][mC.pos-1])
         except Exception:
-            sys.exit('ERROR in reading position information: chr format ({0}) is not matching reference\n'
+            sys.exit('\nERROR in reading position information: chr format ({0}) is not matching reference\n'
                       .format(mC.chr))
         #end try
         if first:
@@ -67,16 +67,16 @@ def main(args):
                 chr, region = args['region'].split(':')
                 strt, end = map(int, region.split('-'))
                 if strt >= end:
-                    sys.exit('ERROR in parsing region argument: start index is larger than end index\n')
+                    sys.exit('\nERROR in parsing region argument: start index is larger than end index\n')
                 #end if
             except Exception:
-                sys.exit('ERROR in parsing region argument: the format is not recognized\n')
+                sys.exit('\nERROR in parsing region argument: the format is not recognized\n')
             #end try
         else:
             try:
                 chr = args['region']
             except Exception:
-                sys.exit('ERROR in parsing region argument: the format is not recognized\n')
+                sys.exit('\nERROR in parsing region argument: the format is not recognized\n')
             #end try
         #end if
     #end if

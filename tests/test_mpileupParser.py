@@ -88,7 +88,7 @@ def test_run_mpileupParser_wrong_chr():
     # Run and Tests
     with pytest.raises(SystemExit) as e:
         assert run_mpileupParser(fi, fo, ref_dict)
-    assert str(e.value) == 'ERROR in reading position information: chr format (chr1) is not matching reference\n'
+    assert str(e.value) == '\nERROR in reading position information: chr format (chr1) is not matching reference\n'
     # Closing files
     fo.close()
     # Clean

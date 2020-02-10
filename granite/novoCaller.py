@@ -24,6 +24,9 @@ from granite.lib.shared_functions import *
 # vcf_parser
 from granite.lib import vcf_parser
 
+# suppress warnings
+import warnings
+warnings.filterwarnings("ignore")
 
 #################################################################
 #
@@ -121,7 +124,7 @@ def table_gen(alt_count, mut_rate):
                     II = I1 * combos + I2
 
                     if II <= II_prev:
-                        sys.exit("error in II calc!!!\n")
+                        sys.exit("\nERROR in II calc!!!\n")
                     #end if
 
                     row = row_gen(GT1, GT2, alt_count, mut_rate)
@@ -172,7 +175,7 @@ def buffering_bams(bams_infofile):
                     IDs.append(ID)
                     bamfiles.append(bamfile)
                 except Exception:
-                    sys.exit('ERROR in parsing BAMs info file: expected two columns\n')
+                    sys.exit('\nERROR in parsing BAMs info file: expected two columns\n')
                 #end try
             #end if
         #end for
@@ -198,7 +201,7 @@ def buffering_rcks(rcks_infofile):
                     IDs.append(ID)
                     rckfiles.append(rckfile)
                 except Exception:
-                    sys.exit('ERROR in parsing RCKs info file: expected two columns\n')
+                    sys.exit('\nERROR in parsing RCKs info file: expected two columns\n')
                 #end try
             #end if
         #end for
@@ -222,7 +225,7 @@ def get_ADs_bam(bamfile, chrom, pos, REF, MQthr, BQthr, deletion=False, insertio
     # Getting pileup info
     try: SP = bamfile.pileup(chrom, position, position + 1)
     except Exception:
-        sys.exit('ERROR in accessing BAM file: variant and file chromosome formats are not matching\n')
+        sys.exit('\nERROR in accessing BAM file: variant and file chromosome formats are not matching\n')
     #end try
 
     # Getting AD info
@@ -290,7 +293,7 @@ def get_ADs_rck(rckfile, chrom, pos, deletion=False, insertion=False):
     chr, rec_pos, cov, ref_fw, ref_rv, alt_fw, alt_rv, \
         ins_fw, ins_rv, del_fw, del_rv = next(rckfile.querys(region))
     if pos != int(rec_pos):
-        raise IndexError('ERROR in RCK file indexing: position received is not consistent with position called\n')
+        raise IndexError('\nERROR in RCK file indexing: position received is not consistent with position called\n')
     #end if
     if deletion:
         ADf = np.array([int(ref_fw), int(del_fw)])
@@ -378,7 +381,7 @@ def M1_L_calc(AD, rho):
     ''' '''
     ALT_count = 1
     if AD.size - 1 != ALT_count:
-        sys.exit("ERROR in M1_L_calc\n")
+        sys.exit("\nERROR in M1_L_calc\n")
     #end if
     M1_L = []
     for k in range(ALT_count + 1):
@@ -396,7 +399,7 @@ def M2_L_calc_aux(M1_L_k, GT_likelihood_wrt_allele_L):
     ''' '''
     ALT_count = 1
     if M1_L_k.size - 1 != ALT_count:
-        sys.exit("ERROR in M2_L_calc_aux\n")
+        sys.exit("\nERROR in M2_L_calc_aux\n")
     #end if
     combos = (ALT_count + 1) * (ALT_count + 2) // 2
     temp_table = GT_likelihood_wrt_allele_L + np.tile(M1_L_k.reshape([1, ALT_count + 1]),[combos, 1])
@@ -418,7 +421,7 @@ def M2_L_calc(M1_L, GT_likelihood_wrt_allele_L):
     ''' '''
     ALT_count = 1
     if (M1_L[0]).size - 1 != ALT_count:
-        sys.exit("ERROR in M2_L_calc\n")
+        sys.exit("\nERROR in M2_L_calc\n")
     #end if
     M2_L = []
     for k in range(ALT_count + 1):
@@ -438,7 +441,7 @@ def GT_marg_L_calc(M2_L_f, M2_L_r, ADf, ADr, prior_L):
     GT_marg_L = prior_L
     ALT_count = 1
     if ADf.size - 1 != ALT_count or ADr.size - 1 != ALT_count:
-        sys.exit("ERROR in GT_marg_L_calc\n")
+        sys.exit("\nERROR in GT_marg_L_calc\n")
     #end if
     for k in range(ALT_count + 1):
         M2_L_k = M2_L_f[k]
@@ -469,7 +472,7 @@ def M3_L_calc(GT_marg_L, M2_L):
     ''' '''
     ALT_count = 1
     if len(M2_L) - 1 != ALT_count:
-        sys.exit("ERROR in M3_L_calc\n")
+        sys.exit("\nERROR in M3_L_calc\n")
     #end if
     M3_L = []
     for k in range(ALT_count + 1):
@@ -488,7 +491,7 @@ def M4_L_calc_aux(M3_L_k, GT_likelihood_wrt_allele_L):
     ''' '''
     ALT_count = 1
     if (GT_likelihood_wrt_allele_L.shape)[1] - 1 != 1:
-        sys.exit("ERROR in M4_L_calc_aux\n")
+        sys.exit("\nERROR in M4_L_calc_aux\n")
     #end if
     combos = (ALT_count + 1) * (ALT_count + 2) // 2
     temp_table = GT_likelihood_wrt_allele_L + np.tile(M3_L_k.reshape([combos, 1]), [1, ALT_count + 1])
@@ -510,7 +513,7 @@ def M4_L_calc(M3_L, GT_likelihood_wrt_allele_L):
     ''' '''
     ALT_count = 1
     if (GT_likelihood_wrt_allele_L.shape)[1] - 1 != ALT_count:
-        sys.exit("ERROR in M4_L_calc\n")
+        sys.exit("\nERROR in M4_L_calc\n")
     #end if
     M4_L = []
     for k in range(ALT_count + 1):
@@ -529,7 +532,7 @@ def A_marg_L_calc(M1_L, M4_L):
     ''' '''
     ALT_count = 1
     if len(M1_L) - 1 != ALT_count:
-        sys.exit("ERROR in A_marg_L_calc\n")
+        sys.exit("\nERROR in A_marg_L_calc\n")
     #end if
     A_marg_L = []
     for k in range(ALT_count + 1):
@@ -548,7 +551,7 @@ def A_marg_L_calc(M1_L, M4_L):
 def T_term_calc_for_rho(A_marg_L, AD):
     ''' '''
     if len(A_marg_L) != AD.size:
-        sys.exit("ERROR in T_term_calc\n")
+        sys.exit("\nERROR in T_term_calc\n")
     #end if
     ALT_count = AD.size - 1
     T1_term = 0.
@@ -612,7 +615,7 @@ def EM_step(ADf_list, ADr_list, rho_f_old, rho_r_old, prior_L_old, GT_likelihood
     #end for
 
     if len(ADf_list) != len(ADr_list):
-        sys.exit("ERROR1 in EM_step\n")
+        sys.exit("\nERROR1 in EM_step\n")
     #end if
 
     for i in range(len(ADf_list)):
@@ -779,7 +782,7 @@ def PP_calc(trio_files, unrelated_files, chrom, pos, REF, ALT, allele_freq, MQth
 def ALT_count_check_parents(ADfs, ADrs, thr=3):
     ''' check if total alternate reads count in parents is over threshold '''
     if len(ADfs) != 3 or len(ADrs) != 3:
-        sys.exit("ERROR in retrieving stranded AD counts: missing information for trio\n")
+        sys.exit("\nERROR in retrieving stranded AD counts: missing information for trio\n")
     #end if
     alt_count = ADfs[0][1] + ADfs[1][1] + ADrs[0][1] + ADrs[1][1]
 
@@ -800,14 +803,14 @@ def get_allele_freq(vnt_obj, is_required=False, tag_AF='novoAF'):
             try:
                 allele_freq = float(tag.split('=')[1])
             except Exception: # tag_AF field is not a float as expected
-                sys.exit('ERROR in variant parsing: allele frequency tag in INFO field is in the wrong format\n')
+                sys.exit('\nERROR in variant parsing: allele frequency tag in INFO field is in the wrong format\n')
             #end try
             break
         #end if
     #end for
 
     if not is_tag_AF and is_required:
-        sys.exit('ERROR in variant parsing: allele frequency tag in INFO field is missing\n')
+        sys.exit('\nERROR in variant parsing: allele frequency tag in INFO field is missing\n')
     #end if
 
     return allele_freq
@@ -853,13 +856,13 @@ def main(args):
 
     # Checking info files for trio is complete
     if len(trio_files) != 3:
-        sys.exit('ERROR in BAMs info file for trio: missing information for some family member\n')
+        sys.exit('\nERROR in BAMs info file for trio: missing information for some family member\n')
     #end if
 
     # Checking information for trio is complete in the vcf
     for ID in IDs_trio:
         if ID not in vcf_obj.header.IDs_genotypes:
-            sys.exit('ERROR in VCF file: missing information for some family member\n')
+            sys.exit('\nERROR in VCF file: missing information for some family member\n')
         #end if
     #end if
 

@@ -117,7 +117,7 @@ def run_region(files, fithr, rdthr, abthr, region):
                 ins_fw, ins_rv, del_fw, del_rv = map(int, line_split[1:])
             # Check consistency among the files
             if tmp_chr != chr or tmp_pos != pos:
-                raise IndexError('ERROR in file: position {0}:{1} in file {2} is not consistent with other files\n'
+                raise IndexError('\nERROR in file: position {0}:{1} in file {2} is not consistent with other files\n'
                         .format(chr, pos, files[i+1]))
             #end if
             # Check position and update bams counts

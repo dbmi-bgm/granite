@@ -75,11 +75,11 @@ def check_region(region, chr_dict):
             chr, strt_end = region.split(':')
             strt, end = map(int, strt_end.split('-'))
             if strt >= end:
-                raise ValueError('ERROR in parsing region, in region {0} starting index is larger than ending index\n'
+                raise ValueError('\nERROR in parsing region, in region {0} starting index is larger than ending index\n'
                         .format(region))
             #end if
         except Exception:
-            raise ValueError('ERROR in parsing region, region {0} format is not recognized\n'
+            raise ValueError('\nERROR in parsing region, region {0} format is not recognized\n'
                     .format(region))
         #end try
     else:
@@ -87,7 +87,7 @@ def check_region(region, chr_dict):
     #end if
     # Check if chr is valid
     if not chr in chr_dict:
-        raise ValueError('ERROR in parsing region, {0} is not a valid chromosome format\n'
+        raise ValueError('\nERROR in parsing region, {0} is not a valid chromosome format\n'
                 .format(chr))
     #end if
 #end def

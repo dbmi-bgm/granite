@@ -88,7 +88,7 @@ def test_args_afthr_bgifile_missing():
     # Run and Tests
     with pytest.raises(SystemExit) as e:
         assert main_blackList(args)
-    assert str(e.value) == 'ERROR in parsing arguments: to blacklist specify a BGI file and/or a threshold for population allele frequency and the TAG to use\n'
+    assert str(e.value) == '\nERROR in parsing arguments: to blacklist specify a BGI file and/or a threshold for population allele frequency and the TAG to use\n'
 #end def
 
 def test_args_afthr_conflict():
@@ -99,7 +99,7 @@ def test_args_afthr_conflict():
     # Run and Tests
     with pytest.raises(SystemExit) as e:
         assert main_blackList(args)
-    assert str(e.value) == 'ERROR in parsing arguments: to filter by population allele frequency please specify the TAG to use\n'
+    assert str(e.value) == '\nERROR in parsing arguments: to filter by population allele frequency please specify the TAG to use\n'
 #end def
 
 def test_aftag_missing():
