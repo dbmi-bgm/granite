@@ -38,7 +38,8 @@ def check_VEP(vnt_obj, idx, VEPremove, VEPrescue):
     is_whitelist = len(trscrpt_list)
     # Get all terms
     for trscrpt in trscrpt_list:
-        trscrpt_terms = set(trscrpt.split('|')[idx].split('~'))
+        # & is standard VEP format, but cgap use ~
+        trscrpt_terms = set(trscrpt.split('|')[idx].replace('~', '&').split('&'))
         if trscrpt_terms.intersection(VEPrescue):
             break
         elif trscrpt_terms.intersection(VEPremove):
@@ -100,8 +101,10 @@ def main(args):
         consequence_idx = vcf_obj.header.get_tag_field_idx('VEP', 'Consequence')
         if args['VEPrescue']: VEPrescue = {term for term in args['VEPrescue']}
         #end if
-    elif args['VEPrescue']:
-        sys.exit('\nERROR in parsing arguments: specify the flag "--VEP" to filter by VEP annotations to apply rescue terms\n')
+        if args['VEPremove']: VEPremove.update({term for term in args['VEPremove']})
+        #end if
+    elif args['VEPrescue'] or args['VEPremove']:
+        sys.exit('\nERROR in parsing arguments: specify the flag "--VEP" to filter by VEP annotations to apply rescue terms or remove additional terms\n')
     #end if
 
     # Reading variants and writing passed
