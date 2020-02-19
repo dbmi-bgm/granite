@@ -834,7 +834,7 @@ def main(args):
     BQthr = int(args['BQthr']) if args['BQthr'] else 0
     AF_tag = args['aftag'] if args['aftag'] else 'novoAF'
     RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
-    novoCaller_tag = '##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller 2. Format:\'Post_prob|AF_unrel\'">'
+    novoCaller_tag = '##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller. Format:\'Post_prob|AF_unrel\'">'
 
     # Buffers
     fo = open(args['outputfile'], 'w')
