@@ -33,9 +33,8 @@ RUN conda install -c bioconda -y pysam bitarray pytabix h5py numpy
 # novoCaller
 RUN git clone https://github.com/dbmi-bgm/novoCaller.git && \
     cd novoCaller && \
-    chmod +x mpileup_parser.py && \
-    chmod +x to_bitarray.py && \
-    chmod +x novoCaller_2.py && \
+    git checkout granite && \
+    python setup.py install && \
     cd ..
 
 # samtools
@@ -48,8 +47,8 @@ RUN wget https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9
     ln -s samtools-1.9 samtools
 
 # mpileup_parser parallel script
-COPY mpileup_parser-parallel.sh .
-RUN chmod +x mpileup_parser-parallel.sh
+COPY mpileupCounts-parallel.sh .
+RUN chmod +x mpileupCounts-parallel.sh
 
 # paths
 ENV PATH=/usr/local/bin/samtools/:$PATH
