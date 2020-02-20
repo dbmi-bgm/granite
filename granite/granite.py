@@ -88,6 +88,7 @@ def main():
     whiteList_parser.add_argument('--VEP', help='use VEP annotations to whitelist exonic and functional relevant variants (removed by default variants flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant" or "regulatory_region_variant")', action='store_true', required=False)
     whiteList_parser.add_argument('--VEPrescue', help='additional terms to overrule removed flags and/or to rescue and whitelist variants when in combination in the format annot&annot (e.g. intron_variant&splice_region_variant)', nargs='+', required=False)
     whiteList_parser.add_argument('--VEPremove', help='additional terms to be removed', nargs='+', required=False)
+    whiteList_parser.add_argument('--BEDfile', help='BED format file with positions to whitelist', type=str, required=False)
 
     # Add toBgi to subparsers
     toBgi_parser = subparsers.add_parser('toBgi', description='utility that converts counts from bgzip and tabix indexed RCK format into BGI format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions',

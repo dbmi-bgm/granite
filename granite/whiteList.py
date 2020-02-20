@@ -82,9 +82,11 @@ def main(args):
                  'downstream_gene_variant', 'upstream_gene_variant',
                  'regulatory_region_variant'}
     VEPrescue, consequence_idx = {}, 0
+    BED_bitarrays = {}
     is_VEP = True if args['VEP'] else False
     is_CLINVAR = True if args['CLINVAR'] else False
     SpliceAI_thr = float(args['SpliceAI']) if args['SpliceAI'] else 0.
+    is_BEDfile = True if args['BEDfile'] else False
 
     # Buffers
     fo = open(args['outputfile'], 'w')
@@ -107,6 +109,11 @@ def main(args):
         sys.exit('\nERROR in parsing arguments: specify the flag "--VEP" to filter by VEP annotations to apply rescue terms or remove additional terms\n')
     #end if
 
+    # BED
+    if is_BEDfile:
+        BED_bitarrays = bed_to_bitarray(args['BEDfile'])
+    #end if
+
     # Reading variants and writing passed
     analyzed = 0
     for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
@@ -118,6 +125,17 @@ def main(args):
         #     continue
         # #end if
         analyzed += 1
+
+        # Check BED
+        if is_BEDfile:
+            try: # CHROM and POS can miss in the BED file, if that just pass to next checks
+                if BED_bitarrays[vnt_obj.CHROM][vnt_obj.POS]:
+                    fo.write(vnt_obj.to_string())
+                    continue
+                #end if
+            except Exception: pass
+            #end try
+        #end if
 
         # Check VEP
         if is_VEP:

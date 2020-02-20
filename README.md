@@ -27,10 +27,10 @@ Additional software needs to be available in the environment:
 
 
 ## File formats
-The program is compatible with standard BAM and VCF formats (VCFv4.x).
+The program is compatible with standard BED, BAM and VCF formats (VCFv4.x).
 
 ### ReadCountKeeper (.rck)
-RCK is a tabular format that allows to efficiently store counts by strand (ForWard-ReVerse) for reads that support REFerence allele, ALTernate alleles, INSertions or DELetions at CHRomosome and POSition. RCK files can be further compressed with *bgzip* and indexed with *tabix* for storage, portability and faster random access.
+RCK is a tabular format that allows to efficiently store counts by strand (ForWard-ReVerse) for reads that support REFerence allele, ALTernate alleles, INSertions or DELetions at CHRomosome and POSition. RCK files can be further compressed with *bgzip* and indexed with *tabix* for storage, portability and faster random access. 1-based.
 
 Tabular format structure:
 
@@ -42,7 +42,20 @@ Commands to compress and index files:
     tabix -b 2 -s 1 -e 0 -c "#" PATH/TO/FILE.gz
 
 ### BinaryGenomeIndex (.bgi)
-BGI is a hdf5 based binary format that stores boolean values for each genomic position.
+BGI is a hdf5-based binary format that stores boolean values for each genomic position as bit arrays. Each position is represented in three complementary arrays that account for SNVs (Single-Nucleotide Variants), insertions and deletions respectively. 1-based.
+
+hdf5 format structure:
+
+    e.g.
+    chr1_snv: array(bool)
+    chr1_ins: array(bool)
+    chr1_del: array(bool)
+    chr2_snv: array(bool)
+    ...
+    ...
+    chrM_del: array(bool)
+
+*note*: hdf5 keys are build as the chromosome ID based on reference (e.g. chr1) plus the suffix specifing wether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
 
 
 # Callers
@@ -130,6 +143,37 @@ blackList allows to filter-out variants from input VCF file based on positions s
                             allele frequency
       --afthr AFTHR         threshold to filter by population allele frequency
                             (<=) [1]
+
+## whiteList
+whiteList allows to select a subset of variants from input VCF file based on specified annotations and positions. The software can use VEP, CLINVAR or SpliceAI annotations (available as annotations in input VCF). Positions can be also specfied as a BED format file.
+
+### Arguments
+    usage: granite whiteList [-h] -i INPUTFILE -o OUTPUTFILE [--SpliceAI SPLICEAI]
+                             [--CLINVAR] [--VEP]
+                             [--VEPrescue VEPRESCUE [VEPRESCUE ...]]
+                             [--VEPremove VEPREMOVE [VEPREMOVE ...]]
+
+    optional arguments:
+      -i INPUTFILE, --inputfile INPUTFILE
+                            input VCF file
+      -o OUTPUTFILE, --outputfile OUTPUTFILE
+                            output file to write results as VCF, use .vcf as
+                            extension
+      --SpliceAI SPLICEAI   threshold to whitelist variants by SpliceAI value (>=)
+      --CLINVAR             flag to whitelist variants with a CLINVAR Id
+      --VEP                 use VEP annotations to whitelist exonic and functional
+                            relevant variants (removed by default variants flagged
+                            as "intron_variant", "intergenic_variant",
+                            "downstream_gene_variant", "upstream_gene_variant" or
+                            "regulatory_region_variant")
+      --VEPrescue VEPRESCUE [VEPRESCUE ...]
+                            additional terms to overrule removed flags and/or to
+                            rescue and whitelist variants when in combination in
+                            the format annot&annot (e.g.
+                            intron_variant&splice_region_variant)
+      --VEPremove VEPREMOVE [VEPREMOVE ...]
+                            additional terms to be removed
+      --BEDfile BEDFILE     BED format file with positions to whitelist
 
 
 ## mpileupCounts

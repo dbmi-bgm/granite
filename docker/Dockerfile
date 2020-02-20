@@ -31,9 +31,8 @@ WORKDIR /usr/local/bin
 RUN conda install -c bioconda -y pysam bitarray pytabix h5py numpy
 
 # novoCaller
-RUN git clone https://github.com/dbmi-bgm/novoCaller.git && \
-    cd novoCaller && \
-    git checkout granite && \
+RUN git clone https://github.com/dbmi-bgm/granite.git && \
+    cd granite && \
     python setup.py install && \
     cd ..
 
@@ -52,7 +51,7 @@ RUN chmod +x mpileupCounts-parallel.sh
 
 # paths
 ENV PATH=/usr/local/bin/samtools/:$PATH
-ENV PATH=/usr/local/bin/novoCaller/:$PATH
+ENV PATH=/usr/local/bin/granite/:$PATH
 
 # supporting UTF-8
 RUN locale-gen "en_US.UTF-8" && update-locale LC_ALL="en_US.UTF-8"

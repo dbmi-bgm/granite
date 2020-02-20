@@ -15,7 +15,7 @@ def test_run_whiteList():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -28,7 +28,7 @@ def test_run_whiteList_CLINVAR():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': True, 'VEP': None, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': None, 'CLINVAR': True, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -41,7 +41,7 @@ def test_run_SpliceAI_001():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': '0.01', 'CLINVAR': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': '0.01', 'CLINVAR': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -54,7 +54,7 @@ def test_run_SpliceAI_002():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': '0.02', 'CLINVAR': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': '0.02', 'CLINVAR': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -67,7 +67,7 @@ def test_run_SpliceAI_008():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': '0.08', 'CLINVAR': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': '0.08', 'CLINVAR': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -80,7 +80,7 @@ def test_run_SpliceAI_0081():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': '0.081', 'CLINVAR': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': '0.081', 'CLINVAR': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -93,7 +93,7 @@ def test_run_SpliceAI_008_CLINVAR():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': '0.08', 'CLINVAR': True, 'VEP': None, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': '0.08', 'CLINVAR': True, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -106,7 +106,7 @@ def test_run_SpliceAI_0081_CLINVAR():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': '0.081', 'CLINVAR': True, 'VEP': None, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': '0.081', 'CLINVAR': True, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -119,7 +119,7 @@ def test_run_whiteList_VEP():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_VEP.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -132,7 +132,7 @@ def test_run_whiteList_VEP_splice_region_variant():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_VEP.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': ['splice_region_variant'], 'VEPremove': None}
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': ['splice_region_variant'], 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -145,7 +145,7 @@ def test_run_whiteList_VEP_non_coding_transcript_variant():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_VEP.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': ['non_coding_transcript_variant'], 'VEPremove': None}
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': ['non_coding_transcript_variant'], 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -158,7 +158,7 @@ def test_run_whiteList_VEP_rescue():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_VEP.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': ['splice_region_variant', 'non_coding_transcript_variant'], 'VEPremove': None}
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': ['splice_region_variant', 'non_coding_transcript_variant'], 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -171,7 +171,7 @@ def test_run_whiteList_VEP_CLINVAR():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_VEP.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': True, 'VEP': True, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': None, 'CLINVAR': True, 'VEP': True, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -184,7 +184,7 @@ def test_run_whiteList_microannot_VEP_CLINVAR_SPLICEAI():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_microannot.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': '0.8', 'CLINVAR': True, 'VEP': True, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': '0.8', 'CLINVAR': True, 'VEP': True, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -197,7 +197,7 @@ def test_run_whiteList_microannot_VEP_CLINVAR():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_microannot.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': True, 'VEP': True, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': None, 'CLINVAR': True, 'VEP': True, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -210,7 +210,7 @@ def test_run_whiteList_microannot_VEP_SPLICEAI():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_microannot.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': '0.8', 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': '0.8', 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -223,7 +223,7 @@ def test_run_whiteList_microannot_VEP():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_microannot.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -236,7 +236,7 @@ def test_run_whiteList_microannot_VEP_remove():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_microannot.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': ['non_coding_transcript_exon_variant']}
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': ['non_coding_transcript_exon_variant'], 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -249,7 +249,7 @@ def test_run_whiteList_microannot_VEP_remove_bis():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_microannot.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': ['mature_miRNA_variant']}
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': ['mature_miRNA_variant'], 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
@@ -262,11 +262,38 @@ def test_run_whiteList_microannot_VEP_remove_save():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_microannot.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': ['splice_region_variant'], 'VEPremove': ['mature_miRNA_variant']}
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': ['splice_region_variant'], 'VEPremove': ['mature_miRNA_variant'], 'BEDfile': None}
     # Run
     main_whiteList(args)
     # Tests
     assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_whiteList_microannot_VEP_remove_save.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_whiteList_microannot_VEP_remove_double():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_whiteList_microannot.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': ['mature_miRNA_variant', 'TF_binding_site_variant'], 'BEDfile': None}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_whiteList_microannot_VEP_remove_double.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_whiteList_microannot_VEP_remove_double_BED():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_whiteList_microannot_BED.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': ['mature_miRNA_variant', 'TF_binding_site_variant'],
+            'BEDfile': 'tests/files/input_BED_whiteList.bed'}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_whiteList_microannot_VEP_remove_double_BED.out')]
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -279,7 +306,7 @@ def test_args_VEP_conflict():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': None, 'VEP': None, 'VEPrescue': ['splice_region_variant', 'non_coding_transcript_variant'], 'VEPremove': None}
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': None, 'VEPrescue': ['splice_region_variant', 'non_coding_transcript_variant'], 'VEPremove': None, 'BEDfile': None}
     # Run and Tests
     with pytest.raises(SystemExit) as e:
         assert main_whiteList(args)
@@ -290,7 +317,7 @@ def test_missing_VEP():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_VEP_missing.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': None}
+            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
     # Run and Tests
     with pytest.raises(SystemExit) as e:
         assert main_whiteList(args)

@@ -53,6 +53,47 @@ def load_bgi(filename):
     return bitarrays_dict
 #end def
 
+def bed_to_bitarray(filename):
+    ''' read bed filename into bitarrays_dict with the following
+    structure {chrID: bitarray, ...} '''
+    chr_tmp, pos_tmp =  '', set()
+    bitarrays_dict = {}
+    with open(filename) as fi:
+        for line in fi:
+            line = line.rstrip().split('\t')
+            if len(line) >= 3: # valid line for position in bed format
+                chr, start, end = line[0], int(line[1]), int(line[2])
+                if not chr_tmp: chr_tmp = chr
+                #end if
+                # Set positions in bitarray for current chromosome and reset data structures for next chromosome
+                if chr_tmp != chr: # next chromosome
+                    bitarrays_dict.setdefault(chr_tmp, bitarray.bitarray(max(pos_tmp) + 1))
+                    bitarrays_dict[chr_tmp].setall(False)
+                    for i in pos_tmp:
+                        bitarrays_dict[chr_tmp][i] = True
+                    #end for
+                    chr_tmp, pos_tmp = chr, set()
+                #end if
+                # Adding new positions
+                i = 0
+                while (start + i) < end:
+                    pos_tmp.add(start + i + 1) # +1 to index by one
+                                               # 'The first base in a chromosome is numbered 0'
+                                               # 'The end position in each BED feature is one-based'
+                    i += 1
+                #end while
+            #end if
+        #end for
+        # Set positions into bitarray for last chromosome
+        bitarrays_dict.setdefault(chr_tmp, bitarray.bitarray(max(pos_tmp) + 1))
+        bitarrays_dict[chr_tmp].setall(False)
+        for i in pos_tmp:
+            bitarrays_dict[chr_tmp][i] = True
+        #end for
+    #end with
+    return bitarrays_dict
+#end def
+
 #################################################################
 #    Functions to write
 #################################################################
