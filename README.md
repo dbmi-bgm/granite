@@ -1,5 +1,5 @@
 # granite
-granite (Genomic vaRiANts calling and fIltering uTilitiEs) is a collection of software to call, filter and work with genomic variants.
+granite (*genomic variants calling and filtering utilities*) is a collection of software to call, filter and work with genomic variants.
 
 ## Requirements
 A ready-to-use docker image is available to download.
