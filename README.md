@@ -135,7 +135,7 @@ It is possible to filter-out variants with posterior probabilty lower than "--pp
 
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --ppthr <float>
 
-It is possible to filter-out variants with population allele frequency higher than "--afthr". Allele frequency must be provided for each variant in INFO column following the format tag=<float>. If "--aftag"
+It is possible to filter-out variants with population allele frequency higher than "--afthr". Allele frequency must be provided for each variant in INFO column following the format tag=\<float\>. If "--aftag"
 is not specified the program will search for *novoAF* tag as a default.
 
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --afthr <float> --aftag tag
@@ -170,7 +170,7 @@ Blacklist variants based on position set to "True" in BGI format file.
 
     granite blackList -i file.vcf -o file.out.vcf -b file.bgi
 
-Blacklist variants based on population allele frequency. This filters out variants with allele frequency higher than "--afthr". Allele frequency must be provided for each variant in INFO column following the format tag=<float>.
+Blacklist variants based on population allele frequency. This filters out variants with allele frequency higher than "--afthr". Allele frequency must be provided for each variant in INFO column following the format tag=\<float\>.
 
     granite blackList -i file.vcf -o file.out.vcf --afthr <float> --aftag tag
 
