@@ -1,8 +1,8 @@
 # granite
 granite (*genomic variants filtering utilities*) is a collection of software to call, filter and work with genomic variants.
 
-
-## Requirements
+&nbsp;
+## Availability and requirements
 A ready-to-use docker image is available to download.
 
     docker pull IMAGE
@@ -26,7 +26,7 @@ Additional software needs to be available in the environment:
   - [*bgzip*](http://www.htslib.org/doc/bgzip.1.html "bgzip documentation")
   - [*tabix*](http://www.htslib.org/doc/tabix.1.html "tabix documentation")
 
-
+&nbsp;
 ## File formats
 The program is compatible with standard BED, BAM and VCF formats (VCFv4.x).
 
@@ -60,11 +60,11 @@ hdf5 format structure:
 
 *note*: hdf5 keys are build as the chromosome ID based on reference (e.g. chr1) plus the suffix specifing whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
 
-
+&nbsp;
 ## Tools
 ![tools chart](docs/chart.png)
 
-
+&nbsp;
 ### novoCaller
 novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The model uses read-level information both in pedigree (trio) and unrelated samples to rank and assign a probabilty to each call. The software represents an updated and improved implementation of the original algorithm described in [paper](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
 
@@ -144,7 +144,7 @@ Filters can be combined.
 
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --afthr <float> --aftag tag --ppthr <float>
 
-
+&nbsp;
 ### blackList
 blackList allows to filter-out variants from input VCF file based on positions set in BGI format file and/or provided population allele frequency.
 
@@ -178,7 +178,7 @@ Combine the two filter.
 
     granite blackList -i file.vcf -o file.out.vcf --afthr <float> --aftag tag -b file.bgi
 
-
+&nbsp;
 ### whiteList
 whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, CLINVAR or SpliceAI annotations. Positions can be also specfied as a BED format file.
 
@@ -234,7 +234,7 @@ Combine the above filters.
 
     granite whiteList -i file.vcf -o file.out.vcf --BEDfile file.bed --VEP --VEPrescue <str> <str> --CLINVAR --SpliceAI <float>
 
-
+&nbsp;
 ### mpileupCounts
 mpileupCounts uses *samtools* to access input BAM and calculates statistics for reads pileup at each position in the specified region, returns counts in RCK format.
 
@@ -258,7 +258,7 @@ mpileupCounts uses *samtools* to access input BAM and calculates statistics for 
       --BQthr BQTHR         minimum base quality for a base to be considered (>=)
                             [13]
 
-
+&nbsp;
 ### toBgi
 toBgi converts counts from bgzip and tabix indexed RCK format into BGI format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions. Positions "called" are set to True (or 1) in BGI binary structure.
 
