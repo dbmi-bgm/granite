@@ -1,6 +1,25 @@
 # granite
-granite (*genomic variants filtering utilities*) is a collection of software to filter and work with genomic variants.
+granite (*genomic variants filtering utilities*) is a collection of software to call, filter and work with genomic variants.
 
+    usage: granite [-h] {novoCaller, mpileupCounts, blackList, whiteList, toBgi} ...
+
+    positional arguments:
+        novoCaller          Bayesian de novo variant caller
+        mpileupCounts       samtools wrapper to calculate reads statistics for
+                            pileup at each position
+        blackList           utility to blacklist and filter out variants from
+                            input VCF file based on positions set in BGI format
+                            file and/or population allele frequency
+        whiteList           utility to whitelist and select a subset of variants
+                            from input VCF file based on specified annotations and
+                            positions
+        toBgi               utility that converts counts from bgzip and tabix
+                            indexed RCK format into BGI format. Positions are
+                            "called" by reads counts or allelic balance for single
+                            or multiple files (joint calls) in specified regions
+
+
+![tools chart](docs/chart.png)
 
 ## Requirements
 A ready-to-use docker image is available to download.
@@ -300,6 +319,3 @@ toBgi can be used to calculate positions to blacklist for common variants by usi
 Absolute reads count can be used instead of allelic balance to call positions. This command will set to "True" in BGI structure positions with reads count for alternate allele equal/higher than "--rdthr" in more that "--fithr" samples (joint calling).
 
     granite toBgi -i file file file file ... -o file.out.bgi -f file.chrom.sizes -r file.regions --fithr <int> --rdthr <int>
-
-
-![tools chart](docs/chart.png)
