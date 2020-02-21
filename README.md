@@ -1,5 +1,6 @@
 # granite
-granite (*genomic variants calling and filtering utilities*) is a collection of software to call, filter and work with genomic variants.
+granite (*genomic variants filtering utilities*) is a collection of software to filter and work with genomic variants.
+
 
 ## Requirements
 A ready-to-use docker image is available to download.
@@ -35,6 +36,8 @@ RCK is a tabular format that allows to efficiently store counts by strand (ForWa
 Tabular format structure:
 
     #CHR   POS   COVERAGE   REF_FW   REF_RV   ALT_FW   ALT_RV   INS_FW   INS_RV   DEL_FW   DEL_REV
+    13     1     23         0        0        11       12       0        0        0        0
+    13     2     35         18       15       1        1        0        0        0        0
 
 Commands to compress and index files:
 
@@ -55,7 +58,7 @@ hdf5 format structure:
     ...
     chrM_del: array(bool)
 
-*note*: hdf5 keys are build as the chromosome ID based on reference (e.g. chr1) plus the suffix specifing wether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
+*note*: hdf5 keys are build as the chromosome ID based on reference (e.g. chr1) plus the suffix specifing whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
 
 
 # Callers
@@ -121,11 +124,29 @@ novoCaller generates output in VCF format. Two new tags are used to report addit
 
     ##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller. Format:'Post_prob|AF_unrel'">
 
+#### Examples
+Calls *de novo* variants. This will return the calls ranked and sorted by calculated posterior probabilty.
+
+    granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles
+
+It is possible to filter-out variants with posterior probabilty lower than "--ppthr".
+
+    granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --ppthr <float>
+
+It is possible to filter-out variants with population allele frequency higher than "--afthr". Allele frequency must be provided for each variant in INFO column following the format tag=<float>. If "--aftag"
+is not specified the program will search for *novoAF* tag as a default.
+
+    granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --afthr <float> --aftag tag
+
+Filters can be combined.
+
+    granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --afthr <float> --aftag tag --ppthr <float>
+
 
 # Utilities
 
 ## blackList
-blackList allows to filter-out variants from input VCF file based on positions set in BGI format file and/or population allele frequency (available as annotation in input VCF).
+blackList allows to filter-out variants from input VCF file based on positions set in BGI format file and/or provided population allele frequency.
 
 ### Arguments
     usage: granite blackList [-h] -i INPUTFILE -o OUTPUTFILE [-b BGIFILE]
@@ -144,8 +165,21 @@ blackList allows to filter-out variants from input VCF file based on positions s
       --afthr AFTHR         threshold to filter by population allele frequency
                             (<=) [1]
 
+#### Examples
+Blacklist variants based on position set to "True" in BGI format file.
+
+    granite blackList -i file.vcf -o file.out.vcf -b file.bgi
+
+Blacklist variants based on population allele frequency. This filters out variants with allele frequency higher than "--afthr". Allele frequency must be provided for each variant in INFO column following the format tag=<float>.
+
+    granite blackList -i file.vcf -o file.out.vcf --afthr <float> --aftag tag
+
+Combine the two filter.
+
+    granite blackList -i file.vcf -o file.out.vcf --afthr <float> --aftag tag -b file.bgi
+
 ## whiteList
-whiteList allows to select a subset of variants from input VCF file based on specified annotations and positions. The software can use VEP, CLINVAR or SpliceAI annotations (available as annotations in input VCF). Positions can be also specfied as a BED format file.
+whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, CLINVAR or SpliceAI annotations. Positions can be also specfied as a BED format file.
 
 ### Arguments
     usage: granite whiteList [-h] -i INPUTFILE -o OUTPUTFILE [--SpliceAI SPLICEAI]
@@ -161,9 +195,9 @@ whiteList allows to select a subset of variants from input VCF file based on spe
                             extension
       --SpliceAI SPLICEAI   threshold to whitelist variants by SpliceAI value (>=)
       --CLINVAR             flag to whitelist variants with a CLINVAR Id
-      --VEP                 use VEP annotations to whitelist exonic and functional
-                            relevant variants (removed by default variants flagged
-                            as "intron_variant", "intergenic_variant",
+      --VEP                 use VEP "Consequence" annotations to whitelist exonic and
+                            functional relevant variants (removed by default variants
+                            flagged as "intron_variant", "intergenic_variant",
                             "downstream_gene_variant", "upstream_gene_variant" or
                             "regulatory_region_variant")
       --VEPrescue VEPRESCUE [VEPRESCUE ...]
@@ -175,6 +209,29 @@ whiteList allows to select a subset of variants from input VCF file based on spe
                             additional terms to be removed
       --BEDfile BEDFILE     BED format file with positions to whitelist
 
+#### Examples
+Whitelists variants with CLINVAR ID. If available, CLINVAR annotation must be provided in INFO column.
+
+    granite whiteList -i file.vcf -o file.out.vcf --CLINVAR
+
+Whitelists variants based on SpliceAI annotations. This filters in variants with SpliceAI score equal/higher than "--SpliceAI". If available SpliceAI annotation must be provided in INFO column.
+
+    granite whiteList -i file.vcf -o file.out.vcf --SpliceAI <float>
+
+Whitelists variants based on VEP "Consequence" annotations. This withelists exonic and functional relevant variants by removing variants flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant" or "regulatory_region_variant". It is possible to specify additional terms to remove using "--VEPremove" and/or additional terms to rescue using "--VEPrescue". To use VEP, annotation must be provided for each variant in INFO column.
+
+    granite whiteList -i file.vcf -o file.out.vcf --VEP
+    granite whiteList -i file.vcf -o file.out.vcf --VEP --VEPremove <str> <str>
+    granite whiteList -i file.vcf -o file.out.vcf --VEP --VEPrescue <str> <str>
+    granite whiteList -i file.vcf -o file.out.vcf --VEP --VEPrescue <str> <str> --VEPremove <str>
+
+Whitelists variants based on positions specified as a BED format file.
+
+    granite whiteList -i file.vcf -o file.out.vcf --BEDfile file.bed
+
+Combine the above filters.
+
+    granite whiteList -i file.vcf -o file.out.vcf --BEDfile file.bed --VEP --VEPrescue <str> <str> --CLINVAR --SpliceAI <float>
 
 ## mpileupCounts
 mpileupCounts uses *samtools* to access input BAM and calculates statistics for reads pileup at each position in the specified region, returns counts in RCK format.
@@ -204,12 +261,12 @@ mpileupCounts uses *samtools* to access input BAM and calculates statistics for 
 toBgi converts counts from bgzip and tabix indexed RCK format into BGI format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions. Positions "called" are set to True (or 1) in BGI binary structure.
 
 ### Arguments
-    usage: granite toBgi [-h] [-i INPUTFILES [INPUTFILES ...]] -o OUTPUTFILE -r
+    usage: granite toBgi [-h] [-i INPUTFILE [INPUTFILE ...]] -o OUTPUTFILE -r
                          REGIONFILE -f CHROMFILE [--ncores NCORES] --fithr FITHR
                          [--rdthr RDTHR] [--abthr ABTHR]
 
     optional arguments:
-      -i INPUTFILES [INPUTFILES ...], --inputfiles INPUTFILES [INPUTFILES ...]
+      -i INPUTFILE [INPUTFILE ...], --inputfiles INPUTFILE [INPUTFILE ...]
                             list of files to be used for the single/joint calling
                             [e.g. -i file_1 file_2 ...], expected bgzip and tabix
                             indexed RCK files
@@ -234,3 +291,15 @@ toBgi converts counts from bgzip and tabix indexed RCK format into BGI format. P
       --abthr ABTHR         minimum percentage of alternate reads compared to
                             reference reads to count the file in "--fithr" when
                             "calling" by allelic balance (>=) [15]
+
+#### Examples
+toBgi can be used to calculate positions to blacklist for common variants by using unrelated samples. This command will set to "True" in BGI structure positions with allelic balance for alternate allele equal/higher than "--abthr" in more that "--fithr" samples (joint calling).
+
+    granite toBgi -i file file file file ... -o file.out.bgi -f file.chrom.sizes -r file.regions --fithr <int> --abthr <int>
+
+Absolute reads count can be used instead of allelic balance to call positions. This command will set to "True" in BGI structure positions with reads count for alternate allele equal/higher than "--rdthr" in more that "--fithr" samples (joint calling).
+
+    granite toBgi -i file file file file ... -o file.out.bgi -f file.chrom.sizes -r file.regions --fithr <int> --rdthr <int>
+
+
+![tools chart](docs/chart.png)

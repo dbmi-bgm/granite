@@ -56,7 +56,7 @@ def load_bgi(filename):
 def bed_to_bitarray(filename):
     ''' read bed filename into bitarrays_dict with the following
     structure {chrID: bitarray, ...} '''
-    chr_tmp, pos_tmp =  '', set()
+    chr_tmp, pos_tmp = '', set()
     bitarrays_dict = {}
     with open(filename) as fi:
         for line in fi:
