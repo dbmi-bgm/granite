@@ -65,10 +65,10 @@ hdf5 format structure:
 ![tools chart](docs/chart.png)
 
 
-## novoCaller
+### novoCaller
 novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The model uses read-level information both in pedigree (trio) and unrelated samples to rank and assign a probabilty to each call. The software represents an updated and improved implementation of the original algorithm described in [paper](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
 
-### Arguments
+#### Arguments
     usage: granite novoCaller [-h] -i INPUTFILE -o OUTPUTFILE -u UNRELATEDFILES -t
                               TRIOFILES [--ppthr PPTHR] [--afthr AFTHR]
                               [--aftag AFTAG] [--bam] [--MQthr MQTHR]
@@ -103,19 +103,19 @@ novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The 
       --BQthr BQTHR         (only with "--bam") minimum base quality for a base to
                             be considered (>=) [0]
 
-### Input
+#### Input
 novoCaller accepts files in VCF format as input. Files must contain genotype information for trio in addition to standard VCF columns. Columns IDs for trio must match the IDs provided together with the list of RCK/BAM files ("--triofiles").
 
 Required VCF format structure:
 
     #CHROM   POS   ID   REF   ALT   QUAL   FILTER   INFO   FORMAT   PROBAND_ID   MOTHER_ID   FATHER_ID   ...
 
-### Trio and unrelated files
+#### Trio and unrelated files
 By default novoCaller expect bgzip and tabix indexed RCK files. To use BAM files directly specify "--bam" flag.
 
 *note*: using BAM files directly will significantly slow down the software since pileup counts need to be calculated on the spot at each position and for each bam.
 
-### Output
+#### Output
 novoCaller generates output in VCF format. Two new tags are used to report additional information for each call. *RSTR* stores reads counts by strand at position for reference and alternate allele. *novoCaller* stores posterior probabilty calculated for the call and allele frequency for alternate allele in unrelated samples.
 
 *RSTR* tag definition:
@@ -145,10 +145,10 @@ Filters can be combined.
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --afthr <float> --aftag tag --ppthr <float>
 
 
-## blackList
+### blackList
 blackList allows to filter-out variants from input VCF file based on positions set in BGI format file and/or provided population allele frequency.
 
-### Arguments
+#### Arguments
     usage: granite blackList [-h] -i INPUTFILE -o OUTPUTFILE [-b BGIFILE]
                              [--aftag AFTAG] [--afthr AFTHR]
 
@@ -179,10 +179,10 @@ Combine the two filter.
     granite blackList -i file.vcf -o file.out.vcf --afthr <float> --aftag tag -b file.bgi
 
 
-## whiteList
+### whiteList
 whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, CLINVAR or SpliceAI annotations. Positions can be also specfied as a BED format file.
 
-### Arguments
+#### Arguments
     usage: granite whiteList [-h] -i INPUTFILE -o OUTPUTFILE [--SpliceAI SPLICEAI]
                              [--CLINVAR] [--VEP]
                              [--VEPrescue VEPRESCUE [VEPRESCUE ...]]
@@ -235,10 +235,10 @@ Combine the above filters.
     granite whiteList -i file.vcf -o file.out.vcf --BEDfile file.bed --VEP --VEPrescue <str> <str> --CLINVAR --SpliceAI <float>
 
 
-## mpileupCounts
+### mpileupCounts
 mpileupCounts uses *samtools* to access input BAM and calculates statistics for reads pileup at each position in the specified region, returns counts in RCK format.
 
-### Arguments
+#### Arguments
     usage: granite mpileupCounts [-h] -i INPUTFILE -o OUTPUTFILE -r REFERENCE
                                  [--region REGION] [--MQthr MQTHR] [--BQthr BQTHR]
 
@@ -259,10 +259,10 @@ mpileupCounts uses *samtools* to access input BAM and calculates statistics for 
                             [13]
 
 
-## toBgi
+### toBgi
 toBgi converts counts from bgzip and tabix indexed RCK format into BGI format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions. Positions "called" are set to True (or 1) in BGI binary structure.
 
-### Arguments
+#### Arguments
     usage: granite toBgi [-h] [-i INPUTFILE [INPUTFILE ...]] -o OUTPUTFILE -r
                          REGIONFILE -f CHROMFILE [--ncores NCORES] --fithr FITHR
                          [--rdthr RDTHR] [--abthr ABTHR]
