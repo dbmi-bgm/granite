@@ -15,7 +15,7 @@ To run locally Python (3.x) is required together with the following libraries:
   - [*pytabix*](https://pypi.org/project/pytabix/ "pytabix documentation")
   - [*h5py*](https://www.h5py.org/ "h5py documentation")
 
-To install with pip:
+To install libraries with pip:
 
     pip install numpy pysam bitarray h5py
     pip install --user pytabix
@@ -25,6 +25,10 @@ Additional software needs to be available in the environment:
   - [*samtools*](http://www.htslib.org/ "samtools documentation")
   - [*bgzip*](http://www.htslib.org/doc/bgzip.1.html "bgzip documentation")
   - [*tabix*](http://www.htslib.org/doc/tabix.1.html "tabix documentation")
+
+To install the program run the following command inside granite folder:
+
+    python setup.py install
 
 &nbsp;
 ## File formats
