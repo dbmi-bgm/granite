@@ -30,7 +30,7 @@ WORKDIR /usr/local/bin
 # python libraries
 RUN conda install -c bioconda -y pysam bitarray pytabix h5py numpy
 
-# novoCaller
+# granite
 RUN git clone https://github.com/dbmi-bgm/granite.git && \
     cd granite && \
     python setup.py install && \
