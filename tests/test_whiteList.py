@@ -298,6 +298,19 @@ def test_run_whiteList_microannot_VEP_remove_double_BED():
     os.remove('tests/files/main_test.out')
 #end def
 
+def test_run_whiteList_VEP_missing():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_whiteList_VEP_missing.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': None, 'CLINVAR': True, 'VEP': True, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_whiteList_VEP_missing.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
 
 #################################################################
 #   Errors
@@ -311,17 +324,6 @@ def test_args_VEP_conflict():
     with pytest.raises(SystemExit) as e:
         assert main_whiteList(args)
     assert str(e.value) == '\nERROR in parsing arguments: specify the flag "--VEP" to filter by VEP annotations to apply rescue terms or remove additional terms\n'
-#end def
-
-def test_missing_VEP():
-    ''' '''
-    # Variables
-    args = {'inputfile': 'tests/files/input_whiteList_VEP_missing.vcf', 'outputfile': 'tests/files/main_test.out',
-            'SpliceAI': None, 'CLINVAR': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None}
-    # Run and Tests
-    with pytest.raises(SystemExit) as e:
-        assert main_whiteList(args)
-    assert '942451' in str(e.value)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def

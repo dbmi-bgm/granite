@@ -30,26 +30,20 @@ from granite.lib import vcf_parser
 def check_VEP(vnt_obj, idx, VEPremove, VEPrescue):
     ''' '''
     try: val_get = vnt_obj.get_tag_value('VEP')
-    except Exception:
-        sys.exit('\nERROR in whitelist check: VEP tag missing for variant:\n\t{0}\n'
-                    .format(vnt_obj.to_string()))
+    except Exception: return False
     #end try
     trscrpt_list = val_get.split(',')
-    is_whitelist = len(trscrpt_list)
     # Get all terms
     for trscrpt in trscrpt_list:
         # & is standard VEP format, but cgap use ~
         trscrpt_terms = set(trscrpt.split('|')[idx].replace('~', '&').split('&'))
         if trscrpt_terms.intersection(VEPrescue):
-            break
+            return True
         elif trscrpt_terms.intersection(VEPremove):
-            is_whitelist -= 1
-        else: break
+            pass
+        else: return True
         #end if
     #end for
-    if is_whitelist:
-        return True
-    #end if
     return False
 #end def
 
