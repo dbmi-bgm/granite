@@ -7,7 +7,7 @@ A ready-to-use docker image is available to download.
 
     docker pull IMAGE
 
-To run locally Python (3.x) is required together with the following libraries:
+To run locally, Python (3.x) is required together with the following libraries:
 
   - [*numpy*](https://docs.scipy.org/doc/ "numpy documentation")
   - [*pysam*](https://pysam.readthedocs.io/en/latest/ "pysam documentation")
@@ -26,7 +26,7 @@ Additional software needs to be available in the environment:
   - [*bgzip*](http://www.htslib.org/doc/bgzip.1.html "bgzip documentation")
   - [*tabix*](http://www.htslib.org/doc/tabix.1.html "tabix documentation")
 
-To install the program run the following command inside granite folder:
+To install the program, run the following command inside granite folder:
 
     python setup.py install
 
@@ -62,7 +62,7 @@ hdf5 format structure:
     ...
     chrM_del: array(bool)
 
-*note*: hdf5 keys are build as the chromosome ID based on reference (e.g. chr1) plus the suffix specifing whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
+*note*: hdf5 keys are build as the chromosome ID based on reference (e.g. chr1) plus the suffix specifying whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
 
 &nbsp;
 ## Tools
@@ -70,7 +70,7 @@ hdf5 format structure:
 
 &nbsp;
 ### novoCaller
-novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The model uses read-level information both in pedigree (trio) and unrelated samples to rank and assign a probabilty to each call. The software represents an updated and improved implementation of the original algorithm described in [paper](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
+novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The model uses read-level information both in pedigree (trio) and unrelated samples to rank and assign a probabilty to each call. The software represents an updated and improved implementation of the original algorithm described in [Mohanty et al. 2019](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
 
 #### Arguments
     usage: granite novoCaller [-h] -i INPUTFILE -o OUTPUTFILE -u UNRELATEDFILES -t
@@ -108,14 +108,14 @@ novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The 
                             be considered (>=) [0]
 
 #### Input
-novoCaller accepts files in VCF format as input. Files must contain genotype information for trio in addition to standard VCF columns. Columns IDs for trio must match the IDs provided together with the list of RCK/BAM files ("--triofiles").
+novoCaller accepts files in VCF format as input. Files must contain genotype information for trio in addition to standard VCF columns. Column IDs for trio must match the IDs provided together with the list of RCK/BAM files (`--triofiles`).
 
 Required VCF format structure:
 
     #CHROM   POS   ID   REF   ALT   QUAL   FILTER   INFO   FORMAT   PROBAND_ID   MOTHER_ID   FATHER_ID   ...
 
 #### Trio and unrelated files
-By default novoCaller expect bgzip and tabix indexed RCK files. To use BAM files directly specify "--bam" flag.
+By default novoCaller expect bgzip and tabix indexed RCK files. To use BAM files directly specify `--bam` flag.
 
 *note*: using BAM files directly will significantly slow down the software since pileup counts need to be calculated on the spot at each position and for each bam.
 
@@ -135,11 +135,11 @@ Calls *de novo* variants. This will return the calls ranked and sorted by calcul
 
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles
 
-It is possible to filter-out variants with posterior probabilty lower than "--ppthr".
+It is possible to filter-out variants with posterior probabilty lower than `--ppthr`.
 
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --ppthr <float>
 
-It is possible to filter-out variants with population allele frequency higher than "--afthr". Allele frequency must be provided for each variant in INFO column following the format tag=\<float\>. If "--aftag"
+It is possible to filter-out variants with population allele frequency higher than `--afthr`. Allele frequency must be provided for each variant in INFO column following the format tag=\<float\>. If `--aftag`
 is not specified the program will search for *novoAF* tag as a default.
 
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --afthr <float> --aftag tag
@@ -170,15 +170,15 @@ blackList allows to filter-out variants from input VCF file based on positions s
                             (<=) [1]
 
 #### Examples
-Blacklist variants based on position set to "True" in BIG format file.
+Blacklist variants based on position set to `True` in BIG format file.
 
     granite blackList -i file.vcf -o file.out.vcf -b file.big
 
-Blacklist variants based on population allele frequency. This filters out variants with allele frequency higher than "--afthr". Allele frequency must be provided for each variant in INFO column following the format tag=\<float\>.
+Blacklist variants based on population allele frequency. This filters out variants with allele frequency higher than `--afthr`. Allele frequency must be provided for each variant in INFO column following the format tag=\<float\>.
 
     granite blackList -i file.vcf -o file.out.vcf --afthr <float> --aftag tag
 
-Combine the two filter.
+Combine the two filters.
 
     granite blackList -i file.vcf -o file.out.vcf --afthr <float> --aftag tag -b file.big
 
@@ -219,11 +219,11 @@ Whitelists variants with CLINVAR ID. If available, CLINVAR annotation must be pr
 
     granite whiteList -i file.vcf -o file.out.vcf --CLINVAR
 
-Whitelists variants based on SpliceAI annotations. This filters in variants with SpliceAI score equal/higher than "--SpliceAI". If available SpliceAI annotation must be provided in INFO column.
+Whitelists variants based on SpliceAI annotations. This filters in variants with SpliceAI score equal/higher than `--SpliceAI`. If available SpliceAI annotation must be provided in INFO column.
 
     granite whiteList -i file.vcf -o file.out.vcf --SpliceAI <float>
 
-Whitelists variants based on VEP "Consequence" annotations. This withelists exonic and functional relevant variants by removing variants flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant" or "regulatory_region_variant". It is possible to specify additional terms to remove using "--VEPremove" and/or additional terms to rescue using "--VEPrescue". To use VEP, annotation must be provided for each variant in INFO column.
+Whitelists variants based on VEP "Consequence" annotations. This withelists exonic and functional relevant variants by removing variants flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant" or "regulatory_region_variant". It is possible to specify additional terms to remove using `--VEPremove` and/or additional terms to rescue using `--VEPrescue`. To use VEP, annotation must be provided for each variant in INFO column.
 
     granite whiteList -i file.vcf -o file.out.vcf --VEP
     granite whiteList -i file.vcf -o file.out.vcf --VEP --VEPremove <str> <str>
@@ -299,10 +299,10 @@ toBig converts counts from bgzip and tabix indexed RCK format into BIG format. P
                             "calling" by allelic balance (>=) [15]
 
 #### Examples
-toBig can be used to calculate positions to blacklist for common variants by using unrelated samples. This command will set to "True" in BIG structure positions with allelic balance for alternate allele equal/higher than "--abthr" in more that "--fithr" samples (joint calling).
+toBig can be used to calculate positions to blacklist for common variants by using unrelated samples. This command will set to `True` in BIG structure positions with allelic balance for alternate allele equal/higher than `--abthr` in more that `--fithr` samples (joint calling).
 
     granite toBig -i file file file file ... -o file.out.big -f file.chrom.sizes -r file.regions --fithr <int> --abthr <int>
 
-Absolute reads count can be used instead of allelic balance to call positions. This command will set to "True" in BIG structure positions with reads count for alternate allele equal/higher than "--rdthr" in more that "--fithr" samples (joint calling).
+Absolute reads count can be used instead of allelic balance to call positions. This command will set to `True` in BIG structure positions with reads count for alternate allele equal/higher than `--rdthr` in more that `--fithr` samples (joint calling).
 
     granite toBig -i file file file file ... -o file.out.big -f file.chrom.sizes -r file.regions --fithr <int> --rdthr <int>
