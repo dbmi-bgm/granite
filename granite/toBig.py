@@ -2,7 +2,7 @@
 
 #################################################################
 #
-#    toBgi
+#    toBig
 #        Michele Berselli
 #        Harvard Medical School
 #        berselli.michele@gmail.com

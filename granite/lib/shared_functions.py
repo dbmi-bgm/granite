@@ -41,15 +41,15 @@ def tabix_IT(filename, region):
 #################################################################
 #    Functions to load
 #################################################################
-def load_bgi(filename):
-    ''' read bgi filename into bitarrays_dict with the following
+def load_big(filename):
+    ''' read big filename into bitarrays_dict with the following
     structure {key: bitarray, ...} '''
-    bgi = h5py.File(filename, 'r')
-    bitarrays_dict = {k: bitarray.bitarray() for k in bgi.keys()}
-    for k in bgi.keys():
-        bitarrays_dict[k].frombytes(bgi[k][:].tostring())
+    big = h5py.File(filename, 'r')
+    bitarrays_dict = {k: bitarray.bitarray() for k in big.keys()}
+    for k in big.keys():
+        bitarrays_dict[k].frombytes(big[k][:].tostring())
     #end for
-    bgi.close()
+    big.close()
     return bitarrays_dict
 #end def
 

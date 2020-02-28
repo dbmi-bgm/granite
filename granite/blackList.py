@@ -34,9 +34,9 @@ def main(args):
     ''' '''
     # Variables
     afthr, aftag = 0., ''
-    bgi_dict = {}
+    big_dict = {}
     is_afthr = True if args['afthr'] else False
-    is_bgifile = True if args['bgifile'] else False
+    is_bigfile = True if args['bigfile'] else False
 
     # Check arguments
     if is_afthr:
@@ -46,16 +46,16 @@ def main(args):
             sys.exit('\nERROR in parsing arguments: to filter by population allele frequency please specify the TAG to use\n')
         #end if
     else:
-        if not is_bgifile:
-            sys.exit('\nERROR in parsing arguments: to blacklist specify a BGI file and/or a threshold for population allele frequency and the TAG to use\n')
+        if not is_bigfile:
+            sys.exit('\nERROR in parsing arguments: to blacklist specify a BIG file and/or a threshold for population allele frequency and the TAG to use\n')
         #end if
     #end if
 
     # Buffers
     fo = open(args['outputfile'], 'w')
 
-    # Loading bgi if specified
-    if is_bgifile: bgi_dict = load_bgi(args['bgifile'])
+    # Loading big if specified
+    if is_bigfile: big_dict = load_big(args['bigfile'])
     #end if
 
     # Creating Vcf object
@@ -91,13 +91,13 @@ def main(args):
             #end if
         #end if
 
-        if is_bgifile:
+        if is_bigfile:
             vtype = variant_type(vnt_obj.REF, vnt_obj.ALT)
             try:
                 key = vnt_obj.CHROM + '_' + vtype
-                is_blacklist = bgi_dict[key][vnt_obj.POS]
+                is_blacklist = big_dict[key][vnt_obj.POS]
             except Exception:
-                sys.exit('\nERROR in blacklist check: {0}:{1} missing in BGI file'.format(key, vnt_obj.POS))
+                sys.exit('\nERROR in blacklist check: {0}:{1} missing in BIG file'.format(key, vnt_obj.POS))
             #end try
             if is_blacklist:
                 continue

@@ -48,8 +48,8 @@ Commands to compress and index files:
     bgzip PATH/TO/FILE
     tabix -b 2 -s 1 -e 0 -c "#" PATH/TO/FILE.gz
 
-### BinaryGenomeIndex (.bgi)
-BGI is a hdf5-based binary format that stores boolean values for each genomic position as bit arrays. Each position is represented in three complementary arrays that account for SNVs (Single-Nucleotide Variants), insertions and deletions respectively. 1-based.
+### BinaryIndexGenome (.big)
+BIG is a hdf5-based binary format that stores boolean values for each genomic position as bit arrays. Each position is represented in three complementary arrays that account for SNVs (Single-Nucleotide Variants), insertions and deletions respectively. 1-based.
 
 hdf5 format structure:
 
@@ -150,10 +150,10 @@ Filters can be combined.
 
 &nbsp;
 ### blackList
-blackList allows to filter-out variants from input VCF file based on positions set in BGI format file and/or provided population allele frequency.
+blackList allows to filter-out variants from input VCF file based on positions set in BIG format file and/or provided population allele frequency.
 
 #### Arguments
-    usage: granite blackList [-h] -i INPUTFILE -o OUTPUTFILE [-b BGIFILE]
+    usage: granite blackList [-h] -i INPUTFILE -o OUTPUTFILE [-b BIGFILE]
                              [--aftag AFTAG] [--afthr AFTHR]
 
     optional arguments:
@@ -162,17 +162,17 @@ blackList allows to filter-out variants from input VCF file based on positions s
       -o OUTPUTFILE, --outputfile OUTPUTFILE
                             output file to write results as VCF, use .vcf as
                             extension
-      -b BGIFILE, --bgifile BGIFILE
-                            BGI format file with positions set for blacklist
+      -b BIGFILE, --bigfile BIGFILE
+                            BIG format file with positions set for blacklist
       --aftag AFTAG         TAG (TAG=<float>) to be used to filter by population
                             allele frequency
       --afthr AFTHR         threshold to filter by population allele frequency
                             (<=) [1]
 
 #### Examples
-Blacklist variants based on position set to "True" in BGI format file.
+Blacklist variants based on position set to "True" in BIG format file.
 
-    granite blackList -i file.vcf -o file.out.vcf -b file.bgi
+    granite blackList -i file.vcf -o file.out.vcf -b file.big
 
 Blacklist variants based on population allele frequency. This filters out variants with allele frequency higher than "--afthr". Allele frequency must be provided for each variant in INFO column following the format tag=\<float\>.
 
@@ -180,7 +180,7 @@ Blacklist variants based on population allele frequency. This filters out varian
 
 Combine the two filter.
 
-    granite blackList -i file.vcf -o file.out.vcf --afthr <float> --aftag tag -b file.bgi
+    granite blackList -i file.vcf -o file.out.vcf --afthr <float> --aftag tag -b file.big
 
 &nbsp;
 ### whiteList
@@ -263,11 +263,11 @@ mpileupCounts uses *samtools* to access input BAM and calculates statistics for 
                             [13]
 
 &nbsp;
-### toBgi
-toBgi converts counts from bgzip and tabix indexed RCK format into BGI format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions. Positions "called" are set to True (or 1) in BGI binary structure.
+### toBig
+toBig converts counts from bgzip and tabix indexed RCK format into BIG format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions. Positions "called" are set to True (or 1) in BIG binary structure.
 
 #### Arguments
-    usage: granite toBgi [-h] [-i INPUTFILE [INPUTFILE ...]] -o OUTPUTFILE -r
+    usage: granite toBig [-h] [-i INPUTFILE [INPUTFILE ...]] -o OUTPUTFILE -r
                          REGIONFILE -f CHROMFILE [--ncores NCORES] --fithr FITHR
                          [--rdthr RDTHR] [--abthr ABTHR]
 
@@ -277,8 +277,8 @@ toBgi converts counts from bgzip and tabix indexed RCK format into BGI format. P
                             [e.g. -i file_1 file_2 ...], expected bgzip and tabix
                             indexed RCK files
       -o OUTPUTFILE, --outputfile OUTPUTFILE
-                            output file to write results as BGI format (binary
-                            hdf5), use .bgi as extension
+                            output file to write results as BIG format (binary
+                            hdf5), use .big as extension
       -r REGIONFILE, --regionfile REGIONFILE
                             file containing regions to be used [e.g.
                             chr1:1-10000000, 1:1-10000000, chr1, 1] listed as a
@@ -299,10 +299,10 @@ toBgi converts counts from bgzip and tabix indexed RCK format into BGI format. P
                             "calling" by allelic balance (>=) [15]
 
 #### Examples
-toBgi can be used to calculate positions to blacklist for common variants by using unrelated samples. This command will set to "True" in BGI structure positions with allelic balance for alternate allele equal/higher than "--abthr" in more that "--fithr" samples (joint calling).
+toBig can be used to calculate positions to blacklist for common variants by using unrelated samples. This command will set to "True" in BIG structure positions with allelic balance for alternate allele equal/higher than "--abthr" in more that "--fithr" samples (joint calling).
 
-    granite toBgi -i file file file file ... -o file.out.bgi -f file.chrom.sizes -r file.regions --fithr <int> --abthr <int>
+    granite toBig -i file file file file ... -o file.out.big -f file.chrom.sizes -r file.regions --fithr <int> --abthr <int>
 
-Absolute reads count can be used instead of allelic balance to call positions. This command will set to "True" in BGI structure positions with reads count for alternate allele equal/higher than "--rdthr" in more that "--fithr" samples (joint calling).
+Absolute reads count can be used instead of allelic balance to call positions. This command will set to "True" in BIG structure positions with reads count for alternate allele equal/higher than "--rdthr" in more that "--fithr" samples (joint calling).
 
-    granite toBgi -i file file file file ... -o file.out.bgi -f file.chrom.sizes -r file.regions --fithr <int> --rdthr <int>
+    granite toBig -i file file file file ... -o file.out.big -f file.chrom.sizes -r file.regions --fithr <int> --rdthr <int>
