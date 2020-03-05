@@ -168,7 +168,7 @@ def variant_type(REF, ALT):
 
 def allele_frequency(vnt_obj, aftag, idx=0):
     ''' return allele frequency for variant from aftag in INFO,
-    set allele frequency to 0. if aftag missing or value not a float '''
+    return 0. if tag is missing or value is not a float '''
     try:
         return float(vnt_obj.get_tag_value(aftag).split('|')[idx])
     except:
