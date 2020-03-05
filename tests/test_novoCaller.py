@@ -273,53 +273,53 @@ def test_run_novoCaller_bam_jc50_wgenome_plus_indels_2():
 #################################################################
 #   Errors
 #################################################################
-def test_run_novoCaller_bam_annot_missing_novoAF():
-    ''' '''
-    # Variables
-    args = {'inputfile': 'tests/files/input_novoCaller_BAM_annot_missing_novoAF.vcf', 'outputfile': 'tests/files/main_test.out',
-            'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
-            'MQthr': None, 'BQthr': None}
-    # Run and Tests
-    with pytest.raises(SystemExit) as e:
-        assert main_novoCaller(args)
-    assert '\nERROR in variant parsing: novoAF allele frequency tag in INFO field is missing for variant:\n' in str(e.value)
-    assert '16805'
-    # Clean
-    os.remove('tests/files/main_test.out')
-#end def
-
-def test_run_novoCaller_bam_annot_wrong_novoAF():
-    ''' '''
-    # Variables
-    args = {'inputfile': 'tests/files/input_novoCaller_BAM_annot_wrong_novoAF.vcf', 'outputfile': 'tests/files/main_test.out',
-            'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
-            'MQthr': None, 'BQthr': None}
-    # Run and Tests
-    with pytest.raises(SystemExit) as e:
-        assert main_novoCaller(args)
-    assert '\nERROR in variant parsing: novoAF allele frequency tag in INFO field is in the wrong format for variant:\n' in str(e.value)
-    assert '16805'
-    # Clean
-    os.remove('tests/files/main_test.out')
-#end def
-
-def test_run_novoCaller_bam_missing_aftag():
-    ''' '''
-    # Variables
-    args = {'inputfile': 'tests/files/input_novoCaller_BAM_annot_missing_novoAF.vcf', 'outputfile': 'tests/files/main_test.out',
-            'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
-            'MQthr': None, 'BQthr': None}
-    # Run and Tests
-    with pytest.raises(SystemExit) as e:
-        assert main_novoCaller(args)
-    assert '\nERROR in variant parsing: novoAF allele frequency tag in INFO field is missing for variant:\n' in str(e.value)
-    assert '14699'
-    # Clean
-    os.remove('tests/files/main_test.out')
-#end def
+# def test_run_novoCaller_bam_annot_missing_novoAF():
+#     ''' '''
+#     # Variables
+#     args = {'inputfile': 'tests/files/input_novoCaller_BAM_annot_missing_novoAF.vcf', 'outputfile': 'tests/files/main_test.out',
+#             'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
+#             'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+#             'MQthr': None, 'BQthr': None}
+#     # Run and Tests
+#     with pytest.raises(SystemExit) as e:
+#         assert main_novoCaller(args)
+#     assert '\nERROR in variant parsing: novoAF allele frequency tag in INFO field is missing for variant:\n' in str(e.value)
+#     assert '16805'
+#     # Clean
+#     os.remove('tests/files/main_test.out')
+# #end def
+#
+# def test_run_novoCaller_bam_annot_wrong_novoAF():
+#     ''' '''
+#     # Variables
+#     args = {'inputfile': 'tests/files/input_novoCaller_BAM_annot_wrong_novoAF.vcf', 'outputfile': 'tests/files/main_test.out',
+#             'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
+#             'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+#             'MQthr': None, 'BQthr': None}
+#     # Run and Tests
+#     with pytest.raises(SystemExit) as e:
+#         assert main_novoCaller(args)
+#     assert '\nERROR in variant parsing: novoAF allele frequency tag in INFO field is in the wrong format for variant:\n' in str(e.value)
+#     assert '16805'
+#     # Clean
+#     os.remove('tests/files/main_test.out')
+# #end def
+#
+# def test_run_novoCaller_bam_missing_aftag():
+#     ''' '''
+#     # Variables
+#     args = {'inputfile': 'tests/files/input_novoCaller_BAM_annot_missing_novoAF.vcf', 'outputfile': 'tests/files/main_test.out',
+#             'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
+#             'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+#             'MQthr': None, 'BQthr': None}
+#     # Run and Tests
+#     with pytest.raises(SystemExit) as e:
+#         assert main_novoCaller(args)
+#     assert '\nERROR in variant parsing: novoAF allele frequency tag in INFO field is missing for variant:\n' in str(e.value)
+#     assert '14699'
+#     # Clean
+#     os.remove('tests/files/main_test.out')
+# #end def
 
 def test_run_novoCaller_bam_missing_trio():
     ''' '''

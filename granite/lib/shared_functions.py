@@ -165,3 +165,13 @@ def variant_type(REF, ALT):
     #end if
     return 'snv'
 #end def
+
+def allele_frequency(vnt_obj, aftag, idx=0):
+    ''' return allele frequency for variant from aftag in INFO,
+    set allele frequency to 0. if aftag missing or value not a float '''
+    try:
+        return float(vnt_obj.get_tag_value(aftag).split('|')[idx])
+    except:
+        return 0.
+    #end try
+#end def

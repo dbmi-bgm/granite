@@ -79,12 +79,7 @@ def main(args):
 
         # Get allele frequency from aftag tag if requested
         if is_afthr:
-            try:
-                af = float(vnt_obj.get_tag_value(aftag))
-            except Exception:
-                sys.exit('\nERROR in parsing VCF: TAG is missing or in the wrong format for variant:\n\t{0}\n'
-                            .format(vnt_obj.to_string()))
-            #end try
+            af = allele_frequency(vnt_obj, aftag)
             # Check allele frequency
             if af > afthr:
                 continue

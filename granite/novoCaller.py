@@ -793,43 +793,15 @@ def ALT_count_check_parents(ADfs, ADrs, thr=3):
 #end def
 
 #################################################################
-#    get_allele_freq
-#################################################################
-def get_allele_freq(vnt_obj, is_required=False, tag_AF='novoAF'):
-    ''' '''
-    is_tag_AF, allele_freq = False, 0. # by default allele_freq set to 0.
-    for tag in vnt_obj.INFO.split(";"):
-        if tag.startswith(tag_AF):
-            is_tag_AF = True
-            try:
-                allele_freq = float(tag.split('=')[1])
-            except Exception: # tag_AF field is not a float as expected
-                sys.exit('\nERROR in variant parsing: {0} allele frequency tag in INFO field is in the wrong format for variant:\n\t{1}\n'
-                    .format(tag_AF, vnt_obj.to_string()))
-            #end try
-            break
-        #end if
-    #end for
-
-    if not is_tag_AF and is_required:
-        sys.exit('\nERROR in variant parsing: {0} allele frequency tag in INFO field is missing for variant:\n\t{1}\n'
-                    .format(tag_AF, vnt_obj.to_string()))
-    #end if
-
-    return allele_freq
-#end def
-
-#################################################################
 #    runner
 #################################################################
 def main(args):
     ''' '''
     # Variables
-    is_afthr = True if args['afthr'] else False
     is_bam = True if args['bam'] else False
-    afthr = float(args['afthr']) if is_afthr else 1.
+    afthr = float(args['afthr']) if args['afthr'] else 1.
     ppthr = float(args['ppthr']) if args['ppthr'] else 0.
-    afthr_unrelated = 0.01 # maybe can be set equal to afthr
+    afthr_unrelated = float(args['afthr_unrelated']) if args['afthr_unrelated'] else 0.01
     MQthr = int(args['MQthr']) if args['MQthr'] else 0
     BQthr = int(args['BQthr']) if args['BQthr'] else 0
     AF_tag = args['aftag'] if args['aftag'] else 'novoAF'
@@ -881,7 +853,7 @@ def main(args):
         # #end if
 
         # Getting allele frequency from novoAF tag
-        af = get_allele_freq(vnt_obj, is_required=is_afthr, tag_AF=AF_tag)
+        af = allele_frequency(vnt_obj, AF_tag)
 
         # Calculate statistics
         if af <= afthr: # hard filter on allele frequency

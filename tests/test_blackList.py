@@ -102,15 +102,15 @@ def test_args_afthr_conflict():
     assert str(e.value) == '\nERROR in parsing arguments: to filter by population allele frequency please specify the TAG to use\n'
 #end def
 
-def test_aftag_missing():
-    ''' '''
-    # Variables
-    args = {'inputfile': 'tests/files/input_blackList_novoAF_missing.vcf', 'outputfile': 'tests/files/main_test.out',
-            'aftag': 'novoAF', 'afthr': '0.2', 'bigfile': None}
-    # Run and Tests
-    with pytest.raises(SystemExit) as e:
-        assert main_blackList(args)
-    assert '27100779' in str(e.value)
-    # Clean
-    os.remove('tests/files/main_test.out')
-#end def
+# def test_aftag_missing():
+#     ''' '''
+#     # Variables
+#     args = {'inputfile': 'tests/files/input_blackList_novoAF_missing.vcf', 'outputfile': 'tests/files/main_test.out',
+#             'aftag': 'novoAF', 'afthr': '0.2', 'bigfile': None}
+#     # Run and Tests
+#     with pytest.raises(SystemExit) as e:
+#         assert main_blackList(args)
+#     assert '27100779' in str(e.value)
+#     # Clean
+#     os.remove('tests/files/main_test.out')
+# #end def
