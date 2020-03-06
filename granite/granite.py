@@ -48,8 +48,8 @@ def main():
 
     novoCaller_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     novoCaller_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
-    novoCaller_parser.add_argument('-u', '--unrelatedfiles', help='TSV file containing ID<TAB>Path/to/file for unrelated files used to train the model (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
-    novoCaller_parser.add_argument('-t', '--triofiles', help='TSV file containing ID<TAB>Path/to/file for family files, the PROBAND must be listed as LAST (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
+    novoCaller_parser.add_argument('-u', '--unrelatedfiles', help='TSV index file containing ID<TAB>Path/to/file for unrelated files used to train the model (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
+    novoCaller_parser.add_argument('-t', '--triofiles', help='TSV index file containing ID<TAB>Path/to/file for family files, the PROBAND must be listed as LAST (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
     novoCaller_parser.add_argument('--ppthr', help='threshold to filter by posterior probabilty for de novo calls (>=) [0]', type=float, required=False)
     novoCaller_parser.add_argument('--afthr', help='threshold to filter by population allele frequency (<=) [1]', type=float, required=False)
     novoCaller_parser.add_argument('--afthr_unrelated', help='threshold to filter by allele frequency calculated among unrelated (<) [0.01]', type=float, required=False)
@@ -106,8 +106,8 @@ def main():
     toBig_parser.add_argument('--abthr', help='minimum percentage of alternate reads compared to reference reads to count the file in "--fithr" when "calling" by allelic balance (>=) [15]', type=int, required=False)
 
     # Add rckTar to subparsers
-    rckTar_parser = subparsers.add_parser('rckTar', description='utility to create a tar archive of bgzip and tabix indexed RCK files. Create an index file for the archive to be used by novoCaller',
-                                                help='utility to create a tar archive of bgzip and tabix indexed RCK files. Create an index file for the archive to be used by novoCaller')
+    rckTar_parser = subparsers.add_parser('rckTar', description='utility to create a tar archive from bgzip and tabix indexed RCK files. Create an index file for the archive',
+                                                help='utility to create a tar archive from bgzip and tabix indexed RCK files. Create an index file for the archive')
 
     rckTar_parser.add_argument('-t', '--ttar', help='target tar to write results, use .rck.tar as extension', type=str, required=True)
     rckTar_parser.add_argument('-f', '--file', help='file to be archived. Specify multiple files as: "-f SampleID_1.rck.gz -f SampleID_2.rck.gz -f ...". Files order is maintained while creating the index', action='append', required=True)

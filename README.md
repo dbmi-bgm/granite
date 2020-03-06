@@ -85,11 +85,11 @@ novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The 
                             output file to write results as VCF, use .vcf as
                             extension
       -u UNRELATEDFILES, --unrelatedfiles UNRELATEDFILES
-                            TSV file containing ID<TAB>Path/to/file for unrelated
+                            TSV index file containing ID<TAB>Path/to/file for unrelated
                             files used to train the model (BAM or bgzip and tabix
                             indexed RCK)
       -t TRIOFILES, --triofiles TRIOFILES
-                            TSV file containing ID<TAB>Path/to/file for family
+                            TSV index file containing ID<TAB>Path/to/file for family
                             files, the PROBAND must be listed as LAST (BAM or
                             bgzip and tabix indexed RCK)
       --ppthr PPTHR         threshold to filter by posterior probabilty for de

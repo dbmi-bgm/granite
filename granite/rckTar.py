@@ -17,6 +17,7 @@
 #################################################################
 import sys, os
 import tarfile
+import ntpath
 
 
 #################################################################
@@ -36,7 +37,8 @@ def main(args):
     # Create index file
     with open(ttar + '.index', 'w') as fo:
         for file in files:
-            fo.write(file.split('.')[0] + '\t' + file + '\n')
+            filename = ntpath.basename(file)
+            fo.write(filename.split('.')[0] + '\t' + filename + '\n')
         # end for
     #end with
 
@@ -44,8 +46,9 @@ def main(args):
     tar_file = tarfile.open(ttar, 'w')
 
     for file in files:
-        tar_file.add(file)
-        tar_file.add(file + '.tbi')
+        filename = ntpath.basename(file)
+        tar_file.add(file, filename)
+        tar_file.add(file + '.tbi', filename + '.tbi')
     #end for
 
     tar_file.close()
