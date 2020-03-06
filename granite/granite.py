@@ -25,6 +25,7 @@ from granite import blackList
 from granite import whiteList
 from granite import mpileupCounts
 from granite import toBig
+from granite import rckTar
 
 
 #################################################################
@@ -104,13 +105,21 @@ def main():
     toBig_parser.add_argument('--rdthr', help='minimum number of alternate reads to count the file in "--fithr", if not specified "calls" are made by allelic balance (>=)', type=int, required=False)
     toBig_parser.add_argument('--abthr', help='minimum percentage of alternate reads compared to reference reads to count the file in "--fithr" when "calling" by allelic balance (>=) [15]', type=int, required=False)
 
+    # Add rckTar to subparsers
+    rckTar_parser = subparsers.add_parser('rckTar', description='utility to create a tar archive of bgzip and tabix indexed RCK files. Create an index file for the archive to be used by novoCaller',
+                                                help='utility to create a tar archive of bgzip and tabix indexed RCK files. Create an index file for the archive to be used by novoCaller')
+
+    rckTar_parser.add_argument('-t', '--ttar', help='target tar to write results, use .rck.tar as extension', type=str, required=True)
+    rckTar_parser.add_argument('-f', '--file', help='file to be archived. Specify multiple files as: "-f SampleID_1.rck.gz -f SampleID_2.rck.gz -f ...". Files order is maintained while creating the index', action='append', required=True)
+
     # Subparsers map
     subparser_map = {
                     'novoCaller': novoCaller_parser,
                     'blackList': blackList_parser,
                     'whiteList': whiteList_parser,
                     'mpileupCounts': mpileupCounts_parser,
-                    'toBig': toBig_parser
+                    'toBig': toBig_parser,
+                    'rckTar': rckTar_parser
                     }
 
     # Checking arguments
@@ -139,6 +148,8 @@ def main():
         mpileupCounts.main(args)
     elif args['func'] == 'toBig':
         toBig.main(args)
+    elif args['func'] == 'rckTar':
+        rckTar.main(args)
     #end if
 #end def
 
