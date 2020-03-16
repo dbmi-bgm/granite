@@ -16,7 +16,7 @@ from granite.lib.shared_functions import *
 def test_run_toBig_rdthr_2_all():
     ''' '''
     # Variables
-    args = {'inputfiles': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
+    args = {'file': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
             'tests/files/input_toBig_3.rck.gz'], 'outputfile': 'tests/files/main_test.out',
             'fithr': '3', 'rdthr': '2', 'ncores': '2', 'abthr': None,
             'regionfile': 'tests/files/input_toBig.regions',
@@ -55,7 +55,7 @@ def test_run_toBig_rdthr_2_all():
 def test_run_toBig_rdthr_2_2():
     ''' '''
     # Variables
-    args = {'inputfiles': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
+    args = {'file': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
             'tests/files/input_toBig_3.rck.gz'], 'outputfile': 'tests/files/main_test.out',
             'fithr': '2', 'rdthr': '2', 'ncores': '2', 'abthr': None,
             'regionfile': 'tests/files/input_toBig.regions',
@@ -94,7 +94,7 @@ def test_run_toBig_rdthr_2_2():
 def test_run_toBig_rdthr_17_all():
     ''' '''
     # Variables
-    args = {'inputfiles': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
+    args = {'file': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
             'tests/files/input_toBig_3.rck.gz'], 'outputfile': 'tests/files/main_test.out',
             'fithr': '3', 'rdthr': '17', 'ncores': None, 'abthr': None,
             'regionfile': 'tests/files/input_toBig.regions',
@@ -133,7 +133,7 @@ def test_run_toBig_rdthr_17_all():
 def test_run_toBig_rdthr_17_2():
     ''' '''
     # Variables
-    args = {'inputfiles': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
+    args = {'file': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
             'tests/files/input_toBig_3.rck.gz'], 'outputfile': 'tests/files/main_test.out',
             'fithr': '2', 'rdthr': '17', 'ncores': '1', 'abthr': None,
             'regionfile': 'tests/files/input_toBig.regions',
@@ -173,7 +173,7 @@ def test_run_toBig_rdthr_17_2():
 def test_run_toBig_abthr_15_all():
     ''' '''
     # Variables
-    args = {'inputfiles': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
+    args = {'file': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
             'tests/files/input_toBig_3.rck.gz'], 'outputfile': 'tests/files/main_test.out',
             'fithr': '3', 'rdthr': None, 'ncores': '2', 'abthr': None,
             'regionfile': 'tests/files/input_toBig.regions',
@@ -212,7 +212,7 @@ def test_run_toBig_abthr_15_all():
 def test_run_toBig_abthr_25_all():
     ''' '''
     # Variables
-    args = {'inputfiles': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
+    args = {'file': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
             'tests/files/input_toBig_3.rck.gz'], 'outputfile': 'tests/files/main_test.out',
             'fithr': '3', 'rdthr': None, 'ncores': '2', 'abthr': '25',
             'regionfile': 'tests/files/input_toBig.regions',
@@ -251,7 +251,7 @@ def test_run_toBig_abthr_25_all():
 def test_run_toBig_abthr_25_2():
     ''' '''
     # Variables
-    args = {'inputfiles': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
+    args = {'file': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
             'tests/files/input_toBig_3.rck.gz'], 'outputfile': 'tests/files/main_test.out',
             'fithr': '2', 'rdthr': None, 'ncores': '1', 'abthr': '25',
             'regionfile': 'tests/files/input_toBig.regions',
@@ -290,7 +290,7 @@ def test_run_toBig_abthr_25_2():
 def test_run_toBig_rdthr_2_1_single():
     ''' '''
     # Variables
-    args = {'inputfiles': ['tests/files/input_toBig_1.rck.gz'],
+    args = {'file': ['tests/files/input_toBig_1.rck.gz'],
             'outputfile': 'tests/files/main_test.out',
             'fithr': '1', 'rdthr': '2', 'ncores': '2', 'abthr': None,
             'regionfile': 'tests/files/input_toBig.regions',
@@ -329,7 +329,7 @@ def test_run_toBig_rdthr_2_1_single():
 def test_run_toBig_rdthr_2_2_single():
     ''' '''
     # Variables
-    args = {'inputfiles': ['tests/files/input_toBig_1.rck.gz'],
+    args = {'file': ['tests/files/input_toBig_1.rck.gz'],
             'outputfile': 'tests/files/main_test.out',
             'fithr': '2', 'rdthr': '2', 'ncores': '2', 'abthr': None,
             'regionfile': 'tests/files/input_toBig.regions',
@@ -372,7 +372,7 @@ def test_run_toBig_rdthr_2_2_single():
 def test_run_toBig_rdthr_2_all_miss_pos():
     ''' '''
     # Variables
-    args = {'inputfiles': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
+    args = {'file': ['tests/files/input_toBig_1.rck.gz', 'tests/files/input_toBig_2.rck.gz',
             'tests/files/input_toBig_3.rck.gz', 'tests/files/input_toBig_miss_pos.rck.gz'], 'outputfile': 'tests/files/main_test.out',
             'fithr': '4', 'rdthr': '2', 'ncores': '2', 'abthr': None,
             'regionfile': 'tests/files/input_toBig.regions',

@@ -96,10 +96,10 @@ def main():
     toBig_parser = subparsers.add_parser('toBig', description='utility that converts counts from bgzip and tabix indexed RCK format into BIG format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions',
                                                 help='utility that converts counts from bgzip and tabix indexed RCK format into BIG format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions')
 
-    toBig_parser.add_argument('-i', '--inputfiles', help='list of files to be used for the single/joint calling [e.g. -i file_1 file_2 ...], expected bgzip and tabix indexed RCK files', nargs='+')
+    toBig_parser.add_argument('-f', '--file', help='file to be used to call positions. To do joint calling specify multiple files as: "-f file_1 -f file_2 -f ...". Expected bgzip and tabix indexed RCK file', action='append', required=True)
     toBig_parser.add_argument('-o', '--outputfile', help='output file to write results as BIG format (binary hdf5), use .big as extension', type=str, required=True)
     toBig_parser.add_argument('-r', '--regionfile', help='file containing regions to be used [e.g. chr1:1-10000000, 1:1-10000000, chr1, 1] listed as a column, chromosomes names must match the reference', type=str, required=True)
-    toBig_parser.add_argument('-f', '--chromfile', help='chrom.sizes file containing chromosomes size information', type=str, required=True)
+    toBig_parser.add_argument('-c', '--chromfile', help='chrom.sizes file containing chromosomes size information', type=str, required=True)
     toBig_parser.add_argument('--ncores', help='number of cores to be used if multiple regions are specified [1]', type=int, required=False)
     toBig_parser.add_argument('--fithr', help='minimum number of files with at least "--rdthr" for the alternate allele or having the variant, "calls" by allelic balance, to jointly "call" position (>=)', type=int, required=True)
     toBig_parser.add_argument('--rdthr', help='minimum number of alternate reads to count the file in "--fithr", if not specified "calls" are made by allelic balance (>=)', type=int, required=False)

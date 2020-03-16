@@ -272,10 +272,9 @@ toBig converts counts from bgzip and tabix indexed RCK format into BIG format. P
                          [--rdthr RDTHR] [--abthr ABTHR]
 
     optional arguments:
-      -i INPUTFILE [INPUTFILE ...], --inputfiles INPUTFILE [INPUTFILE ...]
-                            list of files to be used for the single/joint calling
-                            [e.g. -i file_1 file_2 ...], expected bgzip and tabix
-                            indexed RCK files
+      -f FILE, --file FILE  file to be used to call positions. To do joint calling
+                            specify multiple files as: "-f file_1 -f file_2 -f ...".
+                            Expected bgzip and tabix indexed RCK file
       -o OUTPUTFILE, --outputfile OUTPUTFILE
                             output file to write results as BIG format (binary
                             hdf5), use .big as extension
@@ -283,7 +282,7 @@ toBig converts counts from bgzip and tabix indexed RCK format into BIG format. P
                             file containing regions to be used [e.g.
                             chr1:1-10000000, 1:1-10000000, chr1, 1] listed as a
                             column, chromosomes names must match the reference
-      -f CHROMFILE, --chromfile CHROMFILE
+      -c CHROMFILE, --chromfile CHROMFILE
                             chrom.sizes file containing chromosomes size
                             information
       --ncores NCORES       number of cores to be used if multiple regions are
@@ -301,8 +300,21 @@ toBig converts counts from bgzip and tabix indexed RCK format into BIG format. P
 #### Examples
 toBig can be used to calculate positions to blacklist for common variants by using unrelated samples. This command will set to `True` in BIG structure positions with allelic balance for alternate allele equal/higher than `--abthr` in more that `--fithr` samples (joint calling).
 
-    granite toBig -i file file file file ... -o file.out.big -f file.chrom.sizes -r file.regions --fithr <int> --abthr <int>
+    granite toBig -f file -f file -f file -f file -f ... -o file.out.big -c file.chrom.sizes -r file.regions --fithr <int> --abthr <int>
 
 Absolute reads count can be used instead of allelic balance to call positions. This command will set to `True` in BIG structure positions with reads count for alternate allele equal/higher than `--rdthr` in more that `--fithr` samples (joint calling).
 
-    granite toBig -i file file file file ... -o file.out.big -f file.chrom.sizes -r file.regions --fithr <int> --rdthr <int>
+    granite toBig -f file -f file -f file -f file -f ... -o file.out.big -c file.chrom.sizes -r file.regions --fithr <int> --rdthr <int>
+
+&nbsp;
+### rckTar
+rckTar creates a tar archive from bgzip and tabix indexed RCK files. Creates an index file for the archive.
+
+#### Arguments
+    usage: granite rckTar [-h] -t TTAR -f FILE
+
+    optional arguments:
+      -t TTAR, --ttar TTAR  target tar to write results, use .rck.tar as extension
+      -f FILE, --file FILE  file to be archived. Specify multiple files as: "-f
+                            SampleID_1.rck.gz -f SampleID_2.rck.gz -f ...". Files
+                            order is maintained while creating the index

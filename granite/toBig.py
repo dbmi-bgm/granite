@@ -162,7 +162,7 @@ def main(args):
     rdthr = int(args['rdthr']) if args['rdthr'] else 0
     abthr = int(args['abthr']) if args['abthr'] else 15
     ncores = int(args['ncores']) if args['ncores'] else 1
-    files = args['inputfiles']
+    files = args['file']
 
     # Data structures
     chr_length, shared_arrays = {}, {}
