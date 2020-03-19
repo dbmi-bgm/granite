@@ -780,7 +780,7 @@ def PP_calc(trio_files, unrelated_files, chrom, pos, REF, ALT, allele_freq, MQth
 #################################################################
 #    ALT_count_check_parents
 #################################################################
-def ALT_count_check_parents(ADfs, ADrs, thr=3):
+def ALT_count_check_parents(ADfs, ADrs, thr):
     ''' check if total alternate reads count in parents is over threshold '''
     if len(ADfs) != 3 or len(ADrs) != 3:
         sys.exit("\nERROR in retrieving stranded AD counts: missing information for trio\n")
@@ -804,6 +804,7 @@ def main(args):
     afthr_unrelated = float(args['afthr_unrelated']) if args['afthr_unrelated'] else 0.01
     MQthr = int(args['MQthr']) if args['MQthr'] else 0
     BQthr = int(args['BQthr']) if args['BQthr'] else 0
+    ADthr = int(args['ADthr']) if args['ADthr'] else 0
     AF_tag = args['aftag'] if args['aftag'] else 'novoAF'
     RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
     novoCaller_tag = '##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller. Format:\'Post_prob|AF_unrel\'">'
@@ -860,7 +861,10 @@ def main(args):
             analyzed += 1
             PP, ADfs, ADrs, ADfs_U, ADrs_U, _, _, _, AF_unrel = \
                 PP_calc(trio_files, unrelated_files, vnt_obj.CHROM, vnt_obj.POS, vnt_obj.REF, vnt_obj.ALT, af, MQthr, BQthr, is_bam)
-            if AF_unrel < afthr_unrelated and PP >= ppthr and not ALT_count_check_parents(ADfs, ADrs): # hard filter on AF_unrel, PP, total alternate reads count
+            if ADthr and ALT_count_check_parents(ADfs, ADrs, ADthr):
+                PP = 0.
+            #end if
+            if AF_unrel < afthr_unrelated and PP >= ppthr: # hard filter on AF_unrel, PP
                 variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj])
             #end if
         #end if
