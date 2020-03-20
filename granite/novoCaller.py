@@ -801,7 +801,7 @@ def main(args):
     is_bam = True if args['bam'] else False
     afthr = float(args['afthr']) if args['afthr'] else 1.
     ppthr = float(args['ppthr']) if args['ppthr'] else 0.
-    afthr_unrelated = float(args['afthr_unrelated']) if args['afthr_unrelated'] else 0.01
+    afthr_unrelated = float(args['afthr_unrelated']) if args['afthr_unrelated'] else 1.
     MQthr = int(args['MQthr']) if args['MQthr'] else 0
     BQthr = int(args['BQthr']) if args['BQthr'] else 0
     ADthr = int(args['ADthr']) if args['ADthr'] else 0
@@ -864,7 +864,7 @@ def main(args):
             if ADthr and ALT_count_check_parents(ADfs, ADrs, ADthr):
                 PP = 0.
             #end if
-            if AF_unrel < afthr_unrelated and PP >= ppthr: # hard filter on AF_unrel, PP
+            if AF_unrel <= afthr_unrelated and PP >= ppthr: # hard filter on AF_unrel, PP
                 variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj])
             #end if
         #end if

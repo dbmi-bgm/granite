@@ -39,9 +39,8 @@ def check_VEP(vnt_obj, idx, VEPremove, VEPrescue):
         trscrpt_terms = set(trscrpt.split('|')[idx].replace('~', '&').split('&'))
         if trscrpt_terms.intersection(VEPrescue):
             return True
-        elif trscrpt_terms.intersection(VEPremove):
-            pass
-        else: return True
+        elif trscrpt_terms.difference(VEPremove):
+            return True
         #end if
     #end for
     return False
@@ -72,9 +71,18 @@ def check_CLINVAR(vnt_obj):
 def main(args):
     ''' '''
     # Variables
-    VEPremove = {'intron_variant', 'intergenic_variant',
-                 'downstream_gene_variant', 'upstream_gene_variant',
-                 'regulatory_region_variant'}
+    VEPremove = {
+                # intronic and intergenic features tags
+                'intron_variant', 'intergenic_variant',
+                'downstream_gene_variant', 'upstream_gene_variant',
+                'NMD_transcript_variant', 'non_coding_transcript_variant',
+                'non_coding_transcript_exon_variant',
+                # regulatory features tags
+                'feature_elongation', 'feature_truncation',
+                'regulatory_region_variant', 'regulatory_region_amplification',
+                'regulatory_region_ablation', 'splice_region_variant',
+                'TFBS_amplification', 'TFBS_ablation', 'TF_binding_site_variant'
+                }
     VEPrescue, consequence_idx = {}, 0
     BED_bitarrays = {}
     is_VEP = True if args['VEP'] else False

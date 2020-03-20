@@ -52,7 +52,7 @@ def main():
     novoCaller_parser.add_argument('-t', '--triofiles', help='TSV index file containing ID<TAB>Path/to/file for family files, the PROBAND must be listed as LAST (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
     novoCaller_parser.add_argument('--ppthr', help='threshold to filter by posterior probabilty for de novo calls (>=) [0]', type=float, required=False)
     novoCaller_parser.add_argument('--afthr', help='threshold to filter by population allele frequency (<=) [1]', type=float, required=False)
-    novoCaller_parser.add_argument('--afthr_unrelated', help='threshold to filter by allele frequency calculated among unrelated (<) [0.01]', type=float, required=False)
+    novoCaller_parser.add_argument('--afthr_unrelated', help='threshold to filter by allele frequency calculated among unrelated (<=) [1]', type=float, required=False)
     novoCaller_parser.add_argument('--aftag', help='TAG (TAG=<float>) to be used to filter by population allele frequency [novoAF]', type=str, required=False) # novoAF=<float>
     novoCaller_parser.add_argument('--bam', help='by default the program expect bgzip and tabix indexed RCK files for "--triofiles" and "--unrelatedfiles", add this flag if files are in BAM format instead (SLOWER)', action='store_true', required=False)
     novoCaller_parser.add_argument('--MQthr', help='(only with "--bam") minimum mapping quality for an alignment to be used (>=) [0]', type=int, required=False)
@@ -88,8 +88,8 @@ def main():
     whiteList_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
     whiteList_parser.add_argument('--SpliceAI', help='threshold to whitelist variants by SpliceAI value (>=)', type=float, required=False)
     whiteList_parser.add_argument('--CLINVAR', help='flag to whitelist variants with a CLINVAR Id', action='store_true', required=False)
-    whiteList_parser.add_argument('--VEP', help='use VEP annotations to whitelist exonic and functional relevant variants (removed by default variants flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant" or "regulatory_region_variant")', action='store_true', required=False)
-    whiteList_parser.add_argument('--VEPrescue', help='additional terms to overrule removed flags and/or to rescue and whitelist variants when in combination in the format annot&annot (e.g. intron_variant&splice_region_variant)', nargs='+', required=False)
+    whiteList_parser.add_argument('--VEP', help='use VEP annotations to whitelist exonic and relevant variants (removed by default variants in intronic, intergenic, or regulatory regions)', action='store_true', required=False)
+    whiteList_parser.add_argument('--VEPrescue', help='additional terms to overrule removed flags to rescue and whitelist variants', nargs='+', required=False)
     whiteList_parser.add_argument('--VEPremove', help='additional terms to be removed', nargs='+', required=False)
     whiteList_parser.add_argument('--BEDfile', help='BED format file with positions to whitelist', type=str, required=False)
 

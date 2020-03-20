@@ -202,14 +202,10 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
       --CLINVAR             flag to whitelist variants with a CLINVAR Id
       --VEP                 use VEP "Consequence" annotations to whitelist exonic and
                             functional relevant variants (removed by default variants
-                            flagged as "intron_variant", "intergenic_variant",
-                            "downstream_gene_variant", "upstream_gene_variant" or
-                            "regulatory_region_variant")
+                            in intronic, intergenic, or regulatory regions)
       --VEPrescue VEPRESCUE [VEPRESCUE ...]
-                            additional terms to overrule removed flags and/or to
-                            rescue and whitelist variants when in combination in
-                            the format annot&annot (e.g.
-                            intron_variant&splice_region_variant)
+                            additional terms to overrule removed flags to
+                            rescue and whitelist variants
       --VEPremove VEPREMOVE [VEPREMOVE ...]
                             additional terms to be removed
       --BEDfile BEDFILE     BED format file with positions to whitelist
@@ -223,7 +219,7 @@ Whitelists variants based on SpliceAI annotations. This filters in variants with
 
     granite whiteList -i file.vcf -o file.out.vcf --SpliceAI <float>
 
-Whitelists variants based on VEP "Consequence" annotations. This withelists exonic and functional relevant variants by removing variants flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant" or "regulatory_region_variant". It is possible to specify additional terms to remove using `--VEPremove` and/or additional terms to rescue using `--VEPrescue`. To use VEP, annotation must be provided for each variant in INFO column.
+Whitelists variants based on VEP "Consequence" annotations. This withelists exonic and functional relevant variants by removing variants flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant", "regulatory_region_", "non_coding_transcript_". It is possible to specify additional [*terms*](https://m.ensembl.org/info/genome/variation/prediction/predicted_data.html "VEP calculated consequences") to remove using `--VEPremove` and terms to rescue using `--VEPrescue`. To use VEP, annotation must be provided for each variant in INFO column.
 
     granite whiteList -i file.vcf -o file.out.vcf --VEP
     granite whiteList -i file.vcf -o file.out.vcf --VEP --VEPremove <str> <str>
