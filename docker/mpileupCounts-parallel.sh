@@ -5,6 +5,8 @@ inputbam=$1
 reference=$2
 chromosomefile=$3
 nthreads=$4
+MQthr=$5
+BQthr=$6
 
 # self variables
 directory=mpileups/
@@ -13,7 +15,7 @@ directory=mpileups/
 mkdir -p $directory
 
 # creating basic command
-command="granite mpileupCounts -i $inputbam -r $reference --region {} -o ${directory}bam_{}.out"
+command="granite mpileupCounts -i $inputbam -r $reference --region {} -o ${directory}bam_{}.out --MQthr $MQthr --BQthr $BQthr"
 
 # running command
 cat $chromosomefile | parallel --halt 2 --jobs $nthreads $command || exit 1
