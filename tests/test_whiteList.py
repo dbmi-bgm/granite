@@ -354,7 +354,7 @@ def test_args_VEP_conflict():
     os.remove('tests/files/main_test.out')
 #end def
 
-def test_args_VEP_conflict():
+def test_args_CLINVAR_conflict():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
