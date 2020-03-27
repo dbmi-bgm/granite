@@ -75,7 +75,7 @@ class Vcf(object):
                                             .format(tag))
                     #end try
                     for i, field_i in enumerate(format.split(sep)):
-                        if field == field_i.strip(): return i
+                        if field in field_i.strip(): return i
                         #end if
                     #end for
                 #end if

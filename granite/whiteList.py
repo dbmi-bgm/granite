@@ -57,11 +57,21 @@ def check_spliceAI(vnt_obj, thr=0.8):
     return False
 #end def
 
-def check_CLINVAR(vnt_obj):
-    ''' check if CLINVAR tag is present '''
+def check_CLINVAR(vnt_obj, idx, CLINVARonly):
+    ''' check if CLINVAR tag is present, if CLINVARonly check if
+    variant has specified tags or keywords '''
     try: val_get = vnt_obj.get_tag_value('CLINVAR')
     except Exception: return False
     #end try
+    if CLINVARonly:
+        CLINSIG = val_get.split('|')[idx]
+        for term in CLINVARonly:
+            if term.lower() in CLINSIG.lower():
+                return True
+            #end if
+        #end for
+        return False
+    #end if
     return True
 #end def
 
@@ -84,6 +94,7 @@ def main(args):
                 'TFBS_amplification', 'TFBS_ablation', 'TF_binding_site_variant'
                 }
     VEPrescue, consequence_idx = {}, 0
+    CLINVARonly, CLINSIG_idx = {}, 0  #CLINSIG or CLNSIG
     BED_bitarrays = {}
     is_VEP = True if args['VEP'] else False
     is_CLINVAR = True if args['CLINVAR'] else False
@@ -109,6 +120,18 @@ def main(args):
         #end if
     elif args['VEPrescue'] or args['VEPremove']:
         sys.exit('\nERROR in parsing arguments: specify the flag "--VEP" to filter by VEP annotations to apply rescue terms or remove additional terms\n')
+    #end if
+
+    #CLINVAR
+    if is_CLINVAR:
+        if args['CLINVARonly']:
+            CLINVARonly = {term for term in args['CLINVARonly']}
+            try: CLINSIG_idx = vcf_obj.header.get_tag_field_idx('CLINVAR', 'CLINSIG')
+            except: CLINSIG_idx = vcf_obj.header.get_tag_field_idx('CLINVAR', 'CLNSIG')
+            #end try
+        #end if
+    elif args['CLINVARonly']:
+        sys.exit('\nERROR in parsing arguments: specify the flag "--CLINVAR" to filter by CLINVAR annotations to specify tags or keywords to whitelist\n')
     #end if
 
     # BED
@@ -157,7 +180,7 @@ def main(args):
 
         # Check CLINVAR
         if is_CLINVAR:
-            if check_CLINVAR(vnt_obj):
+            if check_CLINVAR(vnt_obj, CLINSIG_idx, CLINVARonly):
                 fo.write(vnt_obj.to_string())
                 continue
             #end if

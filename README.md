@@ -199,10 +199,14 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
                             output file to write results as VCF, use .vcf as
                             extension
       --SpliceAI SPLICEAI   threshold to whitelist variants by SpliceAI value (>=)
-      --CLINVAR             flag to whitelist variants with a CLINVAR Id
-      --VEP                 use VEP "Consequence" annotations to whitelist exonic and
-                            functional relevant variants (removed by default variants
-                            in intronic, intergenic, or regulatory regions)
+      --CLINVAR             flag to whitelist all variants with a CLINVAR Id
+      --CLINVARonly CLINVARONLY [CLINVARONLY ...]
+                            CLINVAR "CLINSIG" tags or keywords to be saved. Sets
+                            for whitelist only CLINVAR variants with specified
+                            tags or keywords
+      --VEP                 use VEP "Consequence" annotations to whitelist exonic
+                            and relevant variants (removed by default variants in
+                            intronic, intergenic, or regulatory regions)
       --VEPrescue VEPRESCUE [VEPRESCUE ...]
                             additional terms to overrule removed flags to
                             rescue and whitelist variants
@@ -211,9 +215,13 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
       --BEDfile BEDFILE     BED format file with positions to whitelist
 
 #### Examples
-Whitelists variants with CLINVAR ID. If available, CLINVAR annotation must be provided in INFO column.
+Whitelists variants with CLINVAR Id. If available, CLINVAR annotation must be provided in INFO column.
 
     granite whiteList -i file.vcf -o file.out.vcf --CLINVAR
+
+Whitelists only "Pathogenic" and "Likely_pathogenic" variants with CLINVAR Id. CLINVAR "CLINSIG" annotation must be provided in INFO column.
+
+    granite whiteList -i file.vcf -o file.out.vcf --CLINVAR --CLINVARonly Pathogenic
 
 Whitelists variants based on SpliceAI annotations. This filters in variants with SpliceAI score equal/higher than `--SpliceAI`. If available SpliceAI annotation must be provided in INFO column.
 
