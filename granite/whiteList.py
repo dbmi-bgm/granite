@@ -27,9 +27,9 @@ from granite.lib import vcf_parser
 #    FUNCTIONS
 #
 #################################################################
-def check_VEP(vnt_obj, idx, VEPremove, VEPrescue):
-    ''' '''
-    try: val_get = vnt_obj.get_tag_value('VEP')
+def check_VEP(vnt_obj, idx, VEPremove, VEPrescue, VEPtag):
+    ''' check VEP annotations from VEPtag '''
+    try: val_get = vnt_obj.get_tag_value(VEPtag)
     except Exception: return False
     #end try
     trscrpt_list = val_get.split(',')
@@ -57,10 +57,10 @@ def check_spliceAI(vnt_obj, thr=0.8):
     return False
 #end def
 
-def check_CLINVAR(vnt_obj, idx, CLINVARonly):
-    ''' check if CLINVAR tag is present, if CLINVARonly check if
+def check_CLINVAR(vnt_obj, idx, CLINVARonly, CLINVARtag):
+    ''' check if CLINVARtag is present, if CLINVARonly check if
     variant has specified tags or keywords '''
-    try: val_get = vnt_obj.get_tag_value('CLINVAR')
+    try: val_get = vnt_obj.get_tag_value(CLINVARtag)
     except Exception: return False
     #end try
     if CLINVARonly:
@@ -100,6 +100,8 @@ def main(args):
     is_CLINVAR = True if args['CLINVAR'] else False
     SpliceAI_thr = float(args['SpliceAI']) if args['SpliceAI'] else 0.
     is_BEDfile = True if args['BEDfile'] else False
+    VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
+    CLINVARtag = args['CLINVARtag'] if args['CLINVARtag'] else 'CLINVAR'
 
     # Buffers
     fo = open(args['outputfile'], 'w')
@@ -113,7 +115,7 @@ def main(args):
 
     # VEP
     if is_VEP:
-        consequence_idx = vcf_obj.header.get_tag_field_idx('VEP', 'Consequence')
+        consequence_idx = vcf_obj.header.get_tag_field_idx(VEPtag, 'Consequence')
         if args['VEPrescue']: VEPrescue = {term for term in args['VEPrescue']}
         #end if
         if args['VEPremove']: VEPremove.update({term for term in args['VEPremove']})
@@ -126,8 +128,8 @@ def main(args):
     if is_CLINVAR:
         if args['CLINVARonly']:
             CLINVARonly = {term for term in args['CLINVARonly']}
-            try: CLINSIG_idx = vcf_obj.header.get_tag_field_idx('CLINVAR', 'CLINSIG')
-            except: CLINSIG_idx = vcf_obj.header.get_tag_field_idx('CLINVAR', 'CLNSIG')
+            try: CLINSIG_idx = vcf_obj.header.get_tag_field_idx(CLINVARtag, 'CLINSIG')
+            except: CLINSIG_idx = vcf_obj.header.get_tag_field_idx(CLINVARtag, 'CLNSIG')
             #end try
         #end if
     elif args['CLINVARonly']:
@@ -164,7 +166,7 @@ def main(args):
 
         # Check VEP
         if is_VEP:
-            if check_VEP(vnt_obj, consequence_idx, VEPremove, VEPrescue):
+            if check_VEP(vnt_obj, consequence_idx, VEPremove, VEPrescue, VEPtag):
                 fo.write(vnt_obj.to_string())
                 continue
             #end if
@@ -180,7 +182,7 @@ def main(args):
 
         # Check CLINVAR
         if is_CLINVAR:
-            if check_CLINVAR(vnt_obj, CLINSIG_idx, CLINVARonly):
+            if check_CLINVAR(vnt_obj, CLINSIG_idx, CLINVARonly, CLINVARtag):
                 fo.write(vnt_obj.to_string())
                 continue
             #end if

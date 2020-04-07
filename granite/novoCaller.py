@@ -840,7 +840,7 @@ def main(args):
         if ID not in vcf_obj.header.IDs_genotypes:
             sys.exit('\nERROR in VCF file: missing information for some family member\n')
         #end if
-    #end if
+    #end for
 
     # Reading variants
     analyzed = 0
@@ -868,7 +868,7 @@ def main(args):
                 variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj])
             #end if
         #end if
-    #end if
+    #end for
 
     # Writing output
     sys.stderr.write('\n\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(i + 1) + ' total variants\n')

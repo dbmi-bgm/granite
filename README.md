@@ -97,7 +97,7 @@ novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The 
       --afthr AFTHR         threshold to filter by population allele frequency
                             (<=) [1]
       --aftag AFTAG         TAG (TAG=<float>) to be used to filter by population
-                            allele frequency [novoAF]
+                            allele frequency
       --bam                 by default the program expect bgzip and tabix indexed
                             RCK files for "--triofiles" and "--unrelatedfiles",
                             add this flag if files are in BAM format instead
@@ -201,12 +201,19 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
       --SpliceAI SPLICEAI   threshold to whitelist variants by SpliceAI value (>=)
       --CLINVAR             flag to whitelist all variants with a CLINVAR Id
       --CLINVARonly CLINVARONLY [CLINVARONLY ...]
-                            CLINVAR "CLINSIG" tags or keywords to be saved. Sets
+                            CLINVAR "CLINSIG" terms or keywords to be saved. Sets
                             for whitelist only CLINVAR variants with specified
-                            tags or keywords
+                            terms or keywords
+      --CLINVARtag CLINVARTAG
+                            by default the program will search for "CLINVAR" TAG
+                            (CLINVAR=<values>), use this parameter to specify a
+                            different TAG to be used
       --VEP                 use VEP "Consequence" annotations to whitelist exonic
                             and relevant variants (removed by default variants in
                             intronic, intergenic, or regulatory regions)
+      --VEPtag VEPTAG       by default the program will search for "VEP" TAG
+                            (VEP=<values>), use this parameter to specify a
+                            different TAG to be used
       --VEPrescue VEPRESCUE [VEPRESCUE ...]
                             additional terms to overrule removed flags to
                             rescue and whitelist variants
