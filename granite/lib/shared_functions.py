@@ -149,7 +149,7 @@ def check_chrom(chrom):
         #end if
     #end if
     return False
-#end de
+#end def
 
 #################################################################
 #    Functions to get info

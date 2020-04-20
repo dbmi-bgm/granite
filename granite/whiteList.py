@@ -20,6 +20,8 @@ import sys, os
 from granite.lib.shared_functions import *
 # vcf_parser
 from granite.lib import vcf_parser
+# shared_vars
+from granite.lib.shared_vars import VEPremove
 
 
 #################################################################
@@ -81,19 +83,8 @@ def check_CLINVAR(vnt_obj, idx, CLINVARonly, CLINVARtag):
 def main(args):
     ''' '''
     # Variables
-    VEPremove = {
-                # intronic and intergenic features tags
-                'intron_variant', 'intergenic_variant',
-                'downstream_gene_variant', 'upstream_gene_variant',
-                'NMD_transcript_variant', 'non_coding_transcript_variant',
-                'non_coding_transcript_exon_variant',
-                # regulatory features tags
-                'feature_elongation', 'feature_truncation',
-                'regulatory_region_variant', 'regulatory_region_amplification',
-                'regulatory_region_ablation', 'splice_region_variant',
-                'TFBS_amplification', 'TFBS_ablation', 'TF_binding_site_variant'
-                }
     VEPrescue, consequence_idx = {}, 0
+    # VEPremove = {...} -> import from shared_vars
     CLINVARonly, CLINSIG_idx = {}, 0  #CLINSIG or CLNSIG
     BED_bitarrays = {}
     is_VEP = True if args['VEP'] else False

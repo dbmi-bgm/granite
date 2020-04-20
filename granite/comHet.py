@@ -2,7 +2,7 @@
 
 #################################################################
 #
-#    comphetCaller
+#    comHet
 #        Michele Berselli
 #        Harvard Medical School
 #        berselli.michele@gmail.com
@@ -27,7 +27,7 @@ from granite.lib import vcf_parser
 #    FUNCTIONS
 #
 #################################################################
-def fun():
+def add_vnt_to_trscrpt():
     pass
 #end def
 
@@ -56,6 +56,7 @@ def main(args):
 
         if vnt_obj.CHROM != CHROM and trscrpts_dict:
             # DO MAGIC AND PRINT OUT
+            pass
         else:
 
         #end if

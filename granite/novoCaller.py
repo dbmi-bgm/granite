@@ -808,6 +808,7 @@ def main(args):
     AF_tag = args['aftag'] if args['aftag'] else 'novoAF'
     RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
     novoCaller_tag = '##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller. Format:\'Post_prob|AF_unrel\'">'
+    NA_chroms = {'M', 'MT', 'X', 'Y'}
 
     # Buffers
     fo = open(args['outputfile'], 'w')
@@ -861,7 +862,11 @@ def main(args):
             analyzed += 1
             PP, ADfs, ADrs, ADfs_U, ADrs_U, _, _, _, AF_unrel = \
                 PP_calc(trio_files, unrelated_files, vnt_obj.CHROM, vnt_obj.POS, vnt_obj.REF, vnt_obj.ALT, af, MQthr, BQthr, is_bam)
-            if ADthr and ALT_count_check_parents(ADfs, ADrs, ADthr):
+            if vnt_obj.CHROM.replace('chr', '') in NA_chroms:
+            # model assumptions does not apply to sex and mithocondrial chromosomes, PP -> NA
+                PP = 'NA'
+            elif ADthr and ALT_count_check_parents(ADfs, ADrs, ADthr):
+            # AD in parents over ADthr, PP -> 0
                 PP = 0.
             #end if
             if AF_unrel <= afthr_unrelated and PP >= ppthr: # hard filter on AF_unrel, PP
