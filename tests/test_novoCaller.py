@@ -44,6 +44,21 @@ def test_run_novoCaller_bam_noUNR():
     os.remove('tests/files/main_test.out')
 #end def
 
+def test_run_novoCaller_bam_noUNR_NA():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_novoCaller_BAM_noUNR.vcf', 'outputfile': 'tests/files/main_test.out',
+            'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
+            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3}
+    # Run
+    main_novoCaller(args, test=True)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_noUNR_NA.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
 def test_run_novoCaller_bam_noUNR_noafthr():
     ''' '''
     # Variables
@@ -205,6 +220,21 @@ def test_run_novoCaller_bam_jc50_wgenome_plus_indels_9():
     main_novoCaller(args)
     # Tests
     assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_9.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_novoCaller_bam_jc50_wgenome_plus_indels_9_NA():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels.vcf', 'outputfile': 'tests/files/main_test.out',
+            'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
+            'ppthr': '7.579382496057039e-05', 'afthr': None, 'aftag': None, 'bam': True,
+            'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3}
+    # Run
+    main_novoCaller(args, test=True)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_9_NA.out')]
     # Clean
     os.remove('tests/files/main_test.out')
 #end def

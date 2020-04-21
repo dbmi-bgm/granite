@@ -23,6 +23,9 @@ import numpy as np
 from granite.lib.shared_functions import *
 # vcf_parser
 from granite.lib import vcf_parser
+# shared_vars
+from granite.lib.shared_vars import real_NA_chroms
+from granite.lib.shared_vars import test_NA_chroms
 
 # suppress warnings
 import warnings
@@ -795,7 +798,7 @@ def ALT_count_check_parents(ADfs, ADrs, thr):
 #################################################################
 #    runner
 #################################################################
-def main(args):
+def main(args, test=False):
     ''' '''
     # Variables
     is_bam = True if args['bam'] else False
@@ -808,7 +811,11 @@ def main(args):
     AF_tag = args['aftag'] if args['aftag'] else 'novoAF'
     RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
     novoCaller_tag = '##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller. Format:\'Post_prob|AF_unrel\'">'
-    NA_chroms = {'M', 'MT', 'X', 'Y'}
+    # NA chromosomes set
+    if test: NA_chroms = test_NA_chroms
+    else: NA_chroms = real_NA_chroms
+    #end if
+    is_NA = False
 
     # Buffers
     fo = open(args['outputfile'], 'w')
@@ -857,6 +864,9 @@ def main(args):
         # Getting allele frequency from novoAF tag
         af = allele_frequency(vnt_obj, AF_tag)
 
+        # is_NA reset
+        is_NA = False
+
         # Calculate statistics
         if af <= afthr: # hard filter on allele frequency
             analyzed += 1
@@ -864,13 +874,14 @@ def main(args):
                 PP_calc(trio_files, unrelated_files, vnt_obj.CHROM, vnt_obj.POS, vnt_obj.REF, vnt_obj.ALT, af, MQthr, BQthr, is_bam)
             if vnt_obj.CHROM.replace('chr', '') in NA_chroms:
             # model assumptions does not apply to sex and mithocondrial chromosomes, PP -> NA
-                PP = 'NA'
+                PP = 0.
+                is_NA = True
             elif ADthr and ALT_count_check_parents(ADfs, ADrs, ADthr):
             # AD in parents over ADthr, PP -> 0
                 PP = 0.
             #end if
             if AF_unrel <= afthr_unrelated and PP >= ppthr: # hard filter on AF_unrel, PP
-                variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj])
+                variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, is_NA, vnt_obj])
             #end if
         #end if
     #end for
@@ -902,7 +913,7 @@ def main(args):
 
     # Variants passed
     for variant in sorted(variants_passed, key=lambda x: x[0], reverse=True):
-        PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, vnt_obj = variant
+        PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, is_NA, vnt_obj = variant
 
         # Removing older tags fields if present
         if is_RSTR:
@@ -913,6 +924,8 @@ def main(args):
         #end if
 
         # Adding new tags
+        if is_NA: PP = 'NA'
+        #end if
         vnt_obj.add_tag_info('novoCaller={0}|{1}'.format(PP, AF_unrel))
         vnt_obj.add_tag_format('RSTR')
 

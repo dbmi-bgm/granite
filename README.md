@@ -106,6 +106,10 @@ novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The 
                             alignment to be used (>=) [0]
       --BQthr BQTHR         (only with "--bam") minimum base quality for a base to
                             be considered (>=) [0]
+      --ADthr ADTHR         threshold to filter by alternate allele depth in
+                            parents. This will ignore and set to "0" the posterior
+                            probability for variants with a number of alternate
+                            reads in parents higher than specified value
 
 #### Input
 novoCaller accepts files in VCF format as input. Files must contain genotype information for trio in addition to standard VCF columns. Column IDs for trio must match the IDs provided together with the list of RCK/BAM files (`--triofiles`).
@@ -129,6 +133,8 @@ novoCaller generates output in VCF format. Two new tags are used to report addit
 *novoCaller* tag definition:
 
     ##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller. Format:'Post_prob|AF_unrel'">
+
+*note*: novoCaller model assumptions do not apply to unbalanced chromosomes (e.g. sex and mithocondrial chromosomes), therefore the model assigns `NA` as a placeholder for posterior probabilty. When filtering by posterior probabilty (`--ppthr`), `NA` is treated as 0.
 
 #### Examples
 Calls *de novo* variants. This will return the calls ranked and sorted by calculated posterior probabilty.

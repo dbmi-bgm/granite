@@ -28,3 +28,13 @@ VEPremove = {
             'regulatory_region_ablation', 'splice_region_variant',
             'TFBS_amplification', 'TFBS_ablation', 'TF_binding_site_variant'
             }
+
+#################################################################
+#
+#   Unbalanced chromosomes to ignore in novoCaller, PP -> NA
+#
+#################################################################
+real_NA_chroms = {'M', 'MT', 'X', 'Y'}
+
+# for automated tests
+test_NA_chroms = {'2'}
