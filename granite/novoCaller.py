@@ -811,7 +811,7 @@ def main(args, test=False):
     AF_tag = args['aftag'] if args['aftag'] else 'novoAF'
     RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
     novoCaller_tag = '##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller. Format:\'Post_prob|AF_unrel\'">'
-    # NA chromosomes set
+    # NA chromosomes set -> import from shared_vars
     if test: NA_chroms = test_NA_chroms
     else: NA_chroms = real_NA_chroms
     #end if
