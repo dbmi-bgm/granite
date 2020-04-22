@@ -29,54 +29,6 @@ from granite.lib.shared_vars import VEPremove
 #    FUNCTIONS
 #
 #################################################################
-def check_VEP(vnt_obj, idx, VEPremove, VEPrescue, VEPtag):
-    ''' check VEP annotations from VEPtag '''
-    try: val_get = vnt_obj.get_tag_value(VEPtag)
-    except Exception: return False
-    #end try
-    trscrpt_list = val_get.split(',')
-    # Get all terms
-    for trscrpt in trscrpt_list:
-        # & is standard VEP format, but cgap use ~
-        trscrpt_terms = set(trscrpt.split('|')[idx].replace('~', '&').split('&'))
-        if trscrpt_terms.intersection(VEPrescue):
-            return True
-        elif trscrpt_terms.difference(VEPremove):
-            return True
-        #end if
-    #end for
-    return False
-#end def
-
-def check_spliceAI(vnt_obj, thr=0.8):
-    ''' check if SpliceAI tag value is over threshold thr '''
-    try: val_get = float(vnt_obj.get_tag_value('SpliceAI'))
-    except Exception: return False
-    #end try
-    if val_get >= thr:
-        return True
-    #end if
-    return False
-#end def
-
-def check_CLINVAR(vnt_obj, idx, CLINVARonly, CLINVARtag):
-    ''' check if CLINVARtag is present, if CLINVARonly check if
-    variant has specified tags or keywords '''
-    try: val_get = vnt_obj.get_tag_value(CLINVARtag)
-    except Exception: return False
-    #end try
-    if CLINVARonly:
-        CLINSIG = val_get.split('|')[idx]
-        for term in CLINVARonly:
-            if term.lower() in CLINSIG.lower():
-                return True
-            #end if
-        #end for
-        return False
-    #end if
-    return True
-#end def
-
 #################################################################
 #    runner
 #################################################################
