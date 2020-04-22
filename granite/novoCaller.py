@@ -876,9 +876,11 @@ def main(args, test=False):
             # model assumptions does not apply to sex and mithocondrial chromosomes, PP -> NA
                 PP = 0.
                 is_NA = True
-            elif ADthr and ALT_count_check_parents(ADfs, ADrs, ADthr):
+            #end if
+            if ADthr and ALT_count_check_parents(ADfs, ADrs, ADthr):
             # AD in parents over ADthr, PP -> 0
                 PP = 0.
+                is_NA = False
             #end if
             if AF_unrel <= afthr_unrelated and PP >= ppthr: # hard filter on AF_unrel, PP
                 variants_passed.append([PP, ADfs, ADrs, ADfs_U, ADrs_U, AF_unrel, is_NA, vnt_obj])

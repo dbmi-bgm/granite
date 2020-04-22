@@ -31,7 +31,7 @@ class Vcf(object):
 
     def __init__(self, inputfile):
         ''' open input vcf, read header lines and save
-        information as Header object to initialize Vcf object'''
+        information as Header object to initialize Vcf object '''
         self.header = self.parse_header(inputfile)
     #end def
 
