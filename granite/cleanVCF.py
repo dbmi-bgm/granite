@@ -50,6 +50,13 @@ def main(args):
     # Creating Vcf object
     vcf_obj = vcf_parser.Vcf(args['inputfile'])
 
+    # Clean header definitions in INFO block for specified tags
+    if args['tag']:
+        for tag in args['tag']:
+            vcf_obj.header.rm_tag_definition(tag, 'INFO')
+        #end for
+    #end if
+
     # Writing header
     fo.write(vcf_obj.header.definitions)
     fo.write(vcf_obj.header.columns)
@@ -77,8 +84,12 @@ def main(args):
         # #end if
         analyzed += 1
 
-        # Remove tags
-        #TO DO
+        # Clean tags if specified
+        if args['tag']:
+            for tag in args['tag']:
+                vnt_obj.remove_tag_info(tag)
+            #end for
+        #end if
 
         # is_SpAI reset
         is_SpAI = False

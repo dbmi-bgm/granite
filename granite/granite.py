@@ -26,6 +26,7 @@ from granite import whiteList
 from granite import mpileupCounts
 from granite import toBig
 from granite import rckTar
+from granite import cleanVCF
 
 
 #################################################################
@@ -96,6 +97,19 @@ def main():
     whiteList_parser.add_argument('--VEPremove', help='additional terms to be removed', nargs='+', required=False)
     whiteList_parser.add_argument('--BEDfile', help='BED format file with positions to whitelist', type=str, required=False)
 
+    # Add cleanVCF to subparsers
+    cleanVCF_parser = subparsers.add_parser('cleanVCF', description='utility to clean INFO field of input VCF file',
+                                                help='utility to clean INFO field of input VCF file')
+
+    cleanVCF_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
+    cleanVCF_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
+    cleanVCF_parser.add_argument('-t', '--tag', help='TAG to be removed from INFO field. Specify multiple TAGs as: "-t TAG -t TAG -t ..."', action='append', required=False)
+    cleanVCF_parser.add_argument('--VEP', help='clean VEP "Consequence" annotations (removed by default terms for intronic, intergenic, or regulatory regions from annotations)', action='store_true', required=False)
+    cleanVCF_parser.add_argument('--VEPtag', help='by default the program will search for "VEP" TAG (VEP=<values>), use this parameter to specify a different TAG to be used', type=str, required=False)
+    cleanVCF_parser.add_argument('--VEPrescue', help='additional terms to overrule removed flags to rescue annotations', nargs='+', required=False)
+    cleanVCF_parser.add_argument('--VEPremove', help='additional terms to be removed from annotations', nargs='+', required=False)
+    cleanVCF_parser.add_argument('--SpliceAI', help='threshold to save intronic annotations, from VEP "Consequence", for variants by SpliceAI value (>=)', type=float, required=False)
+
     # Add toBig to subparsers
     toBig_parser = subparsers.add_parser('toBig', description='utility that converts counts from bgzip and tabix indexed RCK format into BIG format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions',
                                                 help='utility that converts counts from bgzip and tabix indexed RCK format into BIG format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions')
@@ -121,6 +135,7 @@ def main():
                     'novoCaller': novoCaller_parser,
                     'blackList': blackList_parser,
                     'whiteList': whiteList_parser,
+                    'cleanVCF': cleanVCF_parser,
                     'mpileupCounts': mpileupCounts_parser,
                     'toBig': toBig_parser,
                     'rckTar': rckTar_parser
@@ -154,6 +169,8 @@ def main():
         toBig.main(args)
     elif args['func'] == 'rckTar':
         rckTar.main(args)
+    elif args['func'] == 'cleanVCF':
+        cleanVCF.main(args)
     #end if
 #end def
 

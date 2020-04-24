@@ -59,6 +59,19 @@ class Vcf(object):
             self.definitions = new_definitions
         #end def
 
+        def rm_tag_definition(self, tag, tag_type='FORMAT'):
+            ''' remove tag definition from the header,
+            block specified by tag_type (e.g. FORMAT, INFO) '''
+            new_definitions = ''
+            for line in self.definitions.split('\n')[:-1]:
+                if line.startswith('##' + tag_type + '=<ID=' + tag + ','): # ##<tag_type>=<ID=<tag>,
+                    continue
+                #end if
+                new_definitions += line + '\n'
+            #end for
+            self.definitions = new_definitions
+        #end def
+
         def get_tag_field_idx(self, tag, field, sep='|'):
             ''' get idx for value field in tag from definition
             in INFO block in header '''
