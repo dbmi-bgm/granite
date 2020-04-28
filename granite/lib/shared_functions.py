@@ -224,6 +224,15 @@ def allele_frequency(vnt_obj, aftag, idx=0):
     #end try
 #end def
 
+def VEP_field(vnt_obj, idx, VEPtag):
+    ''' return list of annotations at idx across all transcripts from VEPtag '''
+    try: val_get = vnt_obj.get_tag_value(VEPtag)
+    except Exception: return []
+    #end try
+    trscrpt_list = val_get.split(',')
+    return [trscrpt.split('|')[idx] for trscrpt in trscrpt_list]
+#end def
+
 #################################################################
 #    Functions to modify
 #################################################################

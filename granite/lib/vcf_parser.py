@@ -59,7 +59,7 @@ class Vcf(object):
             self.definitions = new_definitions
         #end def
 
-        def rm_tag_definition(self, tag, tag_type='FORMAT'):
+        def remove_tag_definition(self, tag, tag_type='FORMAT'):
             ''' remove tag definition from the header,
             block specified by tag_type (e.g. FORMAT, INFO) '''
             new_definitions = ''

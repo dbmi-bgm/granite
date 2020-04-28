@@ -21,6 +21,7 @@ import sys, os
 import argparse
 # Tools
 from granite import novoCaller
+from granite import comHet
 from granite import blackList
 from granite import whiteList
 from granite import mpileupCounts
@@ -59,6 +60,13 @@ def main():
     novoCaller_parser.add_argument('--MQthr', help='(only with "--bam") minimum mapping quality for an alignment to be used (>=) [0]', type=int, required=False)
     novoCaller_parser.add_argument('--BQthr', help='(only with "--bam") minimum base quality for a base to be considered (>=) [0]', type=int, required=False)
     novoCaller_parser.add_argument('--ADthr', help='threshold to filter by alternate allele depth in parents. This will ignore and set to "0" the posterior probability for variants with a number of alternate reads in parents higher than specified value', type=int, required=False)
+
+    # Add comHet to subparsers
+    comHet_parser = subparsers.add_parser('comHet', description='',
+                                                help='')
+
+    comHet_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
+    comHet_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
 
     # Add mpileupCounts to subparsers
     mpileupCounts_parser = subparsers.add_parser('mpileupCounts', description='samtools wrapper to calculate reads statistics for pileup at each position',
@@ -133,6 +141,7 @@ def main():
     # Subparsers map
     subparser_map = {
                     'novoCaller': novoCaller_parser,
+                    'comHet': comHet_parser,
                     'blackList': blackList_parser,
                     'whiteList': whiteList_parser,
                     'cleanVCF': cleanVCF_parser,
@@ -159,6 +168,8 @@ def main():
     # Call the right tool
     if args['func'] == 'novoCaller':
         novoCaller.main(args)
+    elif args['func'] == 'comHet':
+        comHet.main(args)
     elif args['func'] == 'blackList':
         blackList.main(args)
     elif args['func'] == 'whiteList':

@@ -53,7 +53,7 @@ def main(args):
     # Clean header definitions in INFO block for specified tags
     if args['tag']:
         for tag in args['tag']:
-            vcf_obj.header.rm_tag_definition(tag, 'INFO')
+            vcf_obj.header.remove_tag_definition(tag, 'INFO')
         #end for
     #end if
 

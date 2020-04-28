@@ -808,9 +808,9 @@ def main(args, test=False):
     MQthr = int(args['MQthr']) if args['MQthr'] else 0
     BQthr = int(args['BQthr']) if args['BQthr'] else 0
     ADthr = int(args['ADthr']) if args['ADthr'] else 0
-    AF_tag = args['aftag'] if args['aftag'] else 'novoAF'
-    RSTR_tag = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
-    novoCaller_tag = '##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller. Format:\'Post_prob|AF_unrel\'">'
+    aftag = args['aftag'] if args['aftag'] else 'novoAF'
+    RSTR_def = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
+    novoCaller_def = '##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller. Format:\'Post_prob|AF_unrel\'">'
     # NA chromosomes set -> import from shared_vars
     if test: NA_chroms = test_NA_chroms
     else: NA_chroms = real_NA_chroms
@@ -862,7 +862,7 @@ def main(args, test=False):
         # #end if
 
         # Getting allele frequency from novoAF tag
-        af = allele_frequency(vnt_obj, AF_tag)
+        af = allele_frequency(vnt_obj, aftag)
 
         # is_NA reset
         is_NA = False
@@ -897,10 +897,10 @@ def main(args, test=False):
     is_novoCaller = 'novoCaller' in vcf_obj.header.definitions
 
     if not is_RSTR:
-        vcf_obj.header.add_tag_definition(RSTR_tag, 'FORMAT')
+        vcf_obj.header.add_tag_definition(RSTR_def, 'FORMAT')
     #end if
     if not is_novoCaller:
-        vcf_obj.header.add_tag_definition(novoCaller_tag, 'INFO')
+        vcf_obj.header.add_tag_definition(novoCaller_def, 'INFO')
     #end if
     fo.write(vcf_obj.header.definitions)
 
