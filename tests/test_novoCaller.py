@@ -365,3 +365,18 @@ def test_run_novoCaller_bam_missing_trio():
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
+
+def test_run_novoCaller_bam_rerun_noUNR_NORSTR():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_novoCaller_BAM_noUNR_NORSTR.out', 'outputfile': 'tests/files/main_test.out',
+            'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
+            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3}
+    # Run and Tests
+    with pytest.raises(ValueError) as e:
+        assert main_novoCaller(args)
+    assert '\nERROR in variant FORMAT field, RSTR tag is missing\n' == str(e.value)
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def

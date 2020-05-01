@@ -50,8 +50,8 @@ def main():
 
     novoCaller_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     novoCaller_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
-    novoCaller_parser.add_argument('-u', '--unrelatedfiles', help='TSV index file containing ID<TAB>Path/to/file for unrelated files used to train the model (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
-    novoCaller_parser.add_argument('-t', '--triofiles', help='TSV index file containing ID<TAB>Path/to/file for family files, the PROBAND must be listed as LAST (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
+    novoCaller_parser.add_argument('-u', '--unrelatedfiles', help='TSV index file containing SampleID<TAB>Path/to/file for unrelated files used to train the model (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
+    novoCaller_parser.add_argument('-t', '--triofiles', help='TSV index file containing SampleID<TAB>Path/to/file for family files, the PROBAND must be listed as LAST (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
     novoCaller_parser.add_argument('--ppthr', help='threshold to filter by posterior probabilty for de novo calls (>=) [0]', type=float, required=False)
     novoCaller_parser.add_argument('--afthr', help='threshold to filter by population allele frequency (<=) [1]', type=float, required=False)
     novoCaller_parser.add_argument('--afthr_unrelated', help='threshold to filter by allele frequency calculated among unrelated (<=) [1]', type=float, required=False)
@@ -67,6 +67,8 @@ def main():
 
     comHet_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     comHet_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
+    comHet_parser.add_argument('--trio', help='list of sample IDs for trio, PROBAND is required and must be listed FIRST (e.g. --trio PROBAND_ID [PARENT_ID] [PARENT_ID])', nargs='+', required=True)
+    comHet_parser.add_argument('--VEPtag', help='by default the program will search for "VEP" TAG (VEP=<values>), use this parameter to specify a different TAG to be used', type=str, required=False)
 
     # Add mpileupCounts to subparsers
     mpileupCounts_parser = subparsers.add_parser('mpileupCounts', description='samtools wrapper to calculate reads statistics for pileup at each position',
@@ -96,7 +98,7 @@ def main():
     whiteList_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     whiteList_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
     whiteList_parser.add_argument('--SpliceAI', help='threshold to whitelist variants by SpliceAI value (>=)', type=float, required=False)
-    whiteList_parser.add_argument('--CLINVAR', help='flag to whitelist all variants with a CLINVAR Id', action='store_true', required=False)
+    whiteList_parser.add_argument('--CLINVAR', help='flag to whitelist all variants with a CLINVAR entry', action='store_true', required=False)
     whiteList_parser.add_argument('--CLINVARonly', help='CLINVAR "CLINSIG" terms or keywords to be saved. Sets for whitelist only CLINVAR variants with specified terms or keywords', nargs='+', required=False)
     whiteList_parser.add_argument('--CLINVARtag', help='by default the program will search for "CLINVAR" TAG (CLINVAR=<values>), use this parameter to specify a different TAG to be used', type=str, required=False)
     whiteList_parser.add_argument('--VEP', help='use VEP "Consequence" annotations to whitelist exonic and relevant variants (removed by default variants in intronic, intergenic, or regulatory regions)', action='store_true', required=False)

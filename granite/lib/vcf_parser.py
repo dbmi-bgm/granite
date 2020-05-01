@@ -139,7 +139,7 @@ class Vcf(object):
 
         def remove_tag_genotype(self, tag_to_remove, sep=':'):
             ''' remove tag field from FORMAT and GENOTYPES '''
-            idx_tag_to_remove, new_format = 0, []
+            idx_tag_to_remove, new_format = -1, []
             # Removing tag field from FORMAT
             for i, tag in enumerate(self.FORMAT.split(sep)):
                 if tag_to_remove == tag:
@@ -148,6 +148,12 @@ class Vcf(object):
                     new_format.append(tag)
                 #end if
             #end for
+            # Error if tag_to_remove not found in FORMAT
+            if idx_tag_to_remove == -1:
+                raise ValueError('\nERROR in variant FORMAT field, {0} tag is missing\n'
+                            .format(tag_to_remove))
+            #end if
+            # Updating FORMAT
             self.FORMAT = sep.join(new_format)
             # Removing tag field from GENOTYPES
             for ID_genotype, genotype in self.GENOTYPES.items():
@@ -197,6 +203,25 @@ class Vcf(object):
 
             # tag_to_get not found
             raise ValueError('\nERROR in variant INFO field, {0} tag is missing\n'.format(tag_to_get))
+        #end def
+
+        def get_genotype_value(self, ID_genotype, tag_to_get, sep=':'):
+            ''' get value from tag (tag_to_get) in genotype specified by corresponding ID '''
+            # Get index from FORMAT
+            idx_tag_to_get = -1
+            for i, tag in enumerate(self.FORMAT.split(sep)):
+                if tag_to_get == tag:
+                    idx_tag_to_get = i
+                    break
+                #end if
+            #end for
+            # Error if tag_to_get not found in FORMAT
+            if idx_tag_to_get == -1:
+                raise ValueError('\nERROR in variant FORMAT field, {0} tag is missing\n'
+                            .format(tag_to_get))
+            #end if
+            # Get value from index in genotype by ID
+            return self.GENOTYPES[ID_genotype].split(sep)[idx_tag_to_get]
         #end def
 
     #end class Variant

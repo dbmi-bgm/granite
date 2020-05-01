@@ -30,19 +30,25 @@ from granite.lib import vcf_parser
 class VariantHet(object):
     ''' '''
 
-    def __init__(self, vnt_obj, ENSG, ENST_list):
+    def __init__(self, vnt_obj, i):
         ''' '''
         self.comHet = []
         self.vnt_obj = vnt_obj
-        self.ENSG = ENSG
-        self.ENST_set = set(ENST_list)
+        self.ENST_dict = {} # {ENSG: ENST_set, ...}
+        self.i = i # variant index
     #end def
 
-    def add_pair(self, vntHet_obj):
-        comHet_pair = [self.ENSG]
-        common_ENST = self.ENST_set.intersection(vntHet_obj.ENST_set)
+    def add_ENST(self, ENSG, ENST_set):
+        ''' '''
+        self.ENST_dict.setdefault(ENSG, ENST_set)
+    #end def
+
+    def add_pair(self, vntHet_obj, ENSG):
+        ''' '''
+        comHet_pair = [ENSG]
+        common_ENST = self.ENST_dict[ENSG].intersection(vntHet_obj.ENST_dict[ENSG])
         if common_ENST:
-            comHet_pair.append('&'.join(common_ENST))
+            comHet_pair.append('&'.join(sorted(common_ENST)))
         else: comHet_pair.append('')
         #end if
         comHet_pair.append('{0}:{1}{2}>{3}'.format(vntHet_obj.vnt_obj.CHROM,
@@ -68,13 +74,36 @@ class VariantHet(object):
 #    FUNCTIONS
 #
 #################################################################
+def is_comHet(vntHet_obj_1, vntHet_obj_2, ID_list, allow_undef=False):
+    ''' '''
+    for ID in ID_list[1:]:
+        GT_1 = vntHet_obj_1.vnt_obj.get_genotype_value(ID, 'GT')
+        GT_2 = vntHet_obj_2.vnt_obj.get_genotype_value(ID, 'GT')
+        if GT_1 == '1/1' or GT_2 == '1/1':
+            return False
+        elif GT_1 == '0/1' and GT_2 == '0/1':
+            return False
+        #end if
+        if not allow_undef:
+            if GT_1 == './.' or GT_2 == './.':
+                return False
+            elif GT_1 == '0/0' and GT_2 == '0/0': # this could be a potential de novo
+                                                  # in a compound het
+                return False
+            #end if
+        #end if
+    #end for
+    return True
+#end def
+
 #################################################################
 #    runner
 #################################################################
 def main(args):
     ''' '''
     # Variables
-    VEPtag = 'VEP'
+    VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
+    comHet_def = '##INFO=<ID=comHet,Number=3,Type=String,Description="Putative compound heterozygous pairs. Format:\'ENSG_ID|ENST_ID|VARIANT\'">'
 
     # Buffers
     fo = open(args['outputfile'], 'w')
@@ -82,21 +111,33 @@ def main(args):
     # Creating Vcf object
     vcf_obj = vcf_parser.Vcf(args['inputfile'])
 
+    # Add definition to header
+    vcf_obj.header.add_tag_definition(comHet_def, 'INFO')
+
     # Writing header
     fo.write(vcf_obj.header.definitions)
     fo.write(vcf_obj.header.columns)
 
     # Data structures
     ENSG_dict = {} # {ENSG: [vntHet_obj1, vntHet_obj2], ...}
+    ENST_dict_tmp = {} # {ENSG: ENST_set, ...}
+    vntHet_set = set() # variants to write in output -> {(i, vntHet_obj), ...}
+                       # i is to track and keep variants order as they are read from input
 
     # Get idx for ENST and ENSG
     ENSG_idx = vcf_obj.header.get_tag_field_idx(VEPtag, 'Gene')
     ENST_idx = vcf_obj.header.get_tag_field_idx(VEPtag, 'Feature')
 
+    # Get trio IDs
+    if len(args['trio']) > 3:
+        sys.exit('\nERROR in parsing arguments: \n')
+    #end if
+    ID_list = args['trio'] # [proband_ID, parent_ID, parent_ID]
+
     # Reading variants
     analyzed = 0
-    for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
-        sys.stderr.write('\rAnalyzing variant... ' + str(i + 1))
+    for c, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
+        sys.stderr.write('\rAnalyzing variant... ' + str(c + 1))
         sys.stderr.flush()
 
         # # Check if chromosome is canonical and in valid format
@@ -105,15 +146,36 @@ def main(args):
         # #end if
         analyzed += 1
 
-        # Get transcript and gene infos from VEP
+        # Reset data structures
+        ENST_dict_tmp = {}
+
+        # Check proband_ID genotype
+        if vnt_obj.get_genotype_value(ID_list[0], 'GT') != '0/1':
+            continue # go next if is not 0/1
+        #end if
+
+        # Get transcripts and genes information from VEP
         ENSG_list = VEP_field(vnt_obj, ENSG_idx, VEPtag)
         ENST_list = VEP_field(vnt_obj, ENST_idx, VEPtag)
 
-        for ENSG in set(ENSG_list):
-            # set to remove duplicated ENSG
-            ENSG_dict.setdefault(ENSG, [])
-            ENSG_dict[ENSG].append(VariantHet(vnt_obj, ENSG, ENST_list))
+        # Assign transcripts to genes
+        for ENSG, ENST in zip(ENSG_list, ENST_list):
+            if ENSG and ENST:
+                ENST_dict_tmp.setdefault(ENSG, set())
+                ENST_dict_tmp[ENSG].add(ENST)
+            #end if
         #end for
+
+        # Assign variants to genes if VEP
+        if ENST_dict_tmp:
+            vntHet_obj = VariantHet(vnt_obj, c)
+            # Assign variant to genes and update transcripts for variant
+            for ENSG, ENST_set in ENST_dict_tmp.items():
+                ENSG_dict.setdefault(ENSG, [])
+                ENSG_dict[ENSG].append(vntHet_obj)
+                vntHet_obj.add_ENST(ENSG, ENST_set)
+            #end for
+        #end if
     #end for
 
     # Pairing variants
@@ -122,17 +184,28 @@ def main(args):
         while p < l:
             vntHet_obj = vntHet_list[p]
             for i, vntHet_obj_i in enumerate(vntHet_list):
-                if i != p: vntHet_obj.add_pair(vntHet_obj_i)
+                if i != p:
+                    # if parents information,
+                    # check genotypes to confirm is compound het or not
+                    if is_comHet(vntHet_obj, vntHet_obj_i, ID_list):
+                        vntHet_obj.add_pair(vntHet_obj_i, ENSG)
+                        # Add vntHet to set to write since there is at least one pair
+                        vntHet_set.add((vntHet_obj.i, vntHet_obj))
+                    #end if
+                #end if
             #end for
-            fo.write(vntHet_obj.to_string())
             p += 1
         #end while
     #end for
 
     # Writing output
-    sys.stderr.write('\n\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(i + 1) + ' total variants\n')
+    sys.stderr.write('\n\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(c + 1) + ' total variants\n')
     sys.stderr.flush()
 
+    # Order and write variants to output file
+    for _, vntHet_obj in sorted(vntHet_set, key=lambda x: x[0]):
+        fo.write(vntHet_obj.to_string())
+    #end for
 #end def
 
 
@@ -146,7 +219,3 @@ if __name__ == "__main__":
     main()
 
 #end if
-
-## comHet=ENSG|ENST0&ENST1&ENST2|HGNC, ENSG|ENST3|HGNC,
-
-#'chr%s:%s %s/%s' % (CHROM, POS, REF, ALT)

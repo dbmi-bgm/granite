@@ -62,7 +62,7 @@ hdf5 format structure:
     ...
     chrM_del: array(bool)
 
-*note*: hdf5 keys are build as the chromosome ID based on reference (e.g. chr1) plus the suffix specifying whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
+*note*: hdf5 keys are build as the chromosome name based on reference (e.g. chr1) plus the suffix specifying whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
 
 &nbsp;
 ## Tools
@@ -85,11 +85,11 @@ novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The 
                             output file to write results as VCF, use .vcf as
                             extension
       -u UNRELATEDFILES, --unrelatedfiles UNRELATEDFILES
-                            TSV index file containing ID<TAB>Path/to/file for unrelated
+                            TSV index file containing SampleID<TAB>Path/to/file for unrelated
                             files used to train the model (BAM or bgzip and tabix
                             indexed RCK)
       -t TRIOFILES, --triofiles TRIOFILES
-                            TSV index file containing ID<TAB>Path/to/file for family
+                            TSV index file containing SampleID<TAB>Path/to/file for family
                             files, the PROBAND must be listed as LAST (BAM or
                             bgzip and tabix indexed RCK)
       --ppthr PPTHR         threshold to filter by posterior probabilty for de
@@ -112,7 +112,7 @@ novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The 
                             reads in parents higher than specified value
 
 #### Input
-novoCaller accepts files in VCF format as input. Files must contain genotype information for trio in addition to standard VCF columns. Column IDs for trio must match the IDs provided together with the list of RCK/BAM files (`--triofiles`).
+novoCaller accepts files in VCF format as input. Files must contain genotype information for trio in addition to standard VCF columns. Column IDs for trio must match the sample IDs provided together with the list of RCK/BAM files (`--triofiles`).
 
 Required VCF format structure:
 
@@ -205,7 +205,7 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
                             output file to write results as VCF, use .vcf as
                             extension
       --SpliceAI SPLICEAI   threshold to whitelist variants by SpliceAI value (>=)
-      --CLINVAR             flag to whitelist all variants with a CLINVAR Id
+      --CLINVAR             flag to whitelist all variants with a CLINVAR entry
       --CLINVARonly CLINVARONLY [CLINVARONLY ...]
                             CLINVAR "CLINSIG" terms or keywords to be saved. Sets
                             for whitelist only CLINVAR variants with specified
@@ -228,11 +228,11 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
       --BEDfile BEDFILE     BED format file with positions to whitelist
 
 #### Examples
-Whitelists variants with CLINVAR Id. If available, CLINVAR annotation must be provided in INFO column.
+Whitelists variants with CLINVAR entry. If available, CLINVAR annotation must be provided in INFO column.
 
     granite whiteList -i file.vcf -o file.out.vcf --CLINVAR
 
-Whitelists only "Pathogenic" and "Likely_pathogenic" variants with CLINVAR Id. CLINVAR "CLINSIG" annotation must be provided in INFO column.
+Whitelists only "Pathogenic" and "Likely_pathogenic" variants with CLINVAR entry. CLINVAR "CLINSIG" annotation must be provided in INFO column.
 
     granite whiteList -i file.vcf -o file.out.vcf --CLINVAR --CLINVARonly Pathogenic
 
