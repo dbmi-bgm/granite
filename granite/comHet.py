@@ -28,10 +28,11 @@ from granite.lib import vcf_parser
 #
 #################################################################
 class VariantHet(object):
-    ''' '''
+    ''' object to extend a Variant object to store additional
+    information on genes, transcripts and compound heterozygous pairs '''
 
     def __init__(self, vnt_obj, i):
-        ''' '''
+        ''' initialize VariantHet object '''
         self.comHet = []
         self.vnt_obj = vnt_obj
         self.ENST_dict = {} # {ENSG: ENST_set, ...}
@@ -39,12 +40,12 @@ class VariantHet(object):
     #end def
 
     def add_ENST(self, ENSG, ENST_set):
-        ''' '''
+        ''' add gene and its associated transcripts information '''
         self.ENST_dict.setdefault(ENSG, ENST_set)
     #end def
 
     def add_pair(self, vntHet_obj, ENSG):
-        ''' '''
+        ''' add information for compound heterozygous pair with vntHet_obj '''
         comHet_pair = [ENSG]
         common_ENST = self.ENST_dict[ENSG].intersection(vntHet_obj.ENST_dict[ENSG])
         if common_ENST:
@@ -59,7 +60,7 @@ class VariantHet(object):
     #end def
 
     def to_string(self):
-        ''' '''
+        ''' return variant as a string after adding comHet information to INFO field '''
         if self.comHet:
             self.vnt_obj.add_tag_info('comHet=' + ','.join(self.comHet))
         #end if
@@ -75,13 +76,14 @@ class VariantHet(object):
 #
 #################################################################
 def is_comHet(vntHet_obj_1, vntHet_obj_2, ID_list, allow_undef=False):
-    ''' '''
+    ''' check genotypes combination for parents if available and
+    refine the assignment for the pair as a compound heterozygous or not '''
     for ID in ID_list[1:]:
-        GT_1 = vntHet_obj_1.vnt_obj.get_genotype_value(ID, 'GT')
-        GT_2 = vntHet_obj_2.vnt_obj.get_genotype_value(ID, 'GT')
+        GT_1 = vntHet_obj_1.vnt_obj.get_genotype_value(ID, 'GT').replace('|', '/')
+        GT_2 = vntHet_obj_2.vnt_obj.get_genotype_value(ID, 'GT').replace('|', '/')
         if GT_1 == '1/1' or GT_2 == '1/1':
             return False
-        elif GT_1 == '0/1' and GT_2 == '0/1':
+        elif GT_1 in ['0/1', '1/0'] and GT_2 in ['0/1', '1/0']:
             return False
         #end if
         if not allow_undef:
@@ -103,6 +105,7 @@ def main(args):
     ''' '''
     # Variables
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
+    allow_undef = True if args['allow_undef'] else False
     comHet_def = '##INFO=<ID=comHet,Number=3,Type=String,Description="Putative compound heterozygous pairs. Format:\'ENSG_ID|ENST_ID|VARIANT\'">'
 
     # Buffers
@@ -130,7 +133,7 @@ def main(args):
 
     # Get trio IDs
     if len(args['trio']) > 3:
-        sys.exit('\nERROR in parsing arguments: \n')
+        sys.exit('\nERROR in parsing arguments: too many sample IDs provided for trio\n')
     #end if
     ID_list = args['trio'] # [proband_ID, parent_ID, parent_ID]
 
@@ -150,7 +153,7 @@ def main(args):
         ENST_dict_tmp = {}
 
         # Check proband_ID genotype
-        if vnt_obj.get_genotype_value(ID_list[0], 'GT') != '0/1':
+        if vnt_obj.get_genotype_value(ID_list[0], 'GT').replace('|', '/') not in ['0/1', '1/0']:
             continue # go next if is not 0/1
         #end if
 
@@ -179,7 +182,11 @@ def main(args):
     #end for
 
     # Pairing variants
-    for ENSG, vntHet_list in ENSG_dict.items():
+    sys.stderr.write('\n')
+    n = len(ENSG_dict)
+    for n_i, (ENSG, vntHet_list) in enumerate(ENSG_dict.items()):
+        sys.stderr.write('\rPairing variants... {:.0f}%'.format(float(n_i)/n*100))
+        sys.stderr.flush()
         p, l = 0, len(vntHet_list)
         while p < l:
             vntHet_obj = vntHet_list[p]
@@ -187,7 +194,7 @@ def main(args):
                 if i != p:
                     # if parents information,
                     # check genotypes to confirm is compound het or not
-                    if is_comHet(vntHet_obj, vntHet_obj_i, ID_list):
+                    if is_comHet(vntHet_obj, vntHet_obj_i, ID_list, allow_undef):
                         vntHet_obj.add_pair(vntHet_obj_i, ENSG)
                         # Add vntHet to set to write since there is at least one pair
                         vntHet_set.add((vntHet_obj.i, vntHet_obj))
@@ -197,6 +204,8 @@ def main(args):
             p += 1
         #end while
     #end for
+    sys.stderr.write('\rPairing variant... {0}%'.format(100))
+    sys.stderr.flush()
 
     # Writing output
     sys.stderr.write('\n\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(c + 1) + ' total variants\n')
