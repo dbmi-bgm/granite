@@ -63,6 +63,19 @@ def test_run_comHet_proband_plus_NA12877_NA12878():
     os.remove('tests/files/main_test.out')
 #end def
 
+def test_run_comHet_proband_plus_NA12877_NA12878_GT():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_comHet_GT.vcf', 'outputfile': 'tests/files/main_test.out',
+            'trio': ['NA12879_sample', 'NA12877_sample', 'NA12878_sample'], 'VEPtag': None, 'allow_undef': None}
+    # Run
+    main_comHet(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_comHet_GT_plus_NA12877_NA12878.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
 def test_run_comHet_proband_VEP_as_CSQ_plus_NA12877_NA12878():
     ''' '''
     # Variables

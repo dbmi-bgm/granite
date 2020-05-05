@@ -169,7 +169,7 @@ def main(args):
             #end if
         #end for
 
-        # Assign variants to genes if VEP
+        # Assign variant to genes if VEP
         if ENST_dict_tmp:
             vntHet_obj = VariantHet(vnt_obj, c)
             # Assign variant to genes and update transcripts for variant
