@@ -69,7 +69,8 @@ def main():
     comHet_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
     comHet_parser.add_argument('--trio', help='list of sample IDs for trio, PROBAND is required and must be listed FIRST (e.g. --trio PROBAND_ID [PARENT_ID] [PARENT_ID])', nargs='+', required=True)
     comHet_parser.add_argument('--VEPtag', help='by default the program will search for "VEP" TAG (VEP=<values>), use this parameter to specify a different TAG to be used', type=str, required=False)
-    comHet_parser.add_argument('--allow_undef', help='by default the program discards variants with undefined genotype in one parent, or compound heterozygous pairs that are unlikely based on trio genotype (e.g. reference allele only for both variants in one parent). This flag extends the output to include these cases', action='store_true', required=False)
+    comHet_parser.add_argument('--filter_comHet', help='by default the program returns all variants in the input VCF file. This flag will produce a shorter output containing only variants that are potential compound heterozygous', action='store_true', required=False)
+    comHet_parser.add_argument('--allow_undef', help='by default the program ignores variants with undefined genotype in parents. This flag extends the output to include these cases', action='store_true', required=False)
 
     # Add mpileupCounts to subparsers
     mpileupCounts_parser = subparsers.add_parser('mpileupCounts', description='samtools wrapper to calculate reads statistics for pileup at each position',

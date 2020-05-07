@@ -44,9 +44,9 @@ class VariantHet(object):
         self.ENST_dict.setdefault(ENSG, ENST_set)
     #end def
 
-    def add_pair(self, vntHet_obj, ENSG):
+    def add_pair(self, vntHet_obj, ENSG, phase):
         ''' add information for compound heterozygous pair with vntHet_obj '''
-        comHet_pair = [ENSG]
+        comHet_pair = [phase, ENSG]
         common_ENST = self.ENST_dict[ENSG].intersection(vntHet_obj.ENST_dict[ENSG])
         if common_ENST:
             comHet_pair.append('&'.join(sorted(common_ENST)))
@@ -89,13 +89,27 @@ def is_comHet(vntHet_obj_1, vntHet_obj_2, ID_list, allow_undef=False):
         if not allow_undef:
             if GT_1 == './.' or GT_2 == './.':
                 return False
-            elif GT_1 == '0/0' and GT_2 == '0/0': # this could be a potential de novo
-                                                  # in a compound het
-                return False
             #end if
         #end if
     #end for
     return True
+#end def
+
+def phase(vntHet_obj_1, vntHet_obj_2, ID_list):
+    ''' check genotypes combination for parents if available and
+    refine the assignment for the pair as Phased or Unphased '''
+    if len(ID_list[1:]) < 2:
+        return 'Unphased'
+    #end if
+    for ID in ID_list[1:]:
+        GT_1 = vntHet_obj_1.vnt_obj.get_genotype_value(ID, 'GT').replace('|', '/')
+        GT_2 = vntHet_obj_2.vnt_obj.get_genotype_value(ID, 'GT').replace('|', '/')
+        if GT_1 == '0/0' and GT_2 == '0/0': # this could be a potential de novo
+                                            # in a compound het
+                return 'Unphased'
+        #end if
+    #end for
+    return 'Phased'
 #end def
 
 #################################################################
@@ -106,7 +120,8 @@ def main(args):
     # Variables
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
     allow_undef = True if args['allow_undef'] else False
-    comHet_def = '##INFO=<ID=comHet,Number=3,Type=String,Description="Putative compound heterozygous pairs. Format:\'ENSG_ID|ENST_ID|VARIANT\'">'
+    filter_comHet = True if args['filter_comHet'] else False
+    comHet_def = '##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Format:\'phase|ENSG_ID|ENST_ID|VARIANT\'">'
 
     # Buffers
     fo = open(args['outputfile'], 'w')
@@ -152,6 +167,14 @@ def main(args):
         # Reset data structures
         ENST_dict_tmp = {}
 
+        # Creating VariantHet object
+        vntHet_obj = VariantHet(vnt_obj, c)
+        if not filter_comHet: # if not filter, all variants are added to vntHet_set here
+                              # if filter, no variant is added here to vntHet_set,
+                              # compound heterozygous variants will be added after pairing
+            vntHet_set.add((vntHet_obj.i, vntHet_obj))
+        #end if
+
         # Check proband_ID genotype
         if vnt_obj.get_genotype_value(ID_list[0], 'GT').replace('|', '/') not in ['0/1', '1/0']:
             continue # go next if is not 0/1
@@ -171,7 +194,6 @@ def main(args):
 
         # Assign variant to genes if VEP
         if ENST_dict_tmp:
-            vntHet_obj = VariantHet(vnt_obj, c)
             # Assign variant to genes and update transcripts for variant
             for ENSG, ENST_set in ENST_dict_tmp.items():
                 ENSG_dict.setdefault(ENSG, [])
@@ -195,7 +217,7 @@ def main(args):
                     # if parents information,
                     # check genotypes to confirm is compound het or not
                     if is_comHet(vntHet_obj, vntHet_obj_i, ID_list, allow_undef):
-                        vntHet_obj.add_pair(vntHet_obj_i, ENSG)
+                        vntHet_obj.add_pair(vntHet_obj_i, ENSG, phase(vntHet_obj, vntHet_obj_i, ID_list))
                         # Add vntHet to set to write since there is at least one pair
                         vntHet_set.add((vntHet_obj.i, vntHet_obj))
                     #end if
@@ -204,7 +226,7 @@ def main(args):
             p += 1
         #end while
     #end for
-    sys.stderr.write('\rPairing variant... {0}%'.format(100))
+    sys.stderr.write('\rPairing variants... {0}%'.format(100))
     sys.stderr.flush()
 
     # Writing output

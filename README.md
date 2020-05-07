@@ -124,15 +124,15 @@ By default novoCaller expect bgzip and tabix indexed RCK files. To use BAM files
 *note*: using BAM files directly will significantly slow down the software since pileup counts need to be calculated on the spot at each position and for each bam.
 
 #### Output
-novoCaller generates output in VCF format. Two new tags are used to report additional information for each call. *RSTR* stores reads counts by strand at position for reference and alternate allele. *novoCaller* stores posterior probabilty calculated for the call and allele frequency for alternate allele in unrelated samples.
+novoCaller generates output in VCF format. Two new tags are used to report additional information for each call. *RSTR* stores reads counts by strand at position for reference and alternate allele. *novoCaller* stores posterior probabilty calculated for the call and allele frequency for alternate allele in unrelated samples. Variants are sorted by posterior probability in desceding order.
 
-*RSTR* tag definition:
+*RSTR* tag definition (FORMAT):
 
     ##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">
 
-*novoCaller* tag definition:
+*novoCaller* tag definition (INFO):
 
-    ##INFO=<ID=novoCaller,Number=2,Type=Float,Description="Statistics from novoCaller. Format:'Post_prob|AF_unrel'">
+    ##INFO=<ID=novoCaller,Number=.,Type=Float,Description="Statistics from novoCaller. Format:'Post_prob|AF_unrel'">
 
 *note*: novoCaller model assumptions do not apply to unbalanced chromosomes (e.g. sex and mithocondrial chromosomes), therefore the model assigns `NA` as a placeholder for posterior probabilty. When filtering by posterior probabilty (`--ppthr`), `NA` is treated as 0.
 
