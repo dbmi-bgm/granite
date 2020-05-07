@@ -809,8 +809,8 @@ def main(args, test=False):
     BQthr = int(args['BQthr']) if args['BQthr'] else 0
     ADthr = int(args['ADthr']) if args['ADthr'] else 0
     aftag = args['aftag'] if args['aftag'] else 'novoAF'
-    RSTR_def = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">'
-    novoCaller_def = '##INFO=<ID=novoCaller,Number=.,Type=Float,Description="Statistics from novoCaller. Format:\'Post_prob|AF_unrel\'">'
+    RSTR_def = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Read counts by strand for ref and alt alleles (Rf,Af,Rr,Ar)">'
+    novoCaller_def = '##INFO=<ID=novoPP,Number=1,Type=Float,Description="Posterior probability from novoCaller">'
     # NA chromosomes set -> import from shared_vars
     if test: NA_chroms = test_NA_chroms
     else: NA_chroms = real_NA_chroms
@@ -894,7 +894,7 @@ def main(args, test=False):
 
     # Header definitions
     is_RSTR = 'RSTR' in vcf_obj.header.definitions
-    is_novoCaller = 'novoCaller' in vcf_obj.header.definitions
+    is_novoCaller = 'novoPP' in vcf_obj.header.definitions
 
     if not is_RSTR:
         vcf_obj.header.add_tag_definition(RSTR_def, 'FORMAT')
@@ -922,13 +922,13 @@ def main(args, test=False):
             vnt_obj.remove_tag_genotype('RSTR')
         #end if
         if is_novoCaller:
-            vnt_obj.remove_tag_info('novoCaller')
+            vnt_obj.remove_tag_info('novoPP')
         #end if
 
         # Adding new tags
         if is_NA: PP = 'NA'
         #end if
-        vnt_obj.add_tag_info('novoCaller={0}|{1}'.format(PP, AF_unrel))
+        vnt_obj.add_tag_info('novoPP={0}'.format(PP))
         vnt_obj.add_tag_format('RSTR')
 
         # Updating genotypes family

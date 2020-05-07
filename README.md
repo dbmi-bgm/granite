@@ -124,15 +124,15 @@ By default novoCaller expect bgzip and tabix indexed RCK files. To use BAM files
 *note*: using BAM files directly will significantly slow down the software since pileup counts need to be calculated on the spot at each position and for each bam.
 
 #### Output
-novoCaller generates output in VCF format. Two new tags are used to report additional information for each call. *RSTR* stores reads counts by strand at position for reference and alternate allele. *novoCaller* stores posterior probabilty calculated for the call and allele frequency for alternate allele in unrelated samples. Variants are sorted by posterior probability in desceding order.
+novoCaller generates output in VCF format. Two new tags are used to report additional information for each call. *RSTR* stores reads counts by strand at position for reference and alternate alleles. *novoPP* stores posterior probabilty calculated for the call. Variants are sorted by posterior probability in desceding order.
 
 *RSTR* tag definition (FORMAT):
 
-    ##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Reference and alternate allele read counts by strand (Rf,Af,Rr,Ar)">
+    ##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Read counts by strand for ref and alt alleles (Rf,Af,Rr,Ar)">
 
-*novoCaller* tag definition (INFO):
+*novoPP* tag definition (INFO):
 
-    ##INFO=<ID=novoCaller,Number=.,Type=Float,Description="Statistics from novoCaller. Format:'Post_prob|AF_unrel'">
+    ##INFO=<ID=novoPP,Number=1,Type=Float,Description="Posterior probability from novoCaller">
 
 *note*: novoCaller model assumptions do not apply to unbalanced chromosomes (e.g. sex and mithocondrial chromosomes), therefore the model assigns `NA` as a placeholder for posterior probabilty. When filtering by posterior probabilty (`--ppthr`), `NA` is treated as 0.
 
@@ -145,8 +145,7 @@ It is possible to filter-out variants with posterior probabilty lower than `--pp
 
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --ppthr <float>
 
-It is possible to filter-out variants with population allele frequency higher than `--afthr`. Allele frequency must be provided for each variant in INFO column following the format tag=\<float\>. If `--aftag`
-is not specified the program will search for *novoAF* tag as a default.
+It is possible to filter-out variants with population allele frequency higher than `--afthr`. Allele frequency must be provided for each variant in INFO column following the format tag=\<float\>. If `--aftag` is not specified the program will search for *novoAF* tag as a default.
 
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --afthr <float> --aftag tag
 
