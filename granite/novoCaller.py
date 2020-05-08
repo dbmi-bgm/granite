@@ -816,6 +816,7 @@ def main(args, test=False):
     else: NA_chroms = real_NA_chroms
     #end if
     is_NA = False
+    is_verbose = True if args['verbose'] else False
 
     # Buffers
     fo = open(args['outputfile'], 'w')
@@ -853,8 +854,10 @@ def main(args, test=False):
     # Reading variants
     analyzed = 0
     for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
-        sys.stderr.write('\rAnalyzing variant... ' + str(i + 1))
-        sys.stderr.flush()
+        if is_verbose:
+            sys.stderr.write('\rAnalyzing variant... ' + str(i + 1))
+            sys.stderr.flush()
+        #end if
 
         # # Check if chromosome is canonical and in valid format
         # if not check_chrom(vnt_obj.CHROM): # skip variant if not

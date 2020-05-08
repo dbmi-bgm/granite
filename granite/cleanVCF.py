@@ -43,6 +43,7 @@ def main(args):
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
     SpliceAI_thr = float(args['SpliceAI']) if args['SpliceAI'] else 0.
     is_SpAI = False
+    is_verbose = True if args['verbose'] else False
 
     # Buffers
     fo = open(args['outputfile'], 'w')
@@ -75,8 +76,10 @@ def main(args):
     # Reading variants and writing passed
     analyzed = 0
     for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
-        sys.stderr.write('\rAnalyzing variant... ' + str(i + 1))
-        sys.stderr.flush()
+        if is_verbose:
+            sys.stderr.write('\rAnalyzing variant... ' + str(i + 1))
+            sys.stderr.flush()
+        #end if
 
         # # Check if chromosome is canonical and in valid format
         # if not check_chrom(vnt_obj.CHROM):

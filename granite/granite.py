@@ -60,6 +60,7 @@ def main():
     novoCaller_parser.add_argument('--MQthr', help='(only with "--bam") minimum mapping quality for an alignment to be used (>=) [0]', type=int, required=False)
     novoCaller_parser.add_argument('--BQthr', help='(only with "--bam") minimum base quality for a base to be considered (>=) [0]', type=int, required=False)
     novoCaller_parser.add_argument('--ADthr', help='threshold to filter by alternate allele depth in parents. This will ignore and set to "0" the posterior probability for variants with a number of alternate reads in parents higher than specified value', type=int, required=False)
+    novoCaller_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add comHet to subparsers
     comHet_parser = subparsers.add_parser('comHet', description='',
@@ -71,6 +72,7 @@ def main():
     comHet_parser.add_argument('--VEPtag', help='by default the program will search for "VEP" TAG (VEP=<values>), use this parameter to specify a different TAG to be used', type=str, required=False)
     comHet_parser.add_argument('--filter_comHet', help='by default the program returns all variants in the input VCF file. This flag will produce a shorter output containing only variants that are potential compound heterozygous', action='store_true', required=False)
     comHet_parser.add_argument('--allow_undef', help='by default the program ignores variants with undefined genotype in parents. This flag extends the output to include these cases', action='store_true', required=False)
+    comHet_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add mpileupCounts to subparsers
     mpileupCounts_parser = subparsers.add_parser('mpileupCounts', description='samtools wrapper to calculate reads statistics for pileup at each position',
@@ -92,6 +94,7 @@ def main():
     blackList_parser.add_argument('-b', '--bigfile', help='BIG format file with positions set for blacklist', type=str, required=False)
     blackList_parser.add_argument('--aftag', help='TAG (TAG=<float>) to be used to filter by population allele frequency', type=str, required=False)
     blackList_parser.add_argument('--afthr', help='threshold to filter by population allele frequency (<=) [1]', type=float, required=False)
+    blackList_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add whiteList to subparsers
     whiteList_parser = subparsers.add_parser('whiteList', description='utility to whitelist and select a subset of variants from input VCF file based on specified annotations and positions',
@@ -108,6 +111,7 @@ def main():
     whiteList_parser.add_argument('--VEPrescue', help='additional terms to overrule removed flags to rescue and whitelist variants', nargs='+', required=False)
     whiteList_parser.add_argument('--VEPremove', help='additional terms to be removed', nargs='+', required=False)
     whiteList_parser.add_argument('--BEDfile', help='BED format file with positions to whitelist', type=str, required=False)
+    whiteList_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add cleanVCF to subparsers
     cleanVCF_parser = subparsers.add_parser('cleanVCF', description='utility to clean INFO field of input VCF file',
@@ -121,6 +125,7 @@ def main():
     cleanVCF_parser.add_argument('--VEPrescue', help='additional terms to overrule removed flags to rescue annotations', nargs='+', required=False)
     cleanVCF_parser.add_argument('--VEPremove', help='additional terms to be removed from annotations', nargs='+', required=False)
     cleanVCF_parser.add_argument('--SpliceAI', help='threshold to save intronic annotations, from VEP "Consequence", for variants by SpliceAI value (>=)', type=float, required=False)
+    cleanVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add toBig to subparsers
     toBig_parser = subparsers.add_parser('toBig', description='utility that converts counts from bgzip and tabix indexed RCK format into BIG format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions',

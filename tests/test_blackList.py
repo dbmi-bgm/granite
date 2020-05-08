@@ -15,7 +15,7 @@ def test_run_blackList_big():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_blackList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'aftag': None, 'afthr': None, 'bigfile': 'tests/files/input_blackList.big'}
+            'aftag': None, 'afthr': None, 'bigfile': 'tests/files/input_blackList.big', 'verbose': None}
     # Run
     main_blackList(args)
     # Tests
@@ -28,7 +28,7 @@ def test_run_blackList_032_big():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_blackList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'aftag': 'novoAF', 'afthr': '0.32', 'bigfile': 'tests/files/input_blackList.big'}
+            'aftag': 'novoAF', 'afthr': '0.32', 'bigfile': 'tests/files/input_blackList.big', 'verbose': None}
     # Run
     main_blackList(args)
     # Tests
@@ -41,7 +41,7 @@ def test_run_blackList_032():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_blackList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'aftag': 'novoAF', 'afthr': '0.32', 'bigfile': None}
+            'aftag': 'novoAF', 'afthr': '0.32', 'bigfile': None, 'verbose': None}
     # Run
     main_blackList(args)
     # Tests
@@ -54,7 +54,7 @@ def test_run_blackList_01():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_blackList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'aftag': 'novoAF', 'afthr': '0.1', 'bigfile': None}
+            'aftag': 'novoAF', 'afthr': '0.1', 'bigfile': None, 'verbose': None}
     # Run
     main_blackList(args)
     # Tests
@@ -67,7 +67,7 @@ def test_run_blackList_001():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_blackList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'aftag': 'novoAF', 'afthr': '0.01', 'bigfile': None}
+            'aftag': 'novoAF', 'afthr': '0.01', 'bigfile': None, 'verbose': None}
     # Run
     main_blackList(args)
     # Tests
@@ -84,7 +84,7 @@ def test_args_afthr_bigfile_missing():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_blackList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'aftag': None, 'afthr': None, 'bigfile': None}
+            'aftag': None, 'afthr': None, 'bigfile': None, 'verbose': None}
     # Run and Tests
     with pytest.raises(SystemExit) as e:
         assert main_blackList(args)
@@ -95,7 +95,7 @@ def test_args_afthr_conflict():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_blackList.vcf', 'outputfile': 'tests/files/main_test.out',
-            'aftag': None, 'afthr': '0.2', 'bigfile': None}
+            'aftag': None, 'afthr': '0.2', 'bigfile': None, 'verbose': None}
     # Run and Tests
     with pytest.raises(SystemExit) as e:
         assert main_blackList(args)

@@ -122,6 +122,7 @@ def main(args):
     allow_undef = True if args['allow_undef'] else False
     filter_comHet = True if args['filter_comHet'] else False
     comHet_def = '##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Format:\'phase|ENSG_ID|ENST_ID|VARIANT\'">'
+    is_verbose = True if args['verbose'] else False
 
     # Buffers
     fo = open(args['outputfile'], 'w')
@@ -155,8 +156,10 @@ def main(args):
     # Reading variants
     analyzed = 0
     for c, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
-        sys.stderr.write('\rAnalyzing variant... ' + str(c + 1))
-        sys.stderr.flush()
+        if is_verbose:
+            sys.stderr.write('\rAnalyzing variant... ' + str(c + 1))
+            sys.stderr.flush()
+        #end if
 
         # # Check if chromosome is canonical and in valid format
         # if not check_chrom(vnt_obj.CHROM):
@@ -207,8 +210,10 @@ def main(args):
     sys.stderr.write('\n')
     n = len(ENSG_dict)
     for n_i, (ENSG, vntHet_list) in enumerate(ENSG_dict.items()):
-        sys.stderr.write('\rPairing variants... {:.0f}%'.format(float(n_i)/n*100))
-        sys.stderr.flush()
+        if is_verbose:
+            sys.stderr.write('\rPairing variants... {:.0f}%'.format(float(n_i)/n*100))
+            sys.stderr.flush()
+        #end if
         p, l = 0, len(vntHet_list)
         while p < l:
             vntHet_obj = vntHet_list[p]
@@ -226,8 +231,10 @@ def main(args):
             p += 1
         #end while
     #end for
-    sys.stderr.write('\rPairing variants... {0}%'.format(100))
-    sys.stderr.flush()
+    if is_verbose:
+        sys.stderr.write('\rPairing variants... {0}%'.format(100))
+        sys.stderr.flush()
+    #end if
 
     # Writing output
     sys.stderr.write('\n\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(c + 1) + ' total variants\n')

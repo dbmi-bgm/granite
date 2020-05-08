@@ -16,7 +16,7 @@ def test_run_cleanVCF_void():
     # Variables
     args = {'inputfile': 'tests/files/input_cleanVCF.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None,
-            'VEPtag': None, 'tag': []}
+            'VEPtag': None, 'tag': [], 'verbose': None}
     # Run
     main_cleanVCF(args)
     # Tests
@@ -30,7 +30,7 @@ def test_run_cleanVCF_VEP():
     # Variables
     args = {'inputfile': 'tests/files/input_cleanVCF.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': None,
-            'VEPtag': None, 'tag': []}
+            'VEPtag': None, 'tag': [], 'verbose': None}
     # Run
     main_cleanVCF(args)
     # Tests
@@ -44,7 +44,7 @@ def test_run_cleanVCF_VEP_as_ANNOTTAG():
     # Variables
     args = {'inputfile': 'tests/files/input_cleanVCF_ANNOTTAG.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': None,
-            'VEPtag': 'ANNOTTAG', 'tag': []}
+            'VEPtag': 'ANNOTTAG', 'tag': [], 'verbose': None}
     # Run
     main_cleanVCF(args)
     # Tests
@@ -58,7 +58,7 @@ def test_run_cleanVCF_VEP_SpAI():
     # Variables
     args = {'inputfile': 'tests/files/input_cleanVCF_SpAI.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': 0.9, 'VEP': True, 'VEPrescue': None, 'VEPremove': None,
-            'VEPtag': None, 'tag': []}
+            'VEPtag': None, 'tag': [], 'verbose': None}
     # Run
     main_cleanVCF(args)
     # Tests
@@ -72,7 +72,7 @@ def test_run_cleanVCF_VEP_rescue():
     # Variables
     args = {'inputfile': 'tests/files/input_cleanVCF.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': None, 'VEP': True, 'VEPrescue': ['intron_variant'], 'VEPremove': None,
-            'VEPtag': None, 'tag': []}
+            'VEPtag': None, 'tag': [], 'verbose': None}
     # Run
     main_cleanVCF(args)
     # Tests
@@ -86,7 +86,7 @@ def test_run_cleanVCF_VEP_remove():
     # Variables
     args = {'inputfile': 'tests/files/input_cleanVCF.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': ['3_prime_UTR_variant'],
-            'VEPtag': None, 'tag': []}
+            'VEPtag': None, 'tag': [], 'verbose': None}
     # Run
     main_cleanVCF(args)
     # Tests
@@ -100,7 +100,7 @@ def test_run_cleanVCF_VEP_remove_rescue():
     # Variables
     args = {'inputfile': 'tests/files/input_cleanVCF.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': None, 'VEP': True, 'VEPrescue': ['downstream_gene_variant', 'NMD_transcript_variant'],
-            'VEPremove': ['5_prime_UTR_variant', '3_prime_UTR_variant'], 'VEPtag': None, 'tag': []}
+            'VEPremove': ['5_prime_UTR_variant', '3_prime_UTR_variant'], 'VEPtag': None, 'tag': [], 'verbose': None}
     # Run
     main_cleanVCF(args)
     # Tests
@@ -114,7 +114,7 @@ def test_run_cleanVCF_VEP_SpAI_remove_rescue():
     # Variables
     args = {'inputfile': 'tests/files/input_cleanVCF_SpAI.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': 0.9, 'VEP': True, 'VEPrescue': ['downstream_gene_variant', 'NMD_transcript_variant'],
-            'VEPremove': ['5_prime_UTR_variant', '3_prime_UTR_variant'], 'VEPtag': None, 'tag': []}
+            'VEPremove': ['5_prime_UTR_variant', '3_prime_UTR_variant'], 'VEPtag': None, 'tag': [], 'verbose': None}
     # Run
     main_cleanVCF(args)
     # Tests
@@ -128,7 +128,7 @@ def test_run_cleanVCF_VEP_SpAI_remove_rescue_tag():
     # Variables
     args = {'inputfile': 'tests/files/input_cleanVCF_SpAI.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': 0.9, 'VEP': True, 'VEPrescue': ['downstream_gene_variant', 'NMD_transcript_variant'],
-            'VEPremove': ['5_prime_UTR_variant', '3_prime_UTR_variant'], 'VEPtag': None, 'tag': ['BaseQRankSum']}
+            'VEPremove': ['5_prime_UTR_variant', '3_prime_UTR_variant'], 'VEPtag': None, 'tag': ['BaseQRankSum'], 'verbose': None}
     # Run
     main_cleanVCF(args)
     # Tests
@@ -142,7 +142,7 @@ def test_run_cleanVCF_VEP_SpAI_remove_rescue_tag_2():
     # Variables
     args = {'inputfile': 'tests/files/input_cleanVCF_SpAI.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': 0.9, 'VEP': True, 'VEPrescue': ['downstream_gene_variant', 'NMD_transcript_variant'],
-            'VEPremove': ['5_prime_UTR_variant', '3_prime_UTR_variant'], 'VEPtag': None, 'tag': ['BaseQRankSum', 'novoCaller']}
+            'VEPremove': ['5_prime_UTR_variant', '3_prime_UTR_variant'], 'VEPtag': None, 'tag': ['BaseQRankSum', 'novoCaller'], 'verbose': None}
     # Run
     main_cleanVCF(args)
     # Tests
@@ -159,7 +159,7 @@ def test_args_conflict():
     # Variables
     args = {'inputfile': 'tests/files/input_cleanVCF.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': None, 'VEP': None, 'VEPrescue': ['splice_region_variant', 'non_coding_transcript_variant'], 'VEPremove': None,
-            'VEPtag': None, 'tag': []}
+            'VEPtag': None, 'tag': [], 'verbose': None}
     # Run and Tests
     with pytest.raises(SystemExit) as e:
         assert main_cleanVCF(args)
