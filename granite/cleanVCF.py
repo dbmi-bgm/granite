@@ -41,6 +41,7 @@ def main(args):
     # VEPSpliceAI = {...} -> import from shared_vars
     is_VEP = True if args['VEP'] else False
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
+    VEPsep = args['VEPsep'] if args['VEPsep'] else '&'
     SpliceAI_thr = float(args['SpliceAI']) if args['SpliceAI'] else 0.
     is_SpAI = False
     is_verbose = True if args['verbose'] else False
@@ -108,9 +109,9 @@ def main(args):
         if is_VEP:
             # Get cleaned VEP
             if is_SpAI:
-                VEP_clean = clean_VEP(vnt_obj, consequence_idx, VEPremove, VEPrescue.union(VEPSpliceAI), VEPtag)
+                VEP_clean = clean_VEP(vnt_obj, consequence_idx, VEPremove, VEPrescue.union(VEPSpliceAI), VEPtag, VEPsep)
             else:
-                VEP_clean = clean_VEP(vnt_obj, consequence_idx, VEPremove, VEPrescue, VEPtag)
+                VEP_clean = clean_VEP(vnt_obj, consequence_idx, VEPremove, VEPrescue, VEPtag, VEPsep)
             #end if
             # Remove old VEP
             vnt_obj.remove_tag_info(VEPtag)

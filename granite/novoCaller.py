@@ -928,34 +928,33 @@ def main(args, test=False):
             vnt_obj.remove_tag_info('novoPP')
         #end if
 
-        # Adding new tags
-        if is_NA: PP = 'NA'
+        # Adding new tag
+        if not is_NA:
+            vnt_obj.add_tag_info('novoPP={0}'.format(PP))
         #end if
-        vnt_obj.add_tag_info('novoPP={0}'.format(PP))
-        vnt_obj.add_tag_format('RSTR')
 
-        # Updating genotypes family
-        for ID in vnt_obj.GENOTYPES:
-            vnt_obj.add_values_genotype(ID, '')
-        #end for
+        # Fill the trailing fields dropped in genotypes
+        vnt_obj.complete_genotype()
 
         # Updating genotypes trio
         for i, ID in enumerate(IDs_trio):
             values = '{0},{1},{2},{3}'.format(int(ADfs[i][0]), int(ADfs[i][1]), int(ADrs[i][0]), int(ADrs[i][1]))
-            vnt_obj.add_values_genotype(ID, values, sep='')
+            vnt_obj.add_values_genotype(ID, values)
         #end for
-        empty_genotype = './.' + ':' * vnt_obj.GENOTYPES[ID].count(':')
 
-        # Updating unrelated if already present
+        # Updating genotypes unrelated
         unrelated_genotypes = []
         for i, ID in enumerate(IDs_unrelated):
             values = '{0},{1},{2},{3}'.format(int(ADfs_U[i][0]), int(ADfs_U[i][1]), int(ADrs_U[i][0]), int(ADrs_U[i][1]))
             if ID in vnt_obj.GENOTYPES:
-                vnt_obj.add_values_genotype(ID, values, sep='')
+                vnt_obj.add_values_genotype(ID, values)
             else:
-                unrelated_genotypes.append(empty_genotype + values)
+                unrelated_genotypes.append(vnt_obj.empty_genotype() + ':' + values)
             #end if
         #end for
+
+        # Updating FORMAT
+        vnt_obj.add_tag_format('RSTR')
 
         # Writing output
         if unrelated_genotypes:
@@ -963,7 +962,7 @@ def main(args, test=False):
         else:
             fo.write(vnt_obj.to_string())
         #end if
-    # end for
+    #end for
 
     # Closing files buffers
     fo.close()

@@ -158,9 +158,33 @@ class Vcf(object):
             # Removing tag field from GENOTYPES
             for ID_genotype, genotype in self.GENOTYPES.items():
                 genotype_as_list = genotype.split(sep)
-                del genotype_as_list[idx_tag_to_remove]
+                try:
+                    del genotype_as_list[idx_tag_to_remove]
+                except Exception: # del will fail for trailing fields that are dropped
+                                  # field to remove is missing already
+                    pass
+                #end try
                 self.GENOTYPES[ID_genotype] = sep.join(genotype_as_list)
             #end for
+        #end def
+
+        def complete_genotype(self, sep=':'):
+            ''' fill the trailing fields dropped in GENOTYPES,
+            based on FORMAT structure '''
+            len_FORMAT = len(self.FORMAT.split(sep))
+            for ID_genotype, genotype in self.GENOTYPES.items():
+                genotype_as_list = genotype.split(sep)
+                for i in range(len_FORMAT - len(genotype_as_list)):
+                    genotype_as_list.append('.')
+                #end for
+                self.GENOTYPES[ID_genotype] = sep.join(genotype_as_list)
+            #end for
+        #end def
+
+        def empty_genotype(self, sep=':'):
+            ''' return a empty genotype based on FORMAT structure '''
+            len_FORMAT = len(self.FORMAT.split(sep))
+            return './.' + (sep + '.') * (len_FORMAT - 1)
         #end def
 
         def remove_tag_info(self, tag_to_remove, sep=';'):

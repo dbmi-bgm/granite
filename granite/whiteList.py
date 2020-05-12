@@ -45,6 +45,7 @@ def main(args):
     is_BEDfile = True if args['BEDfile'] else False
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
     CLINVARtag = args['CLINVARtag'] if args['CLINVARtag'] else 'CLINVAR'
+    VEPsep = args['VEPsep'] if args['VEPsep'] else '&'
     is_verbose = True if args['verbose'] else False
 
     # Buffers
@@ -73,7 +74,7 @@ def main(args):
         if args['CLINVARonly']:
             CLINVARonly = {term for term in args['CLINVARonly']}
             try: CLINSIG_idx = vcf_obj.header.get_tag_field_idx(CLINVARtag, 'CLINSIG')
-            except: CLINSIG_idx = vcf_obj.header.get_tag_field_idx(CLINVARtag, 'CLNSIG')
+            except Exception: CLINSIG_idx = vcf_obj.header.get_tag_field_idx(CLINVARtag, 'CLNSIG')
             #end try
         #end if
     elif args['CLINVARonly']:
@@ -112,7 +113,7 @@ def main(args):
 
         # Check VEP
         if is_VEP:
-            if check_VEP(vnt_obj, consequence_idx, VEPremove, VEPrescue, VEPtag):
+            if check_VEP(vnt_obj, consequence_idx, VEPremove, VEPrescue, VEPtag, VEPsep):
                 fo.write(vnt_obj.to_string())
                 continue
             #end if

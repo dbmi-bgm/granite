@@ -134,7 +134,7 @@ novoCaller generates output in VCF format. Two new tags are used to report addit
 
     ##INFO=<ID=novoPP,Number=1,Type=Float,Description="Posterior probability from novoCaller">
 
-*note*: novoCaller model assumptions do not apply to unbalanced chromosomes (e.g. sex and mithocondrial chromosomes), therefore the model assigns `NA` as a placeholder for posterior probabilty. When filtering by posterior probabilty (`--ppthr`), `NA` is treated as 0.
+*note*: novoCaller model assumptions do not apply to unbalanced chromosomes (e.g. sex and mithocondrial chromosomes), therefore the model does not assign a posterior probabilty. When filtering by posterior probabilty (`--ppthr`), these variants are treated as if their posterior probabilty was 0.
 
 #### Examples
 Calls *de novo* variants. This will return the calls ranked and sorted by calculated posterior probabilty.
@@ -224,6 +224,10 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
                             rescue and whitelist variants
       --VEPremove VEPREMOVE [VEPREMOVE ...]
                             additional terms to be removed
+      --VEPsep VEPSEP       by default the program expects "\&" as separator for
+                            subfields in VEP (e.g.
+                            intron_variant&splice_region_variant), use this
+                            parameter to specify a different separator to be used
       --BEDfile BEDFILE     BED format file with positions to whitelist
 
 #### Examples

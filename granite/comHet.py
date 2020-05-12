@@ -44,12 +44,12 @@ class VariantHet(object):
         self.ENST_dict.setdefault(ENSG, ENST_set)
     #end def
 
-    def add_pair(self, vntHet_obj, ENSG, phase):
+    def add_pair(self, vntHet_obj, ENSG, phase, sep):
         ''' add information for compound heterozygous pair with vntHet_obj '''
         comHet_pair = [phase, ENSG]
         common_ENST = self.ENST_dict[ENSG].intersection(vntHet_obj.ENST_dict[ENSG])
         if common_ENST:
-            comHet_pair.append('&'.join(sorted(common_ENST)))
+            comHet_pair.append(sep.join(sorted(common_ENST)))
         else: comHet_pair.append('')
         #end if
         comHet_pair.append('{0}:{1}{2}>{3}'.format(vntHet_obj.vnt_obj.CHROM,
@@ -119,9 +119,11 @@ def main(args):
     ''' '''
     # Variables
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
+    sep = args['sep'] if args['sep'] else '&'
     allow_undef = True if args['allow_undef'] else False
     filter_comHet = True if args['filter_comHet'] else False
-    comHet_def = '##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Format:\'phase|ENSG_ID|ENST_ID|VARIANT\'">'
+    granite_def = '##GRANITE=<ID=comHet,Version="XX">'
+    comHet_def = '##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Format:\'PHASE|ENSG_ID|ENST_ID|VARIANT\'">'
     is_verbose = True if args['verbose'] else False
 
     # Buffers
@@ -132,6 +134,7 @@ def main(args):
 
     # Add definition to header
     vcf_obj.header.add_tag_definition(comHet_def, 'INFO')
+    vcf_obj.header.add_tag_definition(granite_def, 'INFO')
 
     # Writing header
     fo.write(vcf_obj.header.definitions)
@@ -222,7 +225,7 @@ def main(args):
                     # if parents information,
                     # check genotypes to confirm is compound het or not
                     if is_comHet(vntHet_obj, vntHet_obj_i, ID_list, allow_undef):
-                        vntHet_obj.add_pair(vntHet_obj_i, ENSG, phase(vntHet_obj, vntHet_obj_i, ID_list))
+                        vntHet_obj.add_pair(vntHet_obj_i, ENSG, phase(vntHet_obj, vntHet_obj_i, ID_list), sep)
                         # Add vntHet to set to write since there is at least one pair
                         vntHet_set.add((vntHet_obj.i, vntHet_obj))
                     #end if

@@ -151,7 +151,7 @@ def check_chrom(chrom):
     return False
 #end def
 
-def check_VEP(vnt_obj, idx, VEPremove, VEPrescue, VEPtag):
+def check_VEP(vnt_obj, idx, VEPremove, VEPrescue, VEPtag, sep='&'):
     ''' check VEP annotations from VEPtag '''
     try: val_get = vnt_obj.get_tag_value(VEPtag)
     except Exception: return False
@@ -159,8 +159,7 @@ def check_VEP(vnt_obj, idx, VEPremove, VEPrescue, VEPtag):
     trscrpt_list = val_get.split(',')
     # Get all terms
     for trscrpt in trscrpt_list:
-        # & is standard VEP format, but cgap use ~
-        trscrpt_terms = set(trscrpt.split('|')[idx].replace('~', '&').split('&'))
+        trscrpt_terms = set(trscrpt.split('|')[idx].split(sep))
         if trscrpt_terms.intersection(VEPrescue):
             return True
         elif trscrpt_terms.difference(VEPremove):
@@ -219,7 +218,7 @@ def allele_frequency(vnt_obj, aftag, idx=0):
     return 0. if tag is missing or value is not a float '''
     try:
         return float(vnt_obj.get_tag_value(aftag).split('|')[idx])
-    except:
+    except Exception:
         return 0.
     #end try
 #end def
@@ -236,7 +235,7 @@ def VEP_field(vnt_obj, idx, VEPtag):
 #################################################################
 #    Functions to modify
 #################################################################
-def clean_VEP(vnt_obj, idx, VEPremove, VEPrescue, VEPtag):
+def clean_VEP(vnt_obj, idx, VEPremove, VEPrescue, VEPtag, sep='&'):
     ''' clean VEP annotations from VEPtag '''
     try: val_get = vnt_obj.get_tag_value(VEPtag)
     except Exception: return False
@@ -247,7 +246,7 @@ def clean_VEP(vnt_obj, idx, VEPremove, VEPrescue, VEPtag):
     for trscrpt in trscrpt_list:
         cnsquence_terms = []
         trscrpt_values = trscrpt.split('|')
-        for term in trscrpt_values[idx].replace('~', '&').split('&'):
+        for term in trscrpt_values[idx].split(sep):
             if term in VEPrescue:
                 cnsquence_terms.append(term)
             elif term not in VEPremove:
@@ -255,7 +254,7 @@ def clean_VEP(vnt_obj, idx, VEPremove, VEPrescue, VEPtag):
             #end if
         #end for
         if cnsquence_terms:
-            trscrpt_values[idx] = '&'.join(cnsquence_terms)
+            trscrpt_values[idx] = sep.join(cnsquence_terms)
             trscrpt_clean.append('|'.join(trscrpt_values))
         #end if
     #end for
