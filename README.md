@@ -224,7 +224,7 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
                             rescue and whitelist variants
       --VEPremove VEPREMOVE [VEPREMOVE ...]
                             additional terms to be removed
-      --VEPsep VEPSEP       by default the program expects "\&" as separator for
+      --VEPsep VEPSEP       by default the program expects "&" as separator for
                             subfields in VEP (e.g.
                             intron_variant&splice_region_variant), use this
                             parameter to specify a different separator to be used

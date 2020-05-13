@@ -107,6 +107,8 @@ def phase(vntHet_obj_1, vntHet_obj_2, ID_list):
         if GT_1 == '0/0' and GT_2 == '0/0': # this could be a potential de novo
                                             # in a compound het
                 return 'Unphased'
+        elif GT_1 == './.' or GT_2 == './.':
+                return 'Unphased'
         #end if
     #end for
     return 'Phased'
@@ -122,7 +124,7 @@ def main(args):
     sep = args['sep'] if args['sep'] else '&'
     allow_undef = True if args['allow_undef'] else False
     filter_comHet = True if args['filter_comHet'] else False
-    granite_def = '##GRANITE=<ID=comHet,Version="XX">'
+    granite_def = '##GRANITE=<ID=comHet>'
     comHet_def = '##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Format:\'PHASE|ENSG_ID|ENST_ID|VARIANT\'">'
     is_verbose = True if args['verbose'] else False
 
@@ -133,8 +135,7 @@ def main(args):
     vcf_obj = vcf_parser.Vcf(args['inputfile'])
 
     # Add definition to header
-    vcf_obj.header.add_tag_definition(comHet_def, 'INFO')
-    vcf_obj.header.add_tag_definition(granite_def, 'INFO')
+    vcf_obj.header.add_tag_definition(granite_def + '\n' + comHet_def, 'INFO')
 
     # Writing header
     fo.write(vcf_obj.header.definitions)

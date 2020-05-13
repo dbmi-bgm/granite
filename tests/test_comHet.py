@@ -128,6 +128,19 @@ def test_run_comHet_proband_plus_NA12878_NA12877_allow_undef():
     os.remove('tests/files/main_test.out')
 #end def
 
+def test_run_comHet_proband_plus_NA12878_NA12877_denovo():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_comHet_denovo.vcf', 'outputfile': 'tests/files/main_test.out',
+            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_comHet': True, 'verbose': None, 'sep': None}
+    # Run
+    main_comHet(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_comHet_plus_NA12878_NA12877_denovo.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
 def test_run_comHet_NA12878():
     ''' '''
     # Variables
