@@ -1,0 +1,90 @@
+{
+  "by_genes": [
+    {
+      "name": "ENSG00000163554",
+      "pairs": {
+        "phased": 6,
+        "total": 11
+      },
+      "transcripts": {
+        "phased": 2,
+        "total": 2
+      },
+      "variants": {
+        "phased": 5,
+        "total": 6
+      }
+    },
+    {
+      "name": "ENSG00000993554",
+      "pairs": {
+        "phased": 2,
+        "total": 5
+      },
+      "transcripts": {
+        "phased": 1,
+        "total": 1
+      },
+      "variants": {
+        "phased": 3,
+        "total": 4
+      }
+    }
+  ],
+  "by_transcripts": [
+    {
+      "gene": "ENSG00000163554",
+      "name": "ENST00000643759",
+      "pairs": {
+        "phased": 4,
+        "total": 8
+      },
+      "variants": {
+        "phased": 4,
+        "total": 5
+      }
+    },
+    {
+      "gene": "ENSG00000163554",
+      "name": "ENST00000643774",
+      "pairs": {
+        "phased": 2,
+        "total": 5
+      },
+      "variants": {
+        "phased": 3,
+        "total": 4
+      }
+    },
+    {
+      "gene": "ENSG00000993554",
+      "name": "ENST00000943959",
+      "pairs": {
+        "phased": 1,
+        "total": 3
+      },
+      "variants": {
+        "phased": 2,
+        "total": 3
+      }
+    }
+  ],
+  "general": {
+    "genes": {
+      "phased": 2,
+      "total": 2
+    },
+    "pairs": {
+      "phased": 6,
+      "total": 11
+    },
+    "transcripts": {
+      "phased": 3,
+      "total": 3
+    },
+    "variants": {
+      "phased": 5,
+      "total": 6
+    }
+  }
+}

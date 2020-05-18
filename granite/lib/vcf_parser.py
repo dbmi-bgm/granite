@@ -137,6 +137,14 @@ class Vcf(object):
             return variant_as_string + '\t'.join(genotypes_as_list) + '\n'
         #end def
 
+        def repr(self):
+            ''' variant representation as CHROM:POSREF>ALT'''
+            return '{0}:{1}{2}>{3}'.format(self.CHROM,
+                                      self.POS,
+                                      self.REF,
+                                      self.ALT)
+        #end def
+
         def remove_tag_genotype(self, tag_to_remove, sep=':'):
             ''' remove tag field from FORMAT and GENOTYPES '''
             idx_tag_to_remove, new_format = -1, []
@@ -215,7 +223,7 @@ class Vcf(object):
         def get_tag_value(self, tag_to_get, sep=';'):
             ''' get value from tag (tag_to_get) in INFO '''
             for tag in self.INFO.split(sep):
-                if tag.startswith(tag_to_get):
+                if tag.startswith(tag_to_get + '='):
                     try:
                         return tag.split('=')[1]
                     except Exception: # tag field is in a wrong format
@@ -245,7 +253,12 @@ class Vcf(object):
                             .format(tag_to_get))
             #end if
             # Get value from index in genotype by ID
-            return self.GENOTYPES[ID_genotype].split(sep)[idx_tag_to_get]
+            try:
+                return self.GENOTYPES[ID_genotype].split(sep)[idx_tag_to_get]
+            except:
+                raise ValueError('\nERROR in GENOTYPES identifiers, {0} identifier is missing in VCF\n'
+                            .format(ID_genotype))
+            #end try
         #end def
 
     #end class Variant

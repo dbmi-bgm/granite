@@ -1,0 +1,17 @@
+##general stats
+#category	phased	total
+genes	2	2
+transcripts	3	3
+variants	5	6
+pairs	6	11
+
+##stats by genes
+#ENSG_ID	transcripts_phased	transcripts_total	variants_phased	variants_total	pairs_phased	pairs_total
+ENSG00000163554	2	2	5	6	6	11
+ENSG00000993554	1	1	3	4	2	5
+
+##stats by transcripts
+#ENST_ID	ENSG_ID	variants_phased	variants_total	pairs_phased	pairs_total
+ENST00000643759	ENSG00000163554	4	5	4	8
+ENST00000643774	ENSG00000163554	3	4	2	5
+ENST00000943959	ENSG00000993554	2	3	1	3

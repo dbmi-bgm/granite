@@ -71,7 +71,7 @@ def main():
     comHet_parser.add_argument('--trio', help='list of sample IDs for trio, PROBAND is required and must be listed FIRST (e.g. --trio PROBAND_ID [PARENT_ID] [PARENT_ID])', nargs='+', required=True)
     comHet_parser.add_argument('--VEPtag', help='by default the program will search for "VEP" TAG (VEP=<values>), use this parameter to specify a different TAG to be used', type=str, required=False)
     comHet_parser.add_argument('--sep', help='by default the program uses "&" as separator for subfields in annotating VCF (e.g. ENST00000643759&ENST00000643774), use this parameter to specify a different separator to be used', type=str, required=False)
-    comHet_parser.add_argument('--filter_comHet', help='by default the program returns all variants in the input VCF file. This flag will produce a shorter output containing only variants that are potential compound heterozygous', action='store_true', required=False)
+    comHet_parser.add_argument('--filter_cmpHet', help='by default the program returns all variants in the input VCF file. This flag will produce a shorter output containing only variants that are potential compound heterozygous', action='store_true', required=False)
     comHet_parser.add_argument('--allow_undef', help='by default the program ignores variants with undefined genotype in parents. This flag extends the output to include these cases', action='store_true', required=False)
     comHet_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
