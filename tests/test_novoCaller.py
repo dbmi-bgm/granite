@@ -34,7 +34,7 @@ def test_run_novoCaller_bam_noUNR():
     # Variables
     args = {'inputfile': 'tests/files/input_novoCaller_BAM_noUNR.vcf', 'outputfile': 'tests/files/main_test.out',
             'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'ppthr': None, 'afthr': '0.01', 'aftag': 'novoAF', 'bam': True,
             'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3, 'verbose': None}
     # Run
     main_novoCaller(args)
@@ -49,7 +49,7 @@ def test_run_novoCaller_bam_noUNR_NA():
     # Variables
     args = {'inputfile': 'tests/files/input_novoCaller_BAM_noUNR.vcf', 'outputfile': 'tests/files/main_test.out',
             'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'ppthr': None, 'afthr': '0.01', 'aftag': 'novoAF', 'bam': True,
             'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3, 'verbose': None}
     # Run
     main_novoCaller(args, test=True)
@@ -79,7 +79,7 @@ def test_run_novoCaller_bam_withUNR():
     # Variables
     args = {'inputfile': 'tests/files/input_novoCaller_BAM_withUNR.vcf', 'outputfile': 'tests/files/main_test.out',
             'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'ppthr': None, 'afthr': '0.01', 'aftag': 'novoAF', 'bam': True,
             'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3, 'verbose': None}
     # Run
     main_novoCaller(args)
@@ -94,7 +94,7 @@ def test_run_novoCaller_bam_withUNR_asSibling_ALLBAMS():
     # Variables
     args = {'inputfile': 'tests/files/input_novoCaller_BAM_withUNR_asSibling.vcf', 'outputfile': 'tests/files/main_test.out',
             'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'ppthr': None, 'afthr': '0.01', 'aftag': 'novoAF', 'bam': True,
             'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3, 'verbose': None}
     # Run
     main_novoCaller(args)
@@ -109,7 +109,7 @@ def test_run_novoCaller_bam_withUNR_asSibling_missingSibling():
     # Variables
     args = {'inputfile': 'tests/files/input_novoCaller_BAM_withUNR_asSibling.vcf', 'outputfile': 'tests/files/main_test.out',
             'unrelatedfiles':'tests/files/unrelated_bam_PSC-01-003_asSibling.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'ppthr': None, 'afthr': '0.01', 'aftag': 'novoAF', 'bam': True,
             'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3, 'verbose': None}
     # Run
     main_novoCaller(args)
@@ -124,7 +124,7 @@ def test_run_novoCaller_bam_withUNR_asSibling_SWAP_SON_missingSibling():
     # Variables
     args = {'inputfile': 'tests/files/input_novoCaller_BAM_withUNR_asSibling_SWAP_SON.vcf', 'outputfile': 'tests/files/main_test.out',
             'unrelatedfiles':'tests/files/unrelated_bam_PSC-01-003_asSibling.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'ppthr': None, 'afthr': '0.01', 'aftag': 'novoAF', 'bam': True,
             'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3, 'verbose': None}
     # Run
     main_novoCaller(args)
@@ -139,7 +139,7 @@ def test_run_novoCaller_bam_rerun_noUNR():
     # Variables
     args = {'inputfile': 'tests/files/input_novoCaller_BAM_noUNR.out', 'outputfile': 'tests/files/main_test.out',
             'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'ppthr': None, 'afthr': '0.01', 'aftag': 'novoAF', 'bam': True,
             'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3, 'verbose': None}
     # Run
     main_novoCaller(args)
@@ -154,7 +154,7 @@ def test_run_novoCaller_bam_rerun_withUNR_asSibling_missingSibling():
     # Variables
     args = {'inputfile': 'tests/files/input_novoCaller_BAM_withUNR_asSibling_missingSibling.out', 'outputfile': 'tests/files/main_test.out',
             'unrelatedfiles':'tests/files/unrelated_bam_PSC-01-003_asSibling.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'ppthr': None, 'afthr': '0.01', 'aftag': 'novoAF', 'bam': True,
             'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3, 'verbose': None}
     # Run
     main_novoCaller(args)
@@ -184,7 +184,7 @@ def test_run_novoCaller_bam_jc50_wgenome_plus_indels():
     # Variables
     args = {'inputfile': 'tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels.vcf', 'outputfile': 'tests/files/main_test.out',
             'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'ppthr': None, 'afthr': '0.01', 'aftag': 'novoAF', 'bam': True,
             'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3, 'verbose': None}
     # Run
     main_novoCaller(args)
@@ -356,7 +356,7 @@ def test_run_novoCaller_bam_missing_trio():
     # Variables
     args = {'inputfile': 'tests/files/input_novoCaller_BAM_annot_missing_novoAF.vcf', 'outputfile': 'tests/files/main_test.out',
             'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam_missingOne.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'ppthr': None, 'afthr': '0.01', 'aftag': 'novoAF', 'bam': True,
             'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3, 'verbose': None}
     # Run and Tests
     with pytest.raises(SystemExit) as e:
@@ -371,7 +371,7 @@ def test_run_novoCaller_bam_rerun_noUNR_NORSTR():
     # Variables
     args = {'inputfile': 'tests/files/input_novoCaller_BAM_noUNR_NORSTR.out', 'outputfile': 'tests/files/main_test.out',
             'unrelatedfiles':'tests/files/unrelated_bam.tsv', 'triofiles':'tests/files/trio_bam.tsv',
-            'ppthr': None, 'afthr': '0.01', 'aftag': None, 'bam': True,
+            'ppthr': None, 'afthr': '0.01', 'aftag': 'novoAF', 'bam': True,
             'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3, 'verbose': None}
     # Run and Tests
     with pytest.raises(ValueError) as e:

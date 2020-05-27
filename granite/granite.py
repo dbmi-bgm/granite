@@ -55,7 +55,7 @@ def main():
     novoCaller_parser.add_argument('--ppthr', help='threshold to filter by posterior probabilty for de novo calls (>=) [0]', type=float, required=False)
     novoCaller_parser.add_argument('--afthr', help='threshold to filter by population allele frequency (<=) [1]', type=float, required=False)
     novoCaller_parser.add_argument('--afthr_unrelated', help='threshold to filter by allele frequency calculated among unrelated (<=) [1]', type=float, required=False)
-    novoCaller_parser.add_argument('--aftag', help='TAG (TAG=<float>) to be used to filter by population allele frequency', type=str, required=False)
+    novoCaller_parser.add_argument('--aftag', help='TAG (TAG=<float>) or TAG field to be used to filter by population allele frequency', type=str, required=False)
     novoCaller_parser.add_argument('--bam', help='by default the program expect bgzip and tabix indexed RCK files for "--triofiles" and "--unrelatedfiles", add this flag if files are in BAM format instead (SLOWER)', action='store_true', required=False)
     novoCaller_parser.add_argument('--MQthr', help='(only with "--bam") minimum mapping quality for an alignment to be used (>=) [0]', type=int, required=False)
     novoCaller_parser.add_argument('--BQthr', help='(only with "--bam") minimum base quality for a base to be considered (>=) [0]', type=int, required=False)
@@ -93,7 +93,7 @@ def main():
     blackList_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     blackList_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
     blackList_parser.add_argument('-b', '--bigfile', help='BIG format file with positions set for blacklist', type=str, required=False)
-    blackList_parser.add_argument('--aftag', help='TAG (TAG=<float>) to be used to filter by population allele frequency', type=str, required=False)
+    blackList_parser.add_argument('--aftag', help='TAG (TAG=<float>) or TAG field to be used to filter by population allele frequency', type=str, required=False)
     blackList_parser.add_argument('--afthr', help='threshold to filter by population allele frequency (<=) [1]', type=float, required=False)
     blackList_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 

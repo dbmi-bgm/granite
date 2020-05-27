@@ -802,13 +802,13 @@ def main(args, test=False):
     ''' '''
     # Variables
     is_bam = True if args['bam'] else False
-    afthr = float(args['afthr']) if args['afthr'] else 1.
+    is_afthr = True if args['afthr'] else False
+    afthr, aftag, aftag_idx = 1., 'novoAF', 0 # novoAF as aftag placeholder if not is_afthr
     ppthr = float(args['ppthr']) if args['ppthr'] else 0.
     afthr_unrelated = float(args['afthr_unrelated']) if args['afthr_unrelated'] else 1.
     MQthr = int(args['MQthr']) if args['MQthr'] else 0
     BQthr = int(args['BQthr']) if args['BQthr'] else 0
     ADthr = int(args['ADthr']) if args['ADthr'] else 0
-    aftag = args['aftag'] if args['aftag'] else 'novoAF'
     RSTR_def = '##FORMAT=<ID=RSTR,Number=4,Type=Integer,Description="Read counts by strand for ref and alt alleles (Rf,Af,Rr,Ar)">'
     novoCaller_def = '##INFO=<ID=novoPP,Number=1,Type=Float,Description="Posterior probability from novoCaller">'
     # NA chromosomes set -> import from shared_vars
@@ -823,6 +823,16 @@ def main(args, test=False):
 
     # Creating Vcf object
     vcf_obj = vcf_parser.Vcf(args['inputfile'])
+
+    # Check arguments
+    if is_afthr:
+        afthr = float(args['afthr'])
+        if args['aftag']:
+            aftag, aftag_idx = vcf_obj.header.check_tag_definition(args['aftag'])
+        else:
+            sys.exit('\nERROR in parsing arguments: to filter by population allele frequency please specify the TAG to use\n')
+        #end if
+    #end if
 
     # Data structures
     variants_passed = []
@@ -865,7 +875,7 @@ def main(args, test=False):
         # #end if
 
         # Getting allele frequency from novoAF tag
-        af = allele_frequency(vnt_obj, aftag)
+        af = allele_frequency(vnt_obj, aftag, aftag_idx)
 
         # is_NA reset
         is_NA = False

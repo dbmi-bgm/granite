@@ -39,10 +39,14 @@ def main(args):
     is_bigfile = True if args['bigfile'] else False
     is_verbose = True if args['verbose'] else False
 
+    # Creating Vcf object
+    vcf_obj = vcf_parser.Vcf(args['inputfile'])
+
     # Check arguments
     if is_afthr:
         afthr = float(args['afthr'])
-        if args['aftag']: aftag = args['aftag']
+        if args['aftag']:
+            aftag, aftag_idx = vcf_obj.header.check_tag_definition(args['aftag'])
         else:
             sys.exit('\nERROR in parsing arguments: to filter by population allele frequency please specify the TAG to use\n')
         #end if
@@ -58,9 +62,6 @@ def main(args):
     # Loading big if specified
     if is_bigfile: big_dict = load_big(args['bigfile'])
     #end if
-
-    # Creating Vcf object
-    vcf_obj = vcf_parser.Vcf(args['inputfile'])
 
     # Writing header
     fo.write(vcf_obj.header.definitions)
@@ -82,7 +83,7 @@ def main(args):
 
         # Get allele frequency from aftag tag if requested
         if is_afthr:
-            af = allele_frequency(vnt_obj, aftag)
+            af = allele_frequency(vnt_obj, aftag, aftag_idx)
             # Check allele frequency
             if af > afthr:
                 continue
