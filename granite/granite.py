@@ -42,7 +42,7 @@ def main():
     ''' command line wrapper around available tools '''
     # Adding parser and subparsers
     parser = argparse.ArgumentParser(prog='granite', description='granite is a collection of software to call, filter and work with genomic variants')
-    subparsers = parser.add_subparsers(dest='func')
+    subparsers = parser.add_subparsers(dest='func', metavar="<command>")
 
     # Add novoCaller to subparsers
     novoCaller_parser = subparsers.add_parser('novoCaller', description='Bayesian de novo variant caller',
@@ -63,13 +63,13 @@ def main():
     novoCaller_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add comHet to subparsers
-    comHet_parser = subparsers.add_parser('comHet', description='',
-                                                help='')
+    comHet_parser = subparsers.add_parser('comHet', description='compound heterozygous variant caller',
+                                                help='compound heterozygous variant caller')
 
     comHet_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     comHet_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
     comHet_parser.add_argument('--trio', help='list of sample IDs for trio, PROBAND is required and must be listed FIRST (e.g. --trio PROBAND_ID [PARENT_ID] [PARENT_ID])', nargs='+', required=True)
-    comHet_parser.add_argument('--VEPtag', help='by default the program will search for "VEP" TAG (VEP=<values>), use this parameter to specify a different TAG to be used', type=str, required=False)
+    comHet_parser.add_argument('--VEPtag', help='by default the program will search for "VEP" TAG (VEP=<values>), use this parameter to specify a different TAG to be used (e.g. CSQ)', type=str, required=False)
     comHet_parser.add_argument('--sep', help='by default the program uses "&" as separator for subfields in annotating VCF (e.g. ENST00000643759&ENST00000643774), use this parameter to specify a different separator to be used', type=str, required=False)
     comHet_parser.add_argument('--filter_cmpHet', help='by default the program returns all variants in the input VCF file. This flag will produce a shorter output containing only variants that are potential compound heterozygous', action='store_true', required=False)
     comHet_parser.add_argument('--allow_undef', help='by default the program ignores variants with undefined genotype in parents. This flag extends the output to include these cases', action='store_true', required=False)
@@ -104,11 +104,12 @@ def main():
     whiteList_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     whiteList_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
     whiteList_parser.add_argument('--SpliceAI', help='threshold to whitelist variants by SpliceAI value (>=)', type=float, required=False)
-    whiteList_parser.add_argument('--CLINVAR', help='flag to whitelist all variants with a CLINVAR entry', action='store_true', required=False)
-    whiteList_parser.add_argument('--CLINVARonly', help='CLINVAR "CLINSIG" terms or keywords to be saved. Sets for whitelist only CLINVAR variants with specified terms or keywords', nargs='+', required=False)
-    whiteList_parser.add_argument('--CLINVARtag', help='by default the program will search for "CLINVAR" TAG (CLINVAR=<values>), use this parameter to specify a different TAG to be used', type=str, required=False)
+    whiteList_parser.add_argument('--SpliceAItag', help='by default the program will search for "SpliceAI" TAG (SpliceAI=<float>), use this parameter to specify a different TAG | TAG field to be used (e.g. DS_DG)', type=str, required=False)
+    whiteList_parser.add_argument('--CLINVAR', help='flag to whitelist all variants with a CLINVAR entry [ALLELEID]', action='store_true', required=False)
+    whiteList_parser.add_argument('--CLINVARonly', help='CLINVAR "CLNSIG" terms or keywords to be saved. Sets for whitelist only CLINVAR variants with specified terms or keywords', nargs='+', required=False)
+    whiteList_parser.add_argument('--CLINVARtag', help='by default the program will search for CLINVAR "ALLELEID" TAG, use this parameter to specify a different TAG to be used', type=str, required=False)
     whiteList_parser.add_argument('--VEP', help='use VEP "Consequence" annotations to whitelist exonic and relevant variants (removed by default variants in intronic, intergenic, or regulatory regions)', action='store_true', required=False)
-    whiteList_parser.add_argument('--VEPtag', help='by default the program will search for "VEP" TAG (VEP=<values>), use this parameter to specify a different TAG to be used', type=str, required=False)
+    whiteList_parser.add_argument('--VEPtag', help='by default the program will search for "VEP" TAG (VEP=<values>), use this parameter to specify a different TAG to be used (e.g. CSQ)', type=str, required=False)
     whiteList_parser.add_argument('--VEPrescue', help='additional terms to overrule removed flags to rescue and whitelist variants', nargs='+', required=False)
     whiteList_parser.add_argument('--VEPremove', help='additional terms to be removed', nargs='+', required=False)
     whiteList_parser.add_argument('--VEPsep', help='by default the program expects "&" as separator for subfields in VEP (e.g. intron_variant&splice_region_variant), use this parameter to specify a different separator to be used', type=str, required=False)
@@ -123,11 +124,12 @@ def main():
     cleanVCF_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
     cleanVCF_parser.add_argument('-t', '--tag', help='TAG to be removed from INFO field. Specify multiple TAGs as: "-t TAG -t TAG -t ..."', action='append', required=False)
     cleanVCF_parser.add_argument('--VEP', help='clean VEP "Consequence" annotations (removed by default terms for intronic, intergenic, or regulatory regions from annotations)', action='store_true', required=False)
-    cleanVCF_parser.add_argument('--VEPtag', help='by default the program will search for "VEP" TAG (VEP=<values>), use this parameter to specify a different TAG to be used', type=str, required=False)
+    cleanVCF_parser.add_argument('--VEPtag', help='by default the program will search for "VEP" TAG (VEP=<values>), use this parameter to specify a different TAG to be used (e.g. CSQ)', type=str, required=False)
     cleanVCF_parser.add_argument('--VEPrescue', help='additional terms to overrule removed flags to rescue annotations', nargs='+', required=False)
     cleanVCF_parser.add_argument('--VEPremove', help='additional terms to be removed from annotations', nargs='+', required=False)
     cleanVCF_parser.add_argument('--VEPsep', help='by default the program expects "&" as separator for subfields in VEP (e.g. intron_variant&splice_region_variant), use this parameter to specify a different separator to be used', type=str, required=False)
     cleanVCF_parser.add_argument('--SpliceAI', help='threshold to save intronic annotations, from VEP "Consequence", for variants by SpliceAI value (>=)', type=float, required=False)
+    cleanVCF_parser.add_argument('--SpliceAItag', help='by default the program will search for "SpliceAI" TAG (SpliceAI=<float>), use this parameter to specify a different TAG | TAG field to be used (e.g. DS_DG)', type=str, required=False)
     cleanVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add toBig to subparsers
@@ -149,6 +151,12 @@ def main():
 
     rckTar_parser.add_argument('-t', '--ttar', help='target tar to write results, use .rck.tar as extension', type=str, required=True)
     rckTar_parser.add_argument('-f', '--file', help='file to be archived. Specify multiple files as: "-f SampleID_1.rck.gz -f SampleID_2.rck.gz -f ...". Files order is maintained while creating the index', action='append', required=True)
+
+    # Add mergeVCF to subparsers
+    # mergeVCF_parser = subparsers.add_parser('mergeVCF', description='utility to ',
+    #                                             help='')
+    # mergeVCF_parser.add_argument('-f', '--file', help='input VCF file to merge. Specify multiple files as: "-f file_1 -f file_2 -f ..."', action='append', required=True)
+    # mergeVCF_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
 
     # Subparsers map
     subparser_map = {

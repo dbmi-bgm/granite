@@ -39,10 +39,12 @@ def main(args):
     VEPrescue, consequence_idx = set(), 0
     # VEPremove = {...} -> import from shared_vars
     # VEPSpliceAI = {...} -> import from shared_vars
+    SpAItag, SpAI_idx = '', 0
     is_VEP = True if args['VEP'] else False
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
     VEPsep = args['VEPsep'] if args['VEPsep'] else '&'
     SpliceAI_thr = float(args['SpliceAI']) if args['SpliceAI'] else 0.
+    SpliceAItag = args['SpliceAItag'] if args['SpliceAItag'] else 'SpliceAI'
     is_SpAI = False
     is_verbose = True if args['verbose'] else False
 
@@ -74,6 +76,11 @@ def main(args):
         sys.exit('\nERROR in parsing arguments: specify the flag "--VEP" to filter by VEP annotations to apply rescue terms or remove additional terms\n')
     #end if
 
+    # SpliceAI
+    if SpliceAI_thr:
+        SpAItag, SpAI_idx = vcf_obj.header.check_tag_definition(SpliceAItag)
+    #end if
+
     # Reading variants and writing passed
     analyzed = 0
     for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
@@ -100,7 +107,7 @@ def main(args):
 
         # Check SpliceAI
         if SpliceAI_thr:
-            if check_spliceAI(vnt_obj, SpliceAI_thr):
+            if check_spliceAI(vnt_obj, SpAI_idx, SpAItag, SpliceAI_thr):
                 is_SpAI = True
             #end if
         #end if

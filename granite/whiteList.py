@@ -37,14 +37,18 @@ def main(args):
     # Variables
     VEPrescue, consequence_idx = {}, 0
     # VEPremove = {...} -> import from shared_vars
-    CLINVARonly, CLINSIG_idx = {}, 0  #CLINSIG or CLNSIG
+    CLINVARonly = {}
+    CLNtag = ''
+    CLNSIGtag, CLNSIG_idx = '', 0
+    SpAItag, SpAI_idx = '', 0
     BED_bitarrays = {}
     is_VEP = True if args['VEP'] else False
     is_CLINVAR = True if args['CLINVAR'] else False
     SpliceAI_thr = float(args['SpliceAI']) if args['SpliceAI'] else 0.
     is_BEDfile = True if args['BEDfile'] else False
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
-    CLINVARtag = args['CLINVARtag'] if args['CLINVARtag'] else 'CLINVAR'
+    CLINVARtag = args['CLINVARtag'] if args['CLINVARtag'] else 'ALLELEID'
+    SpliceAItag = args['SpliceAItag'] if args['SpliceAItag'] else 'SpliceAI'
     VEPsep = args['VEPsep'] if args['VEPsep'] else '&'
     is_verbose = True if args['verbose'] else False
 
@@ -71,14 +75,20 @@ def main(args):
 
     #CLINVAR
     if is_CLINVAR:
+        CLNtag, _ = vcf_obj.header.check_tag_definition(CLINVARtag)
         if args['CLINVARonly']:
             CLINVARonly = {term for term in args['CLINVARonly']}
-            try: CLINSIG_idx = vcf_obj.header.get_tag_field_idx(CLINVARtag, 'CLINSIG')
-            except Exception: CLINSIG_idx = vcf_obj.header.get_tag_field_idx(CLINVARtag, 'CLNSIG')
+            try: CLNSIGtag, CLNSIG_idx = vcf_obj.header.check_tag_definition('CLNSIG')
+            except Exception: CLNSIGtag, CLNSIG_idx = vcf_obj.header.check_tag_definition('CLINSIG')
             #end try
         #end if
     elif args['CLINVARonly']:
         sys.exit('\nERROR in parsing arguments: specify the flag "--CLINVAR" to filter by CLINVAR annotations to specify tags or keywords to whitelist\n')
+    #end if
+
+    # SpliceAI
+    if SpliceAI_thr:
+        SpAItag, SpAI_idx = vcf_obj.header.check_tag_definition(SpliceAItag)
     #end if
 
     # BED
@@ -121,7 +131,7 @@ def main(args):
 
         # Check SpliceAI
         if SpliceAI_thr:
-            if check_spliceAI(vnt_obj, SpliceAI_thr):
+            if check_spliceAI(vnt_obj, SpAI_idx, SpAItag, SpliceAI_thr):
                 fo.write(vnt_obj.to_string())
                 continue
             #end if
@@ -129,7 +139,7 @@ def main(args):
 
         # Check CLINVAR
         if is_CLINVAR:
-            if check_CLINVAR(vnt_obj, CLINSIG_idx, CLINVARonly, CLINVARtag):
+            if check_CLINVAR(vnt_obj, CLNtag, CLNSIG_idx, CLNSIGtag, CLINVARonly):
                 fo.write(vnt_obj.to_string())
                 continue
             #end if

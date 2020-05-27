@@ -169,27 +169,28 @@ def check_VEP(vnt_obj, idx, VEPremove, VEPrescue, VEPtag, sep='&'):
     return False
 #end def
 
-def check_spliceAI(vnt_obj, thr=0.8):
+def check_spliceAI(vnt_obj, idx, SpAItag, thr=0.8):
     ''' check if SpliceAI tag value is over threshold thr '''
-    try: val_get = float(vnt_obj.get_tag_value('SpliceAI'))
+    try: val_get = vnt_obj.get_tag_value(SpAItag)
     except Exception: return False
     #end try
-    if val_get >= thr:
+    if float(val_get.split('|')[idx]) >= thr:
         return True
     #end if
     return False
 #end def
 
-def check_CLINVAR(vnt_obj, idx, CLINVARonly, CLINVARtag):
-    ''' check if CLINVARtag is present, if CLINVARonly check if
-    variant has specified tags or keywords '''
-    try: val_get = vnt_obj.get_tag_value(CLINVARtag)
+def check_CLINVAR(vnt_obj, CLNtag, idx=0, CLNSIGtag='', CLINVARonly=[]):
+    ''' check if CLNtag is present, if CLINVARonly
+    check if variant has specified tags or keywords in CLNSIGtag '''
+    try: val_get = vnt_obj.get_tag_value(CLNtag)
     except Exception: return False
     #end try
     if CLINVARonly:
-        CLINSIG = val_get.split('|')[idx]
+        val_get = vnt_obj.get_tag_value(CLNSIGtag)
+        CLNSIG = val_get.split('|')[idx]
         for term in CLINVARonly:
-            if term.lower() in CLINSIG.lower():
+            if term.lower() in CLNSIG.lower():
                 return True
             #end if
         #end for

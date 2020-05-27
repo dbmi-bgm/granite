@@ -45,7 +45,7 @@ class Vcf(object):
             self.IDs_genotypes = IDs_genotypes
         #end def
 
-        def add_tag_definition(self, tag_definition, tag_type='FORMAT'):
+        def add_tag_definition(self, tag_definition, tag_type='INFO'):
             ''' add tag_definition to the header on top
             of the block specified by tag_type (e.g. FORMAT, INFO) '''
             added_tag, new_definitions = False, ''
@@ -59,12 +59,12 @@ class Vcf(object):
             self.definitions = new_definitions
         #end def
 
-        def remove_tag_definition(self, tag, tag_type='FORMAT'):
-            ''' remove tag definition from the header,
+        def remove_tag_definition(self, tag, tag_type='INFO'):
+            ''' remove tag definition from header,
             block specified by tag_type (e.g. FORMAT, INFO) '''
             new_definitions = ''
             for line in self.definitions.split('\n')[:-1]:
-                if line.startswith('##' + tag_type + '=<ID=' + tag + ','): # ##<tag_type>=<ID=<tag>,
+                if line.startswith('##' + tag_type + '=<ID=' + tag + ','): ##<tag_type>=<ID=<tag>,...
                     continue
                 #end if
                 new_definitions += line + '\n'
@@ -72,11 +72,11 @@ class Vcf(object):
             self.definitions = new_definitions
         #end def
 
-        def get_tag_field_idx(self, tag, field, sep='|'):
-            ''' get idx for value field in tag from definition
-            in INFO block in header '''
+        def get_tag_field_idx(self, tag, field, tag_type='INFO', sep='|'):
+            ''' get idx for value field in tag from definition,
+            block specified by tag_type (e.g. FORMAT, INFO) '''
             for line in self.definitions.split('\n')[:-1]:
-                if line.startswith('##INFO=<ID=' + tag + ','):
+                if line.startswith('##' + tag_type + '=<ID=' + tag + ','):
                     try:
                         format = line.split('Format:')[1]
                         # Cleaning format
@@ -91,6 +91,26 @@ class Vcf(object):
                         if field in field_i.strip(): return i
                         #end if
                     #end for
+                #end if
+            #end for
+            raise ValueError('\nERROR in VCF header structure, {0} tag definition is missing\n'
+                                .format(tag))
+        #end def
+
+        def check_tag_definition(self, tag, tag_type='INFO', sep='|'):
+            ''' check if tag is standalone or field of another leading tag,
+            return leading tag and field index, if any, to acces requested tag '''
+            for line in self.definitions.split('\n')[:-1]:
+                if line.startswith('##' + tag_type):
+                    if ('=<ID=' + tag + ',') in line: ##<tag_type>=<ID=<tag>,..
+                        # tag is already a standalone tag
+                        return tag, 0
+                    elif tag in line and 'Format:' in line: ##<tag_type>=<ID=<lead_tag>,...,Description="... Format:<tag>">
+                        # tag is a field, get leading tag and field index
+                        lead_tag = line.split('=<ID=')[1].split(',')[0]
+                        idx = self.get_tag_field_idx(lead_tag, tag, tag_type, sep)
+                        return lead_tag, idx
+                    #end if
                 #end if
             #end for
             raise ValueError('\nERROR in VCF header structure, {0} tag definition is missing\n'
@@ -255,7 +275,7 @@ class Vcf(object):
             # Get value from index in genotype by ID
             try:
                 return self.GENOTYPES[ID_genotype].split(sep)[idx_tag_to_get]
-            except:
+            except Exception:
                 raise ValueError('\nERROR in GENOTYPES identifiers, {0} identifier is missing in VCF\n'
                             .format(ID_genotype))
             #end try

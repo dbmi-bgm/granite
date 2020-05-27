@@ -19,6 +19,22 @@ def test_Header__get_tag_field_idx():
     assert vcf_obj.header.get_tag_field_idx('CLINVAR', 'CLNSIG') == 1
 #end def
 
+def test_Header__check_tag_definition():
+    ''' '''
+    # Creating Vcf object
+    vcf_obj = vcf_parser.Vcf('tests/files/input_vcf_parser.vcf')
+    # Tests
+    assert vcf_obj.header.check_tag_definition('PID', 'FORMAT') == ('PID', 0)
+    assert vcf_obj.header.check_tag_definition('AN', 'INFO') == ('AN', 0)
+    assert vcf_obj.header.check_tag_definition('Consequence') == ('VEP', 3)
+    assert vcf_obj.header.check_tag_definition('SYMBOL') == ('VEP', 4)
+    assert vcf_obj.header.check_tag_definition('VEP') == ('VEP', 0)
+    assert vcf_obj.header.check_tag_definition('ALLELEID') == ('CLINVAR', 0)
+    assert vcf_obj.header.check_tag_definition('CLNSIG') == ('CLINVAR', 1)
+    assert vcf_obj.header.check_tag_definition('MAXDS') == ('SpliceAI', 0)
+    assert vcf_obj.header.check_tag_definition('NEGATIVE_TRAIN_SITE') == ('NEGATIVE_TRAIN_SITE', 0)
+#end def
+
 def test_Header__attributes():
     ''' '''
     # Creating Vcf object
