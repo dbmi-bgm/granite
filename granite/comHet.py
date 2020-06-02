@@ -37,7 +37,28 @@ class VariantHet(object):
         self.comHet = []
         self.vnt_obj = vnt_obj
         self.ENST_dict = {} # {ENSG: ENST_set, ...}
+        self.ENSG_IMPCT_dict = {} # {ENSG: IMPACT, ...}
+        self.ENST_IMPCT_dict = {} # {ENST: IMPACT, ...}
         self.i = i # variant index
+        self.SpAI = ''
+        self.CLINVAR = ''
+    #end def
+
+    def add_SpAI(self, SpAI_val, SpAI_thr=0.8):
+        ''' add SpliceAI, encoded as S or s based on SpAI_thr '''
+        if SpAI_val >= SpAI_thr: self.SpAI = 'S'
+        else: self.SpAI = 's'
+        #end if
+    #end def
+
+    def add_CLINVAR(self, CLNSIG_val, CLNSIG_encode):
+        ''' add CLINVAR, encoded as C or c based on CLNSIG value '''
+        for clnsig, encd in CLNSIG_encode:
+            if clnsig in CLNSIG_val:
+                self.CLINVAR = encd
+                break
+            #end if
+        #end for
     #end def
 
     def add_ENST(self, ENSG, ENST_set):
@@ -45,13 +66,65 @@ class VariantHet(object):
         self.ENST_dict.setdefault(ENSG, ENST_set)
     #end def
 
-    def add_pair(self, vntHet_obj, ENSG, phase, sep):
+    def add_ENST_IMPCT(self, ENST, IMPCT, IMPCT_encode):
+        ''' add transcript and its associated IMPACT,
+        IMPACT encoded as number '''
+        self.ENST_IMPCT_dict.setdefault(ENST, IMPCT_encode[IMPCT])
+    #end def
+
+    def add_ENSG_IMPCT(self, ENSG, IMPCT_set, IMPCT_encode):
+        ''' add gene and worst IMPACT in its associated transcripts,
+        IMPACT encoded as number '''
+        IMPCT_list = sorted([IMPCT_encode[IMPCT] for IMPCT in IMPCT_set])
+        self.ENSG_IMPCT_dict.setdefault(ENSG, IMPCT_list[0])
+    #end def
+
+    def get_gene_impct(self, ENSG):
+        ''' return combined impact information for gene '''
+        return self.ENSG_IMPCT_dict[ENSG], self.SpAI + self.CLINVAR
+    #end def
+
+    def get_trscrpt_impct(self, ENST):
+        ''' return combined impact information for transcript '''
+        return self.ENST_IMPCT_dict[ENST], self.SpAI + self.CLINVAR
+    #end def
+
+    def worse_ENST(self, vntHet_obj, common_ENST):
+        ''' return the shared transcript with worse IMPACT '''
+        score, tmp_score, tmp_ENST = 0, 0, ''
+        for ENST in common_ENST:
+            score = self.ENST_IMPCT_dict[ENST] + vntHet_obj.ENST_IMPCT_dict[ENST]
+            if not tmp_score:
+                tmp_ENST = ENST
+                tmp_score = score
+            else:
+                if score < tmp_score:
+                    tmp_ENST = ENST
+                #end if
+            #end if
+        #end for
+        return tmp_ENST
+    #end def
+
+    def add_pair(self, vntHet_obj, ENSG, phase, sep, is_impct, IMPCT_decode):
         ''' add information for compound heterozygous pair with vntHet_obj '''
         comHet_pair = [phase, ENSG]
         common_ENST = self.ENST_dict[ENSG].intersection(vntHet_obj.ENST_dict[ENSG])
         if common_ENST:
             comHet_pair.append(sep.join(sorted(common_ENST)))
         else: comHet_pair.append('')
+        #end if
+        if is_impct:
+            # add gene impact
+            impct, impct_ = sorted([self.get_gene_impct(ENSG), vntHet_obj.get_gene_impct(ENSG)])
+            comHet_pair.append(IMPCT_decode[impct[0]] + impct[1] + '/' + IMPCT_decode[impct_[0]] + impct_[1])
+            # add transcript impact
+            if common_ENST:
+                ENST = self.worse_ENST(vntHet_obj, common_ENST)
+                impct, impct_ = sorted([self.get_trscrpt_impct(ENST), vntHet_obj.get_trscrpt_impct(ENST)])
+                comHet_pair.append(IMPCT_decode[impct[0]] + impct[1] + '/' + IMPCT_decode[impct_[0]] + impct_[1])
+            else: comHet_pair.append('')
+            #end if
         #end if
         comHet_pair.append(vntHet_obj.vnt_obj.repr())
         self.comHet.append('|'.join(comHet_pair))
@@ -112,7 +185,7 @@ def phase(vntHet_obj_1, vntHet_obj_2, ID_list):
     return 'Phased'
 #end def
 
-def update_stats(vntHet_obj, stat_dict, sep):
+def update_stats(vntHet_obj, stat_dict, sep, is_impct):
     ''' '''
     try: val_get = vntHet_obj.vnt_obj.get_tag_value('comHet')
     except Exception: return
@@ -120,7 +193,10 @@ def update_stats(vntHet_obj, stat_dict, sep):
     var_repr = vntHet_obj.vnt_obj.repr()
     var_phase = 'Unphased'
     for cmpHet in val_get.split(','):
-        PHASE, ENSG_ID, ENST_ID, VARIANT = cmpHet.split('|')
+        if is_impct:
+            PHASE, ENSG_ID, ENST_ID, IMPCT_G, IMPCT_T, VARIANT = cmpHet.split('|')
+        else: PHASE, ENSG_ID, ENST_ID, VARIANT = cmpHet.split('|')
+        #end if
         if PHASE == 'Phased': var_phase = PHASE
         #end if
         # global
@@ -175,11 +251,43 @@ def update_stats(vntHet_obj, stat_dict, sep):
                 #end if
             #end for
         #end if
+        # by impact
+        if is_impct:
+            stat_dict['impact'].setdefault(IMPCT_G, {
+                                                'vntHet_set': {},
+                                                'pairs_set': set(),
+                                                'gene_set': {},
+                                                'transcript_set': {},
+                                                'Phased': 0,
+                                                'Unphased': 0
+                                                    })
+            stat_dict['impact'][IMPCT_G]['vntHet_set'].setdefault(vntHet_obj, 0)
+            stat_dict['impact'][IMPCT_G]['gene_set'].setdefault(ENSG_ID, 0)
+            if ENST_ID:
+                for trscrpt in ENST_ID.split(sep):
+                    stat_dict['impact'][IMPCT_G]['transcript_set'].setdefault(trscrpt, 0)
+                    if PHASE == 'Phased':
+                        stat_dict['impact'][IMPCT_G]['transcript_set'][trscrpt] = 1
+                    #end if
+                #end for
+            #end if
+            if PHASE == 'Phased':
+                stat_dict['impact'][IMPCT_G]['vntHet_set'][vntHet_obj] = 1
+                stat_dict['impact'][IMPCT_G]['gene_set'][ENSG_ID] = 1
+            #end if
+            if (var_repr, VARIANT) not in stat_dict['impact'][IMPCT_G]['pairs_set']:
+                # increase count
+                stat_dict['impact'][IMPCT_G][PHASE] += 1
+                # add pair to set
+                stat_dict['impact'][IMPCT_G]['pairs_set'].add((var_repr, VARIANT))
+                stat_dict['impact'][IMPCT_G]['pairs_set'].add((VARIANT, var_repr))
+            #end if
+        #end if
     #end for
     stat_dict['vnts'][var_phase] += 1
 #end def
 
-def to_json(stat_dict):
+def to_json(stat_dict, is_impct):
     ''' '''
     stat_json = {}
     phased_genes, total_genes = 0, 0
@@ -256,10 +364,50 @@ def to_json(stat_dict):
         # append to list
         stat_json['by_transcripts'].append(tmp_dict)
     #end for
+    # by impact
+    if is_impct:
+        stat_json.setdefault('by_impact', [])
+        for impact in sorted(stat_dict['impact']):
+            genes_phased, genes_total = 0, 0
+            for v, c in stat_dict['impact'][impact]['gene_set'].items():
+                if c == 1: genes_phased += 1
+                #end if
+                genes_total += 1
+            #end for
+            variants_phased, variants_total = 0, 0
+            for v, c in stat_dict['impact'][impact]['vntHet_set'].items():
+                if c == 1: variants_phased += 1
+                #end if
+                variants_total += 1
+            #end for
+            transcripts_phased, transcripts_total = 0, 0
+            for v, c in stat_dict['impact'][impact]['transcript_set'].items():
+                if c == 1: transcripts_phased += 1
+                #end if
+                transcripts_total += 1
+            #end for
+            tmp_dict = {}
+            tmp_dict.setdefault('name', impact)
+            tmp_dict.setdefault('genes', {'phased': genes_phased,
+                                          'total': genes_total
+                                         })
+            tmp_dict.setdefault('transcripts', {'phased': transcripts_phased,
+                                                'total': transcripts_total
+                                                })
+            tmp_dict.setdefault('variants', {'phased': variants_phased,
+                                             'total': variants_total
+                                            })
+            tmp_dict.setdefault('pairs', {'phased': stat_dict['impact'][impact]['Phased'],
+                                          'total': stat_dict['impact'][impact]['Phased'] + stat_dict['impact'][impact]['Unphased']
+                                         })
+            # append to list
+            stat_json['by_impact'].append(tmp_dict)
+        #end for
+    #end if
     return stat_json
 #end def
 
-def print_stats(stat_json, fo):
+def print_stats(stat_json, fo, is_impct):
     ''' '''
     # global stats
     fo.write('##general stats\n')
@@ -299,6 +447,24 @@ def print_stats(stat_json, fo):
                                             trscrpt_dict['pairs']['total']
                                             ))
     #end for
+    # by impact
+    if is_impct:
+        fo.write('\n##stats by impact\n')
+        fo.write('#impact\tgenes_phased\tgenes_total\ttranscripts_phased\ttranscripts_total\tvariants_phased\tvariants_total\tpairs_phased\tpairs_total\n')
+        for impact_dict in stat_json['by_impact']:
+            fo.write('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n'.format(
+                                                impact_dict['name'],
+                                                impact_dict['genes']['phased'],
+                                                impact_dict['genes']['total'],
+                                                impact_dict['transcripts']['phased'],
+                                                impact_dict['transcripts']['total'],
+                                                impact_dict['variants']['phased'],
+                                                impact_dict['variants']['total'],
+                                                impact_dict['pairs']['phased'],
+                                                impact_dict['pairs']['total']
+                                                ))
+        #end for
+    #end if
 #end def
 
 #################################################################
@@ -306,13 +472,29 @@ def print_stats(stat_json, fo):
 #################################################################
 def main(args):
     ''' '''
+    # Definitions
+    CLNSIG_encode = [
+                      # high impact
+                      ('Pathogenic', 'C'), ('Likely_pathogenic', 'C'),
+                      # moderate/low impact
+                      ('Conflicting_interpretations', 'c'), ('Uncertain_significance', 'c'), ('risk_factor', 'c')
+                    ]
+    IMPCT_encode = {'HIGH': 1, 'MODERATE': 2, 'LOW': 3, 'MODIFIER': 4}
+    IMPCT_decode = {1: 'H', 2: 'M', 3: 'L', 4: 'm'}
+
     # Variables
+    is_impct = True if args['impact'] else False
+    CLNSIGtag, CLNSIG_idx, is_CLNSIG = '', 0, False
+    SpAItag, SpAI_idx, is_SpAI = '', 0, False
+    ENSG_idx, ENST_idx, IMPCT_idx = 0, 0, 0
+    SpliceAItag = args['SpliceAItag'] if args['SpliceAItag'] else 'SpliceAI'
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
     sep = args['sep'] if args['sep'] else '&'
     allow_undef = True if args['allow_undef'] else False
     filter_cmpHet = True if args['filter_cmpHet'] else False
     granite_def = '##GRANITE=<ID=comHet>'
     comHet_def = '##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Subembedded:\'cmpHet\':Format:\'phase|gene|transcript|mate_variant\'">'
+    comHet_impct_def = '##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Subembedded:\'cmpHet\':Format:\'phase|gene|transcript|impact_gene|impact_transcript|mate_variant\'">'
     is_verbose = True if args['verbose'] else False
 
     # Buffers
@@ -322,7 +504,11 @@ def main(args):
     vcf_obj = vcf_parser.Vcf(args['inputfile'])
 
     # Add definition to header
-    vcf_obj.header.add_tag_definition(granite_def + '\n' + comHet_def, 'INFO')
+    if is_impct:
+        vcf_obj.header.add_tag_definition(granite_def + '\n' + comHet_impct_def, 'INFO')
+    else:
+        vcf_obj.header.add_tag_definition(granite_def + '\n' + comHet_def, 'INFO')
+    #end if
 
     # Writing header
     fo.write(vcf_obj.header.definitions)
@@ -339,7 +525,8 @@ def main(args):
                  'vnts': {
                     'Phased': 0,
                     'Unphased': 0
-                    }
+                    },
+                 'impact' : {}
                 }
     ENSG_dict = {} # {ENSG: [vntHet_obj1, vntHet_obj2], ...}
     ENST_dict_tmp = {} # {ENSG: ENST_set, ...}
@@ -349,6 +536,25 @@ def main(args):
     # Get idx for ENST and ENSG
     ENSG_idx = vcf_obj.header.get_tag_field_idx(VEPtag, 'Gene')
     ENST_idx = vcf_obj.header.get_tag_field_idx(VEPtag, 'Feature')
+
+    # Get idx for SpliceAI, CLINVAR and VEP IMPACT
+    if is_impct:
+        try:
+            IMPCT_idx = vcf_obj.header.get_tag_field_idx(VEPtag, 'IMPACT')
+        except Exception:
+            sys.exit('\nERROR in VCF structure: mandatory IMPACT field for "--impact" is missing in VEP\n')
+        #end try
+        try:
+            SpAItag, SpAI_idx = vcf_obj.header.check_tag_definition(SpliceAItag)
+            is_SpAI = True
+        except Exception: is_SpAI = False
+        #end try
+        try:
+            CLNSIGtag, CLNSIG_idx = vcf_obj.header.check_tag_definition('CLNSIG')
+            is_CLNSIG = True
+        except Exception: is_CLNSIG = False
+        #end try
+    #end if
 
     # Get trio IDs
     if len(args['trio']) > 3:
@@ -372,6 +578,7 @@ def main(args):
 
         # Reset data structures
         ENST_dict_tmp = {}
+        IMPCT_dict_tmp = {}
 
         # Creating VariantHet object
         vntHet_obj = VariantHet(vnt_obj, c)
@@ -407,6 +614,38 @@ def main(args):
                 vntHet_obj.add_ENST(ENSG, ENST_set)
             #end for
         #end if
+
+        # Add impact information if is_impct
+        if is_impct:
+            # VEP
+            IMPCT_list = VEP_field(vnt_obj, IMPCT_idx, VEPtag)
+            for i, (ENSG, IMPCT) in enumerate(zip(ENSG_list, IMPCT_list)):
+                if ENSG and IMPCT:
+                    IMPCT_dict_tmp.setdefault(ENSG, set())
+                    IMPCT_dict_tmp[ENSG].add(IMPCT)
+                    vntHet_obj.add_ENST_IMPCT(ENST_list[i], IMPCT, IMPCT_encode)
+                #end if
+            #end for
+            if IMPCT_dict_tmp:
+                for ENSG, IMPCT_set in IMPCT_dict_tmp.items():
+                    vntHet_obj.add_ENSG_IMPCT(ENSG, IMPCT_set, IMPCT_encode)
+                #end for
+            #end if
+            # SpliceAI
+            if is_SpAI:
+                SpAI_val = get_tag_idx(vnt_obj, SpAItag, SpAI_idx)
+                if SpAI_val and float(SpAI_val) >= 0.2:
+                    vntHet_obj.add_SpAI(float(SpAI_val))
+                #end if
+            #end if
+            # CLINVAR
+            if is_CLNSIG:
+                CLNSIG_val = get_tag_idx(vnt_obj, CLNSIGtag, CLNSIG_idx)
+                if CLNSIG_val:
+                    vntHet_obj.add_CLINVAR(CLNSIG_val, CLNSIG_encode)
+                #end if
+            #end if
+        #end if
     #end for
 
     # Pairing variants
@@ -425,7 +664,7 @@ def main(args):
                     # if parents information,
                     # check genotypes to confirm is compound het or not
                     if is_comHet(vntHet_obj, vntHet_obj_i, ID_list, allow_undef):
-                        vntHet_obj.add_pair(vntHet_obj_i, ENSG, phase(vntHet_obj, vntHet_obj_i, ID_list), sep)
+                        vntHet_obj.add_pair(vntHet_obj_i, ENSG, phase(vntHet_obj, vntHet_obj_i, ID_list), sep, is_impct, IMPCT_decode)
                         # Add vntHet to set to write since there is at least one pair
                         vntHet_set.add((vntHet_obj.i, vntHet_obj))
                     #end if
@@ -446,7 +685,7 @@ def main(args):
     # Order and write variants to output file
     for _, vntHet_obj in sorted(vntHet_set, key=lambda x: x[0]):
         fo.write(vntHet_obj.to_string())
-        update_stats(vntHet_obj, stat_dict, sep)
+        update_stats(vntHet_obj, stat_dict, sep, is_impct)
     #end for
 
     # Print summary
@@ -454,10 +693,10 @@ def main(args):
     fj = open(args['outputfile'] + '.json', 'w')
 
     # Get stats as json
-    stat_json = to_json(stat_dict)
+    stat_json = to_json(stat_dict, is_impct)
 
     # Write to file
-    print_stats(stat_json, fs)
+    print_stats(stat_json, fs, is_impct)
     json.dump(stat_json, fj, indent=2, sort_keys=True)
 
     # Close buffers

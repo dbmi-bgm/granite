@@ -78,9 +78,7 @@ def main(args):
         CLNtag, _ = vcf_obj.header.check_tag_definition(CLINVARtag)
         if args['CLINVARonly']:
             CLINVARonly = {term for term in args['CLINVARonly']}
-            try: CLNSIGtag, CLNSIG_idx = vcf_obj.header.check_tag_definition('CLNSIG')
-            except Exception: CLNSIGtag, CLNSIG_idx = vcf_obj.header.check_tag_definition('CLINSIG')
-            #end try
+            CLNSIGtag, CLNSIG_idx = vcf_obj.header.check_tag_definition('CLNSIG')
         #end if
     elif args['CLINVARonly']:
         sys.exit('\nERROR in parsing arguments: specify the flag "--CLINVAR" to filter by CLINVAR annotations to specify tags or keywords to whitelist\n')

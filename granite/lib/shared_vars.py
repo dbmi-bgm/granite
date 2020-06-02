@@ -29,12 +29,14 @@ VEPremove = {
             'TFBS_amplification', 'TFBS_ablation', 'TF_binding_site_variant'
             }
 
+
 #################################################################
 #
 #   VEP terms to rescue only for SpliceAI variants
 #
 #################################################################
 VEPSpliceAI = {'intron_variant'}
+
 
 #################################################################
 #

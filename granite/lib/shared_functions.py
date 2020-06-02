@@ -233,6 +233,16 @@ def VEP_field(vnt_obj, idx, VEPtag):
     return [trscrpt.split('|')[idx] for trscrpt in trscrpt_list]
 #end def
 
+def get_tag_idx(vnt_obj, tag, idx=0):
+    ''' return value from tag at idx in INFO for variant,
+    return None if tag is missing '''
+    try:
+        return vnt_obj.get_tag_value(tag).split('|')[idx]
+    except Exception:
+        return None
+    #end try
+#end def
+
 #################################################################
 #    Functions to modify
 #################################################################
