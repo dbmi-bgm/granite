@@ -120,7 +120,7 @@ class VariantHet(object):
             comHet_pair.append(IMPCT_decode[impct[0]] + impct[1] + '/' + IMPCT_decode[impct_[0]] + impct_[1])
             # add transcript impact
             if common_ENST:
-                ENST = self.worse_ENST(vntHet_obj, common_ENST)
+                ENST = self.worse_ENST(vntHet_obj, sorted(common_ENST))
                 impct, impct_ = sorted([self.get_trscrpt_impct(ENST), vntHet_obj.get_trscrpt_impct(ENST)])
                 comHet_pair.append(IMPCT_decode[impct[0]] + impct[1] + '/' + IMPCT_decode[impct_[0]] + impct_[1])
             else: comHet_pair.append('')
