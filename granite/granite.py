@@ -74,7 +74,7 @@ def main():
     comHet_parser.add_argument('--filter_cmpHet', help='by default the program returns all variants in the input VCF file. This flag will produce a shorter output containing only variants that are potential compound heterozygous', action='store_true', required=False)
     comHet_parser.add_argument('--allow_undef', help='by default the program ignores variants with undefined genotype in parents. This flag extends the output to include these cases', action='store_true', required=False)
     comHet_parser.add_argument('--SpliceAItag', help='by default the program will search for "SpliceAI" TAG (SpliceAI=<float>), use this parameter to specify a different TAG | TAG field to be used (e.g. DS_DG)', type=str, required=False)
-    comHet_parser.add_argument('--impact', help='use VEP "IMPACT" to assign an impact to potential compound heterozygous. If available, SpliceAI and CLINVAR "CLNSIG" information is used together with VEP', action='store_true', required=False)
+    comHet_parser.add_argument('--impact', help='use VEP "IMPACT" or "Consequence" terms to assign an impact to potential compound heterozygous. If available, SpliceAI and CLINVAR "CLNSIG" information is used together with VEP', action='store_true', required=False)
     comHet_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add mpileupCounts to subparsers

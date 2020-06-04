@@ -207,6 +207,24 @@ def test_run_comHet_proband_plus_NA12878_NA12877_denovo_impact():
     os.remove('tests/files/main_test.out.json')
 #end def
 
+def test_run_comHet_proband_plus_NA12878_NA12877_denovo_impact_dict():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_comHet_denovo_impact_dict.vcf', 'outputfile': 'tests/files/main_test.out',
+            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': '~',
+            'impact': True, 'SpliceAItag': None}
+    # Run
+    main_comHet(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_comHet_plus_NA12878_NA12877_denovo_impact_dict.out')]
+    assert [row for row in open('tests/files/main_test.out.summary')] == [row for row in open('tests/files/input_comHet_plus_NA12878_NA12877_denovo_impact_dict.out.summary')]
+    assert [row for row in open('tests/files/main_test.out.json')] == [row for row in open('tests/files/input_comHet_plus_NA12878_NA12877_denovo_impact_dict.out.json')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+    os.remove('tests/files/main_test.out.summary')
+    os.remove('tests/files/main_test.out.json')
+#end def
+
 #################################################################
 #   Errors
 #################################################################

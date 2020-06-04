@@ -76,7 +76,7 @@ novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The 
     usage: granite novoCaller [-h] -i INPUTFILE -o OUTPUTFILE -u UNRELATEDFILES -t
                               TRIOFILES [--ppthr PPTHR] [--afthr AFTHR]
                               [--aftag AFTAG] [--bam] [--MQthr MQTHR]
-                              [--BQthr BQTHR]
+                              [--BQthr BQTHR] [--ADthr ADTHR]
 
     optional arguments:
       -i INPUTFILE, --inputfile INPUTFILE
@@ -85,19 +85,19 @@ novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The 
                             output file to write results as VCF, use .vcf as
                             extension
       -u UNRELATEDFILES, --unrelatedfiles UNRELATEDFILES
-                            TSV index file containing SampleID<TAB>Path/to/file for unrelated
-                            files used to train the model (BAM or bgzip and tabix
-                            indexed RCK)
-      -t TRIOFILES, --triofiles TRIOFILES
-                            TSV index file containing SampleID<TAB>Path/to/file for family
-                            files, the PROBAND must be listed as LAST (BAM or
+                            TSV index file containing SampleID<TAB>Path/to/file
+                            for unrelated files used to train the model (BAM or
                             bgzip and tabix indexed RCK)
+      -t TRIOFILES, --triofiles TRIOFILES
+                            TSV index file containing SampleID<TAB>Path/to/file
+                            for family files, the PROBAND must be listed as LAST
+                            (BAM or bgzip and tabix indexed RCK)
       --ppthr PPTHR         threshold to filter by posterior probabilty for de
                             novo calls (>=) [0]
       --afthr AFTHR         threshold to filter by population allele frequency
                             (<=) [1]
-      --aftag AFTAG         TAG (TAG=<float>) to be used to filter by population
-                            allele frequency
+      --aftag AFTAG         TAG (TAG=<float>) or TAG field to be used to filter by
+                            population allele frequency
       --bam                 by default the program expect bgzip and tabix indexed
                             RCK files for "--triofiles" and "--unrelatedfiles",
                             add this flag if files are in BAM format instead
@@ -154,6 +154,67 @@ Filters can be combined.
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --afthr <float> --aftag tag --ppthr <float>
 
 &nbsp;
+### comHet
+comHet is a variant calling algorithm for *compound heterozygous* mutations. The model uses genotype-level information in pedigree (trio) and VEP-based annotations to call possible compound heterozygous pairs. VEP annotations are used to assign variants to genes and transcripts, genotype information allows to refine calls based on inheritance mode. Calls are further flagged as "Phased" or "Unphased", where "Phased" means that genotype information supports in-trans inheritance for alternate alleles from parents.
+
+#### Arguments
+    usage: granite comHet [-h] -i INPUTFILE -o OUTPUTFILE --trio TRIO [TRIO ...]
+                          [--VEPtag VEPTAG] [--sep SEP] [--filter_cmpHet]
+                          [--allow_undef] [--SpliceAItag SPLICEAITAG] [--impact]
+
+    optional arguments:
+      -i INPUTFILE, --inputfile INPUTFILE
+                            input VCF file
+      -o OUTPUTFILE, --outputfile OUTPUTFILE
+                            output file to write results as VCF, use .vcf as
+                            extension
+      --trio TRIO [TRIO ...]
+                            list of sample IDs for trio, PROBAND is required and
+                            must be listed FIRST (e.g. --trio PROBAND_ID
+                            [PARENT_ID] [PARENT_ID])
+      --VEPtag VEPTAG       by default the program will search for "VEP" TAG
+                            (VEP=<values>), use this parameter to specify a
+                            different TAG to be used (e.g. CSQ)
+      --sep SEP             by default the program uses "&" as separator for
+                            subfields in annotating VCF (e.g.
+                            ENST00000643759&ENST00000643774), use this parameter
+                            to specify a different separator to be used
+      --filter_cmpHet       by default the program returns all variants in the
+                            input VCF file. This flag will produce a shorter
+                            output containing only variants that are potential
+                            compound heterozygous
+      --allow_undef         by default the program ignores variants with undefined
+                            genotype in parents. This flag extends the output to
+                            include these cases
+      --SpliceAItag SPLICEAITAG
+                            by default the program will search for "SpliceAI" TAG
+                            (SpliceAI=<float>), use this parameter to specify a
+                            different TAG | TAG field to be used (e.g. DS_DG)
+      --impact              use VEP "IMPACT" or "Consequence" terms to assign an
+                            impact to potential compound heterozygous. If
+                            available, SpliceAI and CLINVAR "CLNSIG" information
+                            is used together with VEP
+
+#### Input
+comHet accepts files in VCF format as input. Files must contain genotype information for trio members to be used in addition to standard VCF columns. Column IDs for trio must match the sample IDs provided as argument (`--trio`). Proband genotype information is mandatory. If available, parents information will be used to improve specificity by ruling-out false calls based on inheritance mode.
+
+Required VCF format structure:
+
+    #CHROM   POS   ID   REF   ALT   QUAL   FILTER   INFO   FORMAT   PROBAND_ID   [MOTHER_ID]   [FATHER_ID]
+
+#### Output
+comHet generates output in VCF format. The program adds a VEP-like tag to INFO field to report information for calls associated to each variant. *comHet* stores information for all the compound heterozygous pairs (cmpHet) that involve the variant.
+
+*comHet* tag definition (INFO):
+
+    ##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Subembedded:'cmpHet':Format:'phase|gene|transcript|mate_variant'">
+
+#### Examples
+TO WRITE
+
+    granite comHet
+
+&nbsp;
 ### blackList
 blackList allows to filter-out variants from input VCF file based on positions set in BIG format file and/or provided population allele frequency.
 
@@ -169,8 +230,8 @@ blackList allows to filter-out variants from input VCF file based on positions s
                             extension
       -b BIGFILE, --bigfile BIGFILE
                             BIG format file with positions set for blacklist
-      --aftag AFTAG         TAG (TAG=<float>) to be used to filter by population
-                            allele frequency
+      --aftag AFTAG         TAG (TAG=<float>) or TAG field to be used to filter by
+                            population allele frequency
       --afthr AFTHR         threshold to filter by population allele frequency
                             (<=) [1]
 
@@ -193,9 +254,12 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
 
 #### Arguments
     usage: granite whiteList [-h] -i INPUTFILE -o OUTPUTFILE [--SpliceAI SPLICEAI]
-                             [--CLINVAR] [--VEP]
+                             [--SpliceAItag SPLICEAITAG] [--CLINVAR]
+                             [--CLINVARonly CLINVARONLY [CLINVARONLY ...]]
+                             [--CLINVARtag CLINVARTAG] [--VEP] [--VEPtag VEPTAG]
                              [--VEPrescue VEPRESCUE [VEPRESCUE ...]]
                              [--VEPremove VEPREMOVE [VEPREMOVE ...]]
+                             [--VEPsep VEPSEP] [--BEDfile BEDFILE]
 
     optional arguments:
       -i INPUTFILE, --inputfile INPUTFILE
@@ -204,24 +268,29 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
                             output file to write results as VCF, use .vcf as
                             extension
       --SpliceAI SPLICEAI   threshold to whitelist variants by SpliceAI value (>=)
+      --SpliceAItag SPLICEAITAG
+                            by default the program will search for "SpliceAI" TAG
+                            (SpliceAI=<float>), use this parameter to specify a
+                            different TAG | TAG field to be used (e.g. DS_DG)
       --CLINVAR             flag to whitelist all variants with a CLINVAR entry
+                            [ALLELEID]
       --CLINVARonly CLINVARONLY [CLINVARONLY ...]
-                            CLINVAR "CLINSIG" terms or keywords to be saved. Sets
+                            CLINVAR "CLNSIG" terms or keywords to be saved. Sets
                             for whitelist only CLINVAR variants with specified
                             terms or keywords
       --CLINVARtag CLINVARTAG
-                            by default the program will search for "CLINVAR" TAG
-                            (CLINVAR=<values>), use this parameter to specify a
+                            by default the program will search for CLINVAR
+                            "ALLELEID" TAG, use this parameter to specify a
                             different TAG to be used
       --VEP                 use VEP "Consequence" annotations to whitelist exonic
                             and relevant variants (removed by default variants in
                             intronic, intergenic, or regulatory regions)
       --VEPtag VEPTAG       by default the program will search for "VEP" TAG
                             (VEP=<values>), use this parameter to specify a
-                            different TAG to be used
+                            different TAG to be used (e.g. CSQ)
       --VEPrescue VEPRESCUE [VEPRESCUE ...]
-                            additional terms to overrule removed flags to
-                            rescue and whitelist variants
+                            additional terms to overrule removed flags to rescue
+                            and whitelist variants
       --VEPremove VEPREMOVE [VEPREMOVE ...]
                             additional terms to be removed
       --VEPsep VEPSEP       by default the program expects "&" as separator for
@@ -257,6 +326,68 @@ Whitelists variants based on positions specified as a BED format file.
 Combine the above filters.
 
     granite whiteList -i file.vcf -o file.out.vcf --BEDfile file.bed --VEP --VEPrescue <str> <str> --CLINVAR --SpliceAI <float>
+
+&nbsp;
+### cleanVCF
+cleanVCF allows to clean INFO field of input VCF file. The software can remove a list of TAG from INFO field, or can be used to clean VEP annotations.
+
+#### Arguments
+    usage: granite cleanVCF [-h] -i INPUTFILE -o OUTPUTFILE [-t TAG] [--VEP]
+                            [--VEPtag VEPTAG]
+                            [--VEPrescue VEPRESCUE [VEPRESCUE ...]]
+                            [--VEPremove VEPREMOVE [VEPREMOVE ...]]
+                            [--VEPsep VEPSEP] [--SpliceAI SPLICEAI]
+                            [--SpliceAItag SPLICEAITAG]
+
+    optional arguments:
+      -i INPUTFILE, --inputfile INPUTFILE
+                            input VCF file
+      -o OUTPUTFILE, --outputfile OUTPUTFILE
+                            output file to write results as VCF, use .vcf as
+                            extension
+      -t TAG, --tag TAG     TAG to be removed from INFO field. Specify multiple
+                            TAGs as: "-t TAG -t TAG -t ..."
+      --VEP                 clean VEP "Consequence" annotations (removed by
+                            default terms for intronic, intergenic, or regulatory
+                            regions from annotations)
+      --VEPtag VEPTAG       by default the program will search for "VEP" TAG
+                            (VEP=<values>), use this parameter to specify a
+                            different TAG to be used (e.g. CSQ)
+      --VEPrescue VEPRESCUE [VEPRESCUE ...]
+                            additional terms to overrule removed flags to rescue
+                            annotations
+      --VEPremove VEPREMOVE [VEPREMOVE ...]
+                            additional terms to be removed from annotations
+      --VEPsep VEPSEP       by default the program expects "&" as separator for
+                            subfields in VEP (e.g.
+                            intron_variant&splice_region_variant), use this
+                            parameter to specify a different separator to be used
+      --SpliceAI SPLICEAI   threshold to save intronic annotations, from VEP
+                            "Consequence", for variants by SpliceAI value (>=)
+      --SpliceAItag SPLICEAITAG
+                            by default the program will search for "SpliceAI" TAG
+                            (SpliceAI=<float>), use this parameter to specify a
+                            different TAG | TAG field to be used (e.g. DS_DG)
+
+#### Examples
+Remove tag from INFO field.
+
+    granite cleanVCF -i file.vcf -o file.out.vcf -t tag
+
+Clean VEP based on VEP "Consequence" annotations. This remove annotations flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant", "regulatory_region_", "non_coding_transcript_". It is possible to specify additional [*terms*](https://m.ensembl.org/info/genome/variation/prediction/predicted_data.html "VEP calculated consequences") to remove using `--VEPremove` and terms to rescue using `--VEPrescue`. VEP annotation must be provided for each variant in INFO column.
+
+    granite cleanVCF -i file.vcf -o file.out.vcf --VEP
+    granite cleanVCF -i file.vcf -o file.out.vcf --VEP --VEPremove <str> <str>
+    granite cleanVCF -i file.vcf -o file.out.vcf --VEP --VEPrescue <str> <str>
+    granite cleanVCF -i file.vcf -o file.out.vcf --VEP --VEPrescue <str> <str> --VEPremove <str>
+
+The program also accepts a SpliceAI threshold that will rescue annotations for "intron_variant" by SpliceAI. SpliceAI annotation must be provided in INFO column.
+
+    granite cleanVCF -i file.vcf -o file.out.vcf --VEP --SpliceAI <float>
+
+Combine the above filters.
+
+    granite cleanVCF -i file.vcf -o file.out.vcf -t tag --VEP --VEPrescue <str> <str> --SpliceAI <float>
 
 &nbsp;
 ### mpileupCounts

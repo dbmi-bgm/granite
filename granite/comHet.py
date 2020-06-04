@@ -21,6 +21,8 @@ import json
 from granite.lib.shared_functions import *
 # vcf_parser
 from granite.lib import vcf_parser
+# shared_vars
+from granite.lib.shared_vars import VEP_encode
 
 
 #################################################################
@@ -66,17 +68,16 @@ class VariantHet(object):
         self.ENST_dict.setdefault(ENSG, ENST_set)
     #end def
 
-    def add_ENST_IMPCT(self, ENST, IMPCT, IMPCT_encode):
+    def add_ENST_IMPCT(self, ENST, IMPCT):
         ''' add transcript and its associated IMPACT,
         IMPACT encoded as number '''
-        self.ENST_IMPCT_dict.setdefault(ENST, IMPCT_encode[IMPCT])
+        self.ENST_IMPCT_dict.setdefault(ENST, IMPCT)
     #end def
 
-    def add_ENSG_IMPCT(self, ENSG, IMPCT_set, IMPCT_encode):
+    def add_ENSG_IMPCT(self, ENSG, IMPCT_set):
         ''' add gene and worst IMPACT in its associated transcripts,
         IMPACT encoded as number '''
-        IMPCT_list = sorted([IMPCT_encode[IMPCT] for IMPCT in IMPCT_set])
-        self.ENSG_IMPCT_dict.setdefault(ENSG, IMPCT_list[0])
+        self.ENSG_IMPCT_dict.setdefault(ENSG, sorted(list(IMPCT_set))[0])
     #end def
 
     def get_gene_impct(self, ENSG):
@@ -183,6 +184,25 @@ def phase(vntHet_obj_1, vntHet_obj_2, ID_list):
         #end if
     #end for
     return 'Phased'
+#end def
+
+def encode_IMPACT(IMPCT_list, VEP_encode, IMPCT_encode, is_IMPACT, sep):
+    ''' return IMPCT_list encoded as number '''
+    IMPCT_encoded = []
+    if is_IMPACT: # encode IMPACT
+        IMPCT_encoded = [IMPCT_encode[IMPCT] for IMPCT in IMPCT_list]
+    else: # encode terms from Consequence
+        for terms in IMPCT_list:
+            impct_set = set()
+            for term in terms.split(sep):
+                try: impct_set.add(VEP_encode[term])
+                except Exception: impct_set.add(VEP_encode['MODIFIER'])
+                #end try
+            #end for
+            IMPCT_encoded.append(sorted(list(impct_set))[0])
+        #end for
+    #end if
+    return IMPCT_encoded
 #end def
 
 def update_stats(vntHet_obj, stat_dict, sep, is_impct):
@@ -479,11 +499,13 @@ def main(args):
                       # moderate/low impact
                       ('Conflicting_interpretations', 'c'), ('Uncertain_significance', 'c'), ('risk_factor', 'c')
                     ]
+    # VEP_encode = {...} -> import from shared_vars
     IMPCT_encode = {'HIGH': 1, 'MODERATE': 2, 'LOW': 3, 'MODIFIER': 4}
     IMPCT_decode = {1: 'H', 2: 'M', 3: 'L', 4: 'm'}
 
     # Variables
     is_impct = True if args['impact'] else False
+    is_IMPACT = False # True if IMPACT field is in VEP
     CLNSIGtag, CLNSIG_idx, is_CLNSIG = '', 0, False
     SpAItag, SpAI_idx, is_SpAI = '', 0, False
     ENSG_idx, ENST_idx, IMPCT_idx = 0, 0, 0
@@ -541,8 +563,13 @@ def main(args):
     if is_impct:
         try:
             IMPCT_idx = vcf_obj.header.get_tag_field_idx(VEPtag, 'IMPACT')
-        except Exception:
-            sys.exit('\nERROR in VCF structure: mandatory IMPACT field for "--impact" is missing in VEP\n')
+            is_IMPACT = True
+        except Exception: # missing IMPACT, IMPCT_idx will point to Consequence
+            try:
+                IMPCT_idx = vcf_obj.header.get_tag_field_idx(VEPtag, 'Consequence')
+            except Exception:
+                sys.exit('\nERROR in VCF structure: either IMPACT or Consequence field in VEP is necessary to assign "--impact"\n')
+            #end try
         #end try
         try:
             SpAItag, SpAI_idx = vcf_obj.header.check_tag_definition(SpliceAItag)
@@ -619,16 +646,17 @@ def main(args):
         if is_impct:
             # VEP
             IMPCT_list = VEP_field(vnt_obj, IMPCT_idx, VEPtag)
-            for i, (ENSG, IMPCT) in enumerate(zip(ENSG_list, IMPCT_list)):
+            IMPCT_encoded = encode_IMPACT(IMPCT_list, VEP_encode, IMPCT_encode, is_IMPACT, sep)
+            for i, (ENSG, IMPCT) in enumerate(zip(ENSG_list, IMPCT_encoded)):
                 if ENSG and IMPCT:
                     IMPCT_dict_tmp.setdefault(ENSG, set())
                     IMPCT_dict_tmp[ENSG].add(IMPCT)
-                    vntHet_obj.add_ENST_IMPCT(ENST_list[i], IMPCT, IMPCT_encode)
+                    vntHet_obj.add_ENST_IMPCT(ENST_list[i], IMPCT)
                 #end if
             #end for
             if IMPCT_dict_tmp:
                 for ENSG, IMPCT_set in IMPCT_dict_tmp.items():
-                    vntHet_obj.add_ENSG_IMPCT(ENSG, IMPCT_set, IMPCT_encode)
+                    vntHet_obj.add_ENSG_IMPCT(ENSG, IMPCT_set)
                 #end for
             #end if
             # SpliceAI

@@ -47,3 +47,34 @@ real_NA_chroms = {'M', 'MT', 'X', 'Y'}
 
 # for automated tests
 test_NA_chroms = {'2'}
+
+
+#################################################################
+#
+#   VEP Consequence to impact
+#
+#################################################################
+VEP_encode = {
+                # HIGH
+                'transcript_ablation': 1,
+                'splice_acceptor_variant': 1,
+                'splice_donor_variant': 1,
+                'stop_gained': 1,
+                'frameshift_variant': 1,
+                'stop_lost': 1,
+                'start_lost': 1,
+                'transcript_amplification': 1,
+                # MODERATE
+                'inframe_insertion': 2,
+                'inframe_deletion': 2,
+                'missense_variant': 2,
+                'protein_altering_variant': 2,
+                # LOW
+                'splice_region_variant': 3,
+                'incomplete_terminal_codon_variant': 3,
+                'start_retained_variant': 3,
+                'stop_retained_variant': 3,
+                'synonymous_variant': 3,
+                # MODIFIER
+                'MODIFIER': 4
+            }
