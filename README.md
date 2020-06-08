@@ -145,7 +145,7 @@ It is possible to filter-out variants with posterior probabilty lower than `--pp
 
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --ppthr <float>
 
-It is possible to filter-out variants with population allele frequency higher than `--afthr`. Allele frequency must be provided for each variant in INFO column following the format tag=\<float\>. If `--aftag` is not specified the program will search for *novoAF* tag as a default.
+It is possible to filter-out variants with population allele frequency higher than `--afthr`. Allele frequency must be provided for each variant in INFO column.
 
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --afthr <float> --aftag tag
 
@@ -196,7 +196,7 @@ comHet is a variant calling algorithm for *compound heterozygous* mutations. The
                             is used together with VEP
 
 #### Input
-comHet accepts files in VCF format as input. Files must contain genotype information for trio members to be used in addition to standard VCF columns. Column IDs for trio must match the sample IDs provided as argument (`--trio`). Proband genotype information is mandatory. If available, parents information will be used to improve specificity by ruling-out false calls based on inheritance mode.
+comHet accepts files in VCF format as input. Files must contain genotype information for trio members to be used in addition to standard VCF columns. Column IDs for trio must match the sample IDs provided as argument (`--trio`). Proband genotype information is mandatory. If available, parents information will be used to improve specificity by ruling-out false calls based on inheritance mode. VEP annotations for "Gene" and "Feature" are also required in INFO column for transcripts.
 
 Required VCF format structure:
 
@@ -209,10 +209,22 @@ comHet generates output in VCF format. The program adds a VEP-like tag to INFO f
 
     ##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Subembedded:'cmpHet':Format:'phase|gene|transcript|mate_variant'">
 
-#### Examples
-TO WRITE
+*comHet* tag definition (INFO) with `--impact`:
 
-    granite comHet
+    ##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Subembedded:\'cmpHet\':Format:\'phase|gene|transcript|impact_gene|impact_transcript|mate_variant\'">
+
+#### Examples
+Calls *compound heterozygous* variants.
+
+    granite comHet -i file.vcf -o file.out.vcf --trio PROBAND_ID [PARENT_ID] [PARENT_ID]
+
+It is possible to add impact information for gene (`impact_gene`) and for shared transcripts (`impact_transcript`). `impact_gene` is the worst impact calculated at gene level while considering all its associated transcripts. `impact_transcript` is the worst impact calculated considering only transcripts that are shared between the two mates, if any. VEP annotations for "IMPACT" or "Consequence" must be provided in INFO column in order to assign an impact. If available, SpliceAI and CLINVAR "CLNSIG" information is used together with VEP to refine the assignment.
+
+    granite comHet -i file.vcf -o file.out.vcf --trio PROBAND_ID [PARENT_ID] [PARENT_ID] --impact
+
+It is possible to reduce the output to only variants that are potential compound heterozygous.
+
+    granite comHet -i file.vcf -o file.out.vcf --trio PROBAND_ID [PARENT_ID] [PARENT_ID] --filter_cmpHet
 
 &nbsp;
 ### blackList
@@ -240,7 +252,7 @@ Blacklist variants based on position set to `True` in BIG format file.
 
     granite blackList -i file.vcf -o file.out.vcf -b file.big
 
-Blacklist variants based on population allele frequency. This filters out variants with allele frequency higher than `--afthr`. Allele frequency must be provided for each variant in INFO column following the format tag=\<float\>.
+Blacklist variants based on population allele frequency. This filters out variants with allele frequency higher than `--afthr`. Allele frequency must be provided for each variant in INFO column.
 
     granite blackList -i file.vcf -o file.out.vcf --afthr <float> --aftag tag
 
@@ -304,7 +316,7 @@ Whitelists variants with CLINVAR entry. If available, CLINVAR annotation must be
 
     granite whiteList -i file.vcf -o file.out.vcf --CLINVAR
 
-Whitelists only "Pathogenic" and "Likely_pathogenic" variants with CLINVAR entry. CLINVAR "CLINSIG" annotation must be provided in INFO column.
+Whitelists only "Pathogenic" and "Likely_pathogenic" variants with CLINVAR entry. CLINVAR "CLNSIG" annotation must be provided in INFO column.
 
     granite whiteList -i file.vcf -o file.out.vcf --CLINVAR --CLINVARonly Pathogenic
 
