@@ -217,7 +217,14 @@ class Vcf(object):
 
         def remove_tag_info(self, tag_to_remove, sep=';'):
             ''' remove tag field from INFO '''
-            self.INFO = re.sub(r'{0}=.*?{1}'.format(tag_to_remove, sep), '', self.INFO)
+            new_INFO = []
+            for tag in self.INFO.split(sep):
+                if tag.startswith(tag_to_remove + '='):
+                    continue
+                #end if
+                new_INFO.append(tag)
+            #end for
+            self.INFO = sep.join(new_INFO)
         #end def
 
         def add_tag_format(self, tag_to_add, sep=':'):
@@ -233,10 +240,10 @@ class Vcf(object):
         def add_tag_info(self, tag_to_add, sep=';'):
             ''' add tag field and value (tag_to_add) to INFO '''
             # tag_to_add -> tag=<value>
-            if self.INFO.endswith(sep):
-                self.INFO += tag_to_add + sep
+            if self.INFO.endswith(sep): # if INFO ending is wrongly formatted
+                self.INFO += tag_to_add
             else:
-                self.INFO += sep + tag_to_add + sep
+                self.INFO += sep + tag_to_add
             #end if
         #end def
 
