@@ -90,6 +90,26 @@ class VariantHet(object):
         return self.ENST_IMPCT_dict[ENST], self.SpAI + self.CLINVAR
     #end def
 
+    def map_impct(self, impct, impct_, IMPCT_decode, test):
+        ''' '''
+        if test:
+            return IMPCT_decode[impct[0]] + impct[1] + '/' + IMPCT_decode[impct_[0]] + impct_[1]
+        else:
+            impct_decoded = IMPCT_decode[impct[0]]
+            impct_decoded_ = IMPCT_decode[impct_[0]]
+            impct_else = impct[1] + impct_[1]
+            if impct_decoded_ in ['H', 'M']:
+                return 'STRONG'
+            elif impct_decoded in ['H', 'M'] \
+                 or 'S' in impct_else \
+                 or 'C' in impct_else:
+                return 'MEDIUM'
+            else:
+                return 'WEAK'
+            #end if
+        #end if
+    #end def
+
     def worse_ENST(self, vntHet_obj, common_ENST):
         ''' return the shared transcript with worse IMPACT '''
         score, tmp_score, tmp_ENST = 0, 0, ''
@@ -107,7 +127,7 @@ class VariantHet(object):
         return tmp_ENST
     #end def
 
-    def add_pair(self, vntHet_obj, ENSG, phase, sep, is_impct, IMPCT_decode):
+    def add_pair(self, vntHet_obj, ENSG, phase, sep, is_impct, IMPCT_decode, test):
         ''' add information for compound heterozygous pair with vntHet_obj '''
         comHet_pair = [phase, ENSG]
         common_ENST = self.ENST_dict[ENSG].intersection(vntHet_obj.ENST_dict[ENSG])
@@ -118,12 +138,12 @@ class VariantHet(object):
         if is_impct:
             # add gene impact
             impct, impct_ = sorted([self.get_gene_impct(ENSG), vntHet_obj.get_gene_impct(ENSG)])
-            comHet_pair.append(IMPCT_decode[impct[0]] + impct[1] + '/' + IMPCT_decode[impct_[0]] + impct_[1])
+            comHet_pair.append(self.map_impct(impct, impct_, IMPCT_decode, test))
             # add transcript impact
             if common_ENST:
                 ENST = self.worse_ENST(vntHet_obj, sorted(common_ENST))
                 impct, impct_ = sorted([self.get_trscrpt_impct(ENST), vntHet_obj.get_trscrpt_impct(ENST)])
-                comHet_pair.append(IMPCT_decode[impct[0]] + impct[1] + '/' + IMPCT_decode[impct_[0]] + impct_[1])
+                comHet_pair.append(self.map_impct(impct, impct_, IMPCT_decode, test))
             else: comHet_pair.append('')
             #end if
         #end if
@@ -490,7 +510,7 @@ def print_stats(stat_json, fo, is_impct):
 #################################################################
 #    runner
 #################################################################
-def main(args):
+def main(args, test=False):
     ''' '''
     # Definitions
     CLNSIG_encode = [
@@ -692,7 +712,7 @@ def main(args):
                     # if parents information,
                     # check genotypes to confirm is compound het or not
                     if is_comHet(vntHet_obj, vntHet_obj_i, ID_list, allow_undef):
-                        vntHet_obj.add_pair(vntHet_obj_i, ENSG, phase(vntHet_obj, vntHet_obj_i, ID_list), sep, is_impct, IMPCT_decode)
+                        vntHet_obj.add_pair(vntHet_obj_i, ENSG, phase(vntHet_obj, vntHet_obj_i, ID_list), sep, is_impct, IMPCT_decode, test)
                         # Add vntHet to set to write since there is at least one pair
                         vntHet_set.add((vntHet_obj.i, vntHet_obj))
                     #end if
