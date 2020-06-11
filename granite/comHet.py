@@ -98,11 +98,11 @@ class VariantHet(object):
             impct_decoded = IMPCT_decode[impct[0]]
             impct_decoded_ = IMPCT_decode[impct_[0]]
             impct_else = impct[1] + impct_[1]
-            if impct_decoded_ in ['H', 'M']:
-                return 'STRONG'
-            elif impct_decoded in ['H', 'M'] \
+            if impct_decoded_ in ['H', 'M'] \
                  or 'S' in impct_else \
                  or 'C' in impct_else:
+                return 'STRONG'
+            elif impct_decoded in ['H', 'M']:
                 return 'MEDIUM'
             else:
                 return 'WEAK'
