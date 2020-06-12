@@ -101,11 +101,11 @@ class VariantHet(object):
             if impct_decoded_ in ['H', 'M'] \
                  or 'S' in impct_else \
                  or 'C' in impct_else:
-                return 'STRONG'
+                return 'STRONG_PAIR'
             elif impct_decoded in ['H', 'M']:
-                return 'MEDIUM'
+                return 'MEDIUM_PAIR'
             else:
-                return 'WEAK'
+                return 'WEAK_PAIR'
             #end if
         #end if
     #end def
