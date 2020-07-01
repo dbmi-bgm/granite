@@ -1,3 +1,4 @@
 ##TODO
+- split multi-allelic variants in single variants during parsing
 - add mergeVCF
 - add regions to novoCaller to parallelize

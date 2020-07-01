@@ -206,10 +206,28 @@ def variant_type(REF, ALT):
     ''' return variant type as snv, ins, del '''
     if len(ALT.split(',')) > 1:
         return 'snv' # TO DECIDE WHAT TO DO, as snv for now
-    elif len(REF) > 1:
+    elif len(REF) > len(ALT) or ALT == '*':
         return 'del'
-    elif len(ALT) > 1:
+    elif len(REF) < len(ALT) or REF == '*':
         return 'ins'
+    #end if
+    return 'snv'
+#end def
+
+def variant_type_ext(REF, ALT):
+    ''' return variant type as snv, ins, del,
+    mnv (multi-nucleotide), mav (multi-allelic) '''
+    # multi-allelic variant
+    if len(ALT.split(',')) > 1:
+        return 'mav'
+    #end if
+    # normal variant
+    if len(REF) < len(ALT) or REF == '*':
+        return 'ins'
+    elif len(REF) > len(ALT) or ALT == '*':
+        return 'del'
+    elif len(REF) == len(ALT) and len(REF) != 1:
+        return 'mnv'
     #end if
     return 'snv'
 #end def

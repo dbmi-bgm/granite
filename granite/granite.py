@@ -28,6 +28,7 @@ from granite import mpileupCounts
 from granite import toBig
 from granite import rckTar
 from granite import cleanVCF
+from granite import qcVCF
 
 
 #################################################################
@@ -154,6 +155,19 @@ def main():
     rckTar_parser.add_argument('-t', '--ttar', help='target tar to write results, use .rck.tar as extension', type=str, required=True)
     rckTar_parser.add_argument('-f', '--file', help='file to be archived. Specify multiple files as: "-f SampleID_1.rck.gz -f SampleID_2.rck.gz -f ...". Files order is maintained while creating the index', action='append', required=True)
 
+    # Add qcVCF to subparsers
+    qcVCF_parser = subparsers.add_parser('qcVCF', description='utility to create a report of different metrics calculated for input VCF file',
+                                                help='utility to create a report of different metrics calculated for input VCF file')
+
+    qcVCF_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
+    qcVCF_parser.add_argument('-o', '--outputfile', help='output file to write results as JSON, use .json as extension', type=str, required=True)
+    qcVCF_parser.add_argument('-p', '--pedigree', help='file containing pedigree information', type=str, required=True)
+    qcVCF_parser.add_argument('--samples', help='list of sample IDs to get stats for (e.g. --samples SampleID_1 [SampleID_2] ...)', nargs='+', required=True)
+    qcVCF_parser.add_argument('--ti_tv', help='add transition-transversion ratio and statistics on substitutions to report', action='store_true', required=False)
+    qcVCF_parser.add_argument('--trio_errors', help='add statistics on mendelian errors based on trio to report', action='store_true', required=False)
+    qcVCF_parser.add_argument('--het_hom', help='add heterozygosity ratio and statistics on zygosity to report', action='store_true', required=False)
+    qcVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
+
     # Add mergeVCF to subparsers
     # mergeVCF_parser = subparsers.add_parser('mergeVCF', description='utility to ',
     #                                             help='')
@@ -169,7 +183,8 @@ def main():
                     'cleanVCF': cleanVCF_parser,
                     'mpileupCounts': mpileupCounts_parser,
                     'toBig': toBig_parser,
-                    'rckTar': rckTar_parser
+                    'rckTar': rckTar_parser,
+                    'qcVCF': qcVCF_parser
                     }
 
     # Checking arguments
@@ -204,6 +219,8 @@ def main():
         rckTar.main(args)
     elif args['func'] == 'cleanVCF':
         cleanVCF.main(args)
+    elif args['func'] == 'qcVCF':
+        qcVCF.main(args)
     #end if
 #end def
 
