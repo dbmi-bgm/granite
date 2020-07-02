@@ -1,0 +1,54 @@
+[
+ {
+    "individual": "NA12873",
+    "sample_name": "NA12873_sample",
+    "gender": "M",
+    "parents": []
+  },
+  {
+    "individual": "NA12874",
+    "gender": "F",
+    "parents": []
+  },
+  {
+    "individual": "NA12875",
+    "sample_name": "NA12875_sample",
+    "gender": "M",
+    "parents": []
+  },
+  {
+    "individual": "NA12876",
+    "sample_name": "NA12876_sample",
+    "gender": "F",
+    "parents": []
+  },
+  {
+    "individual": "NA12877",
+    "sample_name": "NA12877_sample",
+    "gender": "M",
+    "parents": ["NA12875", "NA12876"]
+  },
+  {
+    "individual": "NA12878",
+    "sample_name": "NA12878_sample",
+    "gender": "F",
+    "parents": ["NA12873", "NA12874"]
+  },
+  {
+    "individual": "NA12879",
+    "sample_name": "NA12879_sample",
+    "gender": "F",
+    "parents": ["NA12878", "NA12877"]
+  },
+  {
+    "individual": "NA12880",
+    "gender": "U",
+    "parents": ["NA12877", "NA12878"]
+  },
+  {
+    "individual": "NA12881",
+    "sample_name": "NA12881_smpl",
+    "gender": "U",
+    "parents": ["NA12877", "NA12878"]
+  }
+]

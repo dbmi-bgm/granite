@@ -161,7 +161,7 @@ def main():
 
     qcVCF_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     qcVCF_parser.add_argument('-o', '--outputfile', help='output file to write results as JSON, use .json as extension', type=str, required=True)
-    qcVCF_parser.add_argument('-p', '--pedigree', help='file containing pedigree information', type=str, required=True)
+    qcVCF_parser.add_argument('-p', '--pedigree', help='pedigree information, either as json file or json representation as string', type=str, required=True)
     qcVCF_parser.add_argument('--samples', help='list of sample IDs to get stats for (e.g. --samples SampleID_1 [SampleID_2] ...)', nargs='+', required=True)
     qcVCF_parser.add_argument('--ti_tv', help='add transition-transversion ratio and statistics on substitutions to report', action='store_true', required=False)
     qcVCF_parser.add_argument('--trio_errors', help='add statistics on mendelian errors based on trio to report', action='store_true', required=False)
