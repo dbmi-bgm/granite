@@ -63,7 +63,7 @@ def _substitution(vnt_obj, ID, REF, ALT, stat_dict):
     ''' substitution information, update counts for ID '''
     GT = vnt_obj.get_genotype_value(ID, 'GT').replace('|', '/')
     if GT not in ['0/0', './.']: # sample has variant
-        stat_dict[ID]['sub'][REF + '>' + ALT] += 1
+        stat_dict[ID]['sub'][REF + '_' + ALT] += 1
     #end if
 #end def
 
@@ -131,9 +131,9 @@ def _mendelian_error(pedigree_obj, vnt_obj, ID, var_type, stat_dict):
 #################################################################
 def tt_ratio(sub_dict):
     ''' return transition-transversion ratio'''
-    ti = sub_dict['A>G'] + sub_dict['G>A'] + sub_dict['T>C'] + sub_dict['C>T']
-    tv = sub_dict['A>T'] + sub_dict['T>A'] + sub_dict['A>C'] + sub_dict['C>A'] \
-        + sub_dict['G>T'] + sub_dict['T>G'] + sub_dict['G>C'] + sub_dict['C>G']
+    ti = sub_dict['A_G'] + sub_dict['G_A'] + sub_dict['T_C'] + sub_dict['C_T']
+    tv = sub_dict['A_T'] + sub_dict['T_A'] + sub_dict['A_C'] + sub_dict['C_A'] \
+        + sub_dict['G_T'] + sub_dict['T_G'] + sub_dict['G_C'] + sub_dict['C_G']
     return ti / tv
 #end def
 
@@ -249,10 +249,10 @@ def main(args):
                             'mnv': {'het': 0, 'hom': 0, 'tot': 0},
                             'mav': {'het': 0, 'hom': 0, 'tot': 0},
                             'sub': {
-                                'A>G': 0, 'A>T': 0, 'A>C': 0,
-                                'T>A': 0, 'T>G': 0, 'T>C': 0,
-                                'C>A': 0, 'C>G': 0, 'C>T': 0,
-                                'G>A': 0, 'G>T': 0, 'G>C': 0
+                                'A_G': 0, 'A_T': 0, 'A_C': 0,
+                                'T_A': 0, 'T_G': 0, 'T_C': 0,
+                                'C_A': 0, 'C_G': 0, 'C_T': 0,
+                                'G_A': 0, 'G_T': 0, 'G_C': 0
                                 },
                             'trio': {
                                 'snv': {
