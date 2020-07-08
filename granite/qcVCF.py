@@ -112,16 +112,15 @@ def _mendelian_error(pedigree_obj, vnt_obj, ID, var_type, stat_dict):
         if GT in ['0/1', '1/0']:
             if GT_0 == '0/0' and GT_1 == '0/0':
                 stat_dict[ID]['trio'][var_type]['het']['de_novo'] += 1
-                stat_dict[ID]['trio'][var_type]['het']['total'] += 1
             elif GT_0 == '1/1' and GT_1 == '1/1':
                 stat_dict[ID]['trio'][var_type]['het']['errors'] += 1
-                stat_dict[ID]['trio'][var_type]['het']['total'] += 1
             #end if
+            stat_dict[ID]['trio'][var_type]['het']['total'] += 1
         elif GT == '1/1':
             if GT_0 == '0/0' or GT_1 == '0/0':
                 stat_dict[ID]['trio'][var_type]['hom']['errors'] += 1
-                stat_dict[ID]['trio'][var_type]['hom']['total'] += 1
             #end if
+            stat_dict[ID]['trio'][var_type]['hom']['total'] += 1
         #end if
     #end if
 #end def
@@ -159,13 +158,15 @@ def to_json(stat_dict, stat_to_add):
     #end if
     for ID in stat_dict:
         tmp_total = {
-            'name': ID
+            'name': ID,
+            'total': 0
         }
         for k, v in stat_dict[ID].items():
             tmp_dict = {}
             # total variants
             if k in ['snv', 'ins', 'del', 'mnv', 'mav']:
                 tmp_total.setdefault(k.upper(), v['total'])
+                tmp_total['total'] += v['total']
             #end if
             # heterozygosity ratio
             if k in ['snv', 'ins', 'del', 'mnv'] and 'het_hom' in stat_to_add:
