@@ -55,7 +55,7 @@ def _genotype(vnt_obj, ID, var_type, stat_dict):
         else:
             stat_dict[ID][var_type]['het'] += 1
         #end if
-        stat_dict[ID][var_type]['tot'] += 1
+        stat_dict[ID][var_type]['total'] += 1
     #end if
 #end def
 
@@ -98,10 +98,10 @@ def _mendelian_error(pedigree_obj, vnt_obj, ID, var_type, stat_dict):
             if GT_ == './.':
                 if GT in ['0/1', '1/0']:
                     stat_dict[ID]['trio'][var_type]['het']['miss'] += 1
-                    stat_dict[ID]['trio'][var_type]['het']['tot'] += 1
+                    stat_dict[ID]['trio'][var_type]['het']['total'] += 1
                 elif GT == '1/1':
                     stat_dict[ID]['trio'][var_type]['hom']['miss'] += 1
-                    stat_dict[ID]['trio'][var_type]['hom']['tot'] += 1
+                    stat_dict[ID]['trio'][var_type]['hom']['total'] += 1
                 #end if
                 return # missing genotype for parent, skip
             #end if
@@ -112,15 +112,15 @@ def _mendelian_error(pedigree_obj, vnt_obj, ID, var_type, stat_dict):
         if GT in ['0/1', '1/0']:
             if GT_0 == '0/0' and GT_1 == '0/0':
                 stat_dict[ID]['trio'][var_type]['het']['de_novo'] += 1
-                stat_dict[ID]['trio'][var_type]['het']['tot'] += 1
+                stat_dict[ID]['trio'][var_type]['het']['total'] += 1
             elif GT_0 == '1/1' and GT_1 == '1/1':
                 stat_dict[ID]['trio'][var_type]['het']['errors'] += 1
-                stat_dict[ID]['trio'][var_type]['het']['tot'] += 1
+                stat_dict[ID]['trio'][var_type]['het']['total'] += 1
             #end if
         elif GT == '1/1':
             if GT_0 == '0/0' or GT_1 == '0/0':
                 stat_dict[ID]['trio'][var_type]['hom']['errors'] += 1
-                stat_dict[ID]['trio'][var_type]['hom']['tot'] += 1
+                stat_dict[ID]['trio'][var_type]['hom']['total'] += 1
             #end if
         #end if
     #end if
@@ -139,7 +139,9 @@ def tt_ratio(sub_dict):
 
 def to_json(stat_dict, stat_to_add):
     ''' '''
-    stat_json = {}
+    stat_json = {
+        'total variants': []
+    }
     if 'ti_tv' in stat_to_add:
         stat_json.setdefault('transition-transversion ratio', [])
     #end if
@@ -156,11 +158,18 @@ def to_json(stat_dict, stat_to_add):
                                            })
     #end if
     for ID in stat_dict:
+        tmp_total = {
+            'sample_name': ID
+        }
         for k, v in stat_dict[ID].items():
             tmp_dict = {}
+            # total variants
+            if k in ['snv', 'ins', 'del', 'mnv', 'mav']:
+                tmp_total.setdefault(k.upper(), v['total'])
+            #end if
             # heterozygosity ratio
             if k in ['snv', 'ins', 'del', 'mnv'] and 'het_hom' in stat_to_add:
-                tmp_dict.setdefault('name', ID)
+                tmp_dict.setdefault('sample_name', ID)
                 if v['hom']:
                     hh_ratio = round(v['het'] / v['hom'], 2)
                     tmp_dict.setdefault('ratio', hh_ratio)
@@ -170,7 +179,7 @@ def to_json(stat_dict, stat_to_add):
             #end if
             # substitutions
             if k == 'sub' and 'ti_tv' in stat_to_add:
-                tmp_dict.setdefault('name', ID)
+                tmp_dict.setdefault('sample_name', ID)
                 try: tmp_dict.setdefault('ratio', round(tt_ratio(v), 2))
                 except Exception: pass
                 #end try
@@ -182,8 +191,8 @@ def to_json(stat_dict, stat_to_add):
                 for k_v, v_v in v.items():
                     tmp_dict = {} # reset tmp_dict
                     if k_v in ['snv', 'ins', 'del']:
-                        if v_v['het']['tot'] or v_v['hom']['tot']:
-                            tmp_dict.setdefault('name', ID)
+                        if v_v['het']['total'] or v_v['hom']['total']:
+                            tmp_dict.setdefault('sample_name', ID)
                             tmp_dict.setdefault('counts', v_v)
                             stat_json['mendelian errors in trio'][k_v.upper()].append(tmp_dict)
                         #end if
@@ -191,6 +200,7 @@ def to_json(stat_dict, stat_to_add):
                 #end for
             #end if
         #end for
+        stat_json['total variants'].append(tmp_total)
     #end for
     return stat_json
 #end def
@@ -243,11 +253,11 @@ def main(args):
     # Initializing stat_dict
     for ID in ID_list:
         stat_dict.setdefault(ID, {
-                            'snv': {'het': 0, 'hom': 0, 'tot': 0},
-                            'ins': {'het': 0, 'hom': 0, 'tot': 0},
-                            'del': {'het': 0, 'hom': 0, 'tot': 0},
-                            'mnv': {'het': 0, 'hom': 0, 'tot': 0},
-                            'mav': {'het': 0, 'hom': 0, 'tot': 0},
+                            'snv': {'het': 0, 'hom': 0, 'total': 0},
+                            'ins': {'het': 0, 'hom': 0, 'total': 0},
+                            'del': {'het': 0, 'hom': 0, 'total': 0},
+                            'mnv': {'het': 0, 'hom': 0, 'total': 0},
+                            'mav': {'het': 0, 'hom': 0, 'total': 0},
                             'sub': {
                                 'A_G': 0, 'A_T': 0, 'A_C': 0,
                                 'T_A': 0, 'T_G': 0, 'T_C': 0,
@@ -256,24 +266,24 @@ def main(args):
                                 },
                             'trio': {
                                 'snv': {
-                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'tot': 0},
-                                        'hom': {'errors': 0, 'miss': 0, 'tot': 0}
+                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'total': 0},
+                                        'hom': {'errors': 0, 'miss': 0, 'total': 0}
                                         },
                                 'ins': {
-                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'tot': 0},
-                                        'hom': {'errors': 0, 'miss': 0, 'tot': 0}
+                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'total': 0},
+                                        'hom': {'errors': 0, 'miss': 0, 'total': 0}
                                         },
                                 'del': {
-                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'tot': 0},
-                                        'hom': {'errors': 0, 'miss': 0, 'tot': 0}
+                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'total': 0},
+                                        'hom': {'errors': 0, 'miss': 0, 'total': 0}
                                         },
                                 'mnv': {
-                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'tot': 0},
-                                        'hom': {'errors': 0, 'miss': 0, 'tot': 0}
+                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'total': 0},
+                                        'hom': {'errors': 0, 'miss': 0, 'total': 0}
                                         },
                                 'mav': {
-                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'tot': 0},
-                                        'hom': {'errors': 0, 'miss': 0, 'tot': 0}
+                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'total': 0},
+                                        'hom': {'errors': 0, 'miss': 0, 'total': 0}
                                         }
                                 }
                             })
