@@ -159,7 +159,7 @@ def to_json(stat_dict, stat_to_add):
     #end if
     for ID in stat_dict:
         tmp_total = {
-            'sample_name': ID
+            'name': ID
         }
         for k, v in stat_dict[ID].items():
             tmp_dict = {}
@@ -169,7 +169,7 @@ def to_json(stat_dict, stat_to_add):
             #end if
             # heterozygosity ratio
             if k in ['snv', 'ins', 'del', 'mnv'] and 'het_hom' in stat_to_add:
-                tmp_dict.setdefault('sample_name', ID)
+                tmp_dict.setdefault('name', ID)
                 if v['hom']:
                     hh_ratio = round(v['het'] / v['hom'], 2)
                     tmp_dict.setdefault('ratio', hh_ratio)
@@ -179,7 +179,7 @@ def to_json(stat_dict, stat_to_add):
             #end if
             # substitutions
             if k == 'sub' and 'ti_tv' in stat_to_add:
-                tmp_dict.setdefault('sample_name', ID)
+                tmp_dict.setdefault('name', ID)
                 try: tmp_dict.setdefault('ratio', round(tt_ratio(v), 2))
                 except Exception: pass
                 #end try
@@ -192,7 +192,7 @@ def to_json(stat_dict, stat_to_add):
                     tmp_dict = {} # reset tmp_dict
                     if k_v in ['snv', 'ins', 'del']:
                         if v_v['het']['total'] or v_v['hom']['total']:
-                            tmp_dict.setdefault('sample_name', ID)
+                            tmp_dict.setdefault('name', ID)
                             tmp_dict.setdefault('counts', v_v)
                             stat_json['mendelian errors in trio'][k_v.upper()].append(tmp_dict)
                         #end if
