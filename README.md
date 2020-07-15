@@ -1,6 +1,38 @@
 # granite
 granite (*genomic variants filtering utilities*) is a collection of software to call, filter and work with genomic variants.
 
+- [granite](#granite)
+  * [Availability and requirements](#availability-and-requirements)
+  * [File formats](#file-formats)
+  * [Tools](#tools)
+    + [novoCaller](#novocaller)
+      - [Arguments](#arguments)
+      - [Input](#input)
+      - [Trio and unrelated files](#trio-and-unrelated-files)
+      - [Output](#output)
+      - [Examples](#examples)
+    + [comHet](#comhet)
+      - [Arguments](#arguments-1)
+      - [Input](#input-1)
+      - [Output](#output-1)
+      - [Examples](#examples-1)
+    + [blackList](#blacklist)
+      - [Arguments](#arguments-2)
+      - [Examples](#examples-2)
+    + [whiteList](#whitelist)
+      - [Arguments](#arguments-3)
+      - [Examples](#examples-3)
+    + [cleanVCF](#cleanvcf)
+      - [Arguments](#arguments-4)
+      - [Examples](#examples-4)
+    + [mpileupCounts](#mpileupcounts)
+      - [Arguments](#arguments-5)
+    + [toBig](#tobig)
+      - [Arguments](#arguments-6)
+      - [Examples](#examples-5)
+    + [rckTar](#rcktar)
+      - [Arguments](#arguments-7)
+
 &nbsp;
 ## Availability and requirements
 A ready-to-use docker image is available to download.
@@ -211,7 +243,7 @@ comHet generates output in VCF format. The program adds a VEP-like tag to INFO f
 
 *comHet* tag definition (INFO) with `--impact`:
 
-    ##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Subembedded:\'cmpHet\':Format:\'phase|gene|transcript|impact_gene|impact_transcript|mate_variant\'">
+    ##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Subembedded:'cmpHet':Format:'phase|gene|transcript|impact_gene|impact_transcript|mate_variant'">
 
 #### Examples
 Calls *compound heterozygous* variants.
