@@ -97,10 +97,10 @@ def _mendelian_error(pedigree_obj, vnt_obj, ID, var_type, stat_dict):
             #end try
             if GT_ == './.':
                 if GT in ['0/1', '1/0']:
-                    stat_dict[ID]['trio'][var_type]['het']['miss'] += 1
+                    stat_dict[ID]['trio'][var_type]['het']['missing_in_parent'] += 1
                     stat_dict[ID]['trio'][var_type]['het']['total'] += 1
                 elif GT == '1/1':
-                    stat_dict[ID]['trio'][var_type]['hom']['miss'] += 1
+                    stat_dict[ID]['trio'][var_type]['hom']['missing_in_parent'] += 1
                     stat_dict[ID]['trio'][var_type]['hom']['total'] += 1
                 #end if
                 return # missing genotype for parent, skip
@@ -267,24 +267,24 @@ def main(args):
                                 },
                             'trio': {
                                 'snv': {
-                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'total': 0},
-                                        'hom': {'errors': 0, 'miss': 0, 'total': 0}
+                                        'het': {'de_novo': 0, 'errors': 0, 'missing_in_parent': 0, 'total': 0},
+                                        'hom': {'errors': 0, 'missing_in_parent': 0, 'total': 0}
                                         },
                                 'ins': {
-                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'total': 0},
-                                        'hom': {'errors': 0, 'miss': 0, 'total': 0}
+                                        'het': {'de_novo': 0, 'errors': 0, 'missing_in_parent': 0, 'total': 0},
+                                        'hom': {'errors': 0, 'missing_in_parent': 0, 'total': 0}
                                         },
                                 'del': {
-                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'total': 0},
-                                        'hom': {'errors': 0, 'miss': 0, 'total': 0}
+                                        'het': {'de_novo': 0, 'errors': 0, 'missing_in_parent': 0, 'total': 0},
+                                        'hom': {'errors': 0, 'missing_in_parent': 0, 'total': 0}
                                         },
                                 'mnv': {
-                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'total': 0},
-                                        'hom': {'errors': 0, 'miss': 0, 'total': 0}
+                                        'het': {'de_novo': 0, 'errors': 0, 'missing_in_parent': 0, 'total': 0},
+                                        'hom': {'errors': 0, 'missing_in_parent': 0, 'total': 0}
                                         },
                                 'mav': {
-                                        'het': {'de_novo': 0, 'errors': 0, 'miss': 0, 'total': 0},
-                                        'hom': {'errors': 0, 'miss': 0, 'total': 0}
+                                        'het': {'de_novo': 0, 'errors': 0, 'missing_in_parent': 0, 'total': 0},
+                                        'hom': {'errors': 0, 'missing_in_parent': 0, 'total': 0}
                                         }
                                 }
                             })
