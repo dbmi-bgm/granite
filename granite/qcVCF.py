@@ -17,6 +17,7 @@
 #################################################################
 import sys, os
 import json
+import statistics
 # shared_functions as *
 from granite.lib.shared_functions import *
 # vcf_parser
@@ -39,6 +40,8 @@ def get_stats(vnt_obj, stat_dict, ID_list):
     var_type = variant_type_ext(vnt_obj.REF, vnt_obj.ALT)
     for ID in ID_list:
         _genotype(vnt_obj, ID, var_type, stat_dict)
+        _read_depth_DP(vnt_obj, ID, stat_dict)
+        _read_depth_RSTR(vnt_obj, ID, stat_dict)
         if var_type == 'snv':
             _substitution(vnt_obj, ID, vnt_obj.REF, vnt_obj.ALT, stat_dict)
         #end if
@@ -64,6 +67,28 @@ def _substitution(vnt_obj, ID, REF, ALT, stat_dict):
     GT = vnt_obj.get_genotype_value(ID, 'GT').replace('|', '/')
     if GT not in ['0/0', './.']: # sample has variant
         stat_dict[ID]['sub'][REF + '_' + ALT] += 1
+    #end if
+#end def
+
+def _read_depth_DP(vnt_obj, ID, stat_dict):
+    ''' read depth information based on DP, update data for ID '''
+    GT = vnt_obj.get_genotype_value(ID, 'GT').replace('|', '/')
+    try: DP = vnt_obj.get_genotype_value(ID, 'DP')
+    except Exception: return # missing DP information for that ID, skip
+    #end try
+    if GT not in ['0/0', './.']:
+        stat_dict[ID]['depth']['DP'].append(int(DP))
+    #end if
+#end def
+
+def _read_depth_RSTR(vnt_obj, ID, stat_dict):
+    ''' read depth information based on RSTR, update data for ID '''
+    GT = vnt_obj.get_genotype_value(ID, 'GT').replace('|', '/')
+    try: RSTR = vnt_obj.get_genotype_value(ID, 'RSTR')
+    except Exception: return # missing RSTR information for that ID, skip
+    #end try
+    if GT not in ['0/0', './.']:
+        stat_dict[ID]['depth']['RSTR'].append(sum(map(int, RSTR.split(','))))
     #end if
 #end def
 
@@ -136,10 +161,32 @@ def tt_ratio(sub_dict):
     return ti / tv
 #end def
 
+def compress_list(data_list):
+    ''' return compressed version of list of numbers as list of single points
+    accompanied by list with occurency counts for each of the points,
+    [points_list, counts_list] '''
+    points, counts = [], []
+    for i, e in enumerate(sorted(data_list)):
+        if i == 0:
+            tmp_e, count = e, 1
+        elif e != tmp_e:
+            points.append(tmp_e)
+            counts.append(count)
+            tmp_e, count = e, 1
+        else: count += 1
+        #end if
+    #end for
+    # last point
+    points.append(tmp_e)
+    counts.append(count)
+    return [points, counts]
+#end def
+
 def to_json(stat_dict, stat_to_add):
     ''' '''
     stat_json = {
-        'total variants': []
+        'total variants': [],
+        'depth of coverage': []
     }
     if 'ti_tv' in stat_to_add:
         stat_json.setdefault('transition-transversion ratio', [])
@@ -199,6 +246,21 @@ def to_json(stat_dict, stat_to_add):
                         #end if
                     #end if
                 #end for
+            #end if
+            # depth of coverage
+            if k == 'depth':
+                tmp_dict.setdefault('name', ID)
+                if v['DP']: # DP
+                    tmp_dict.setdefault('DP (gatk)', {})
+                    tmp_dict['DP (gatk)'].setdefault('average', round(statistics.mean(v['DP']), 2))
+                    tmp_dict['DP (gatk)'].setdefault('points', compress_list(v['DP']))
+                #end if
+                if v['RSTR']: # RSTR
+                    tmp_dict.setdefault('DP (raw)', {})
+                    tmp_dict['DP (raw)'].setdefault('average', round(statistics.mean(v['RSTR']), 2))
+                    tmp_dict['DP (raw)'].setdefault('points', compress_list(v['RSTR']))
+                #end if
+                stat_json['depth of coverage'].append(tmp_dict)
             #end if
         #end for
         stat_json['total variants'].append(tmp_total)
@@ -286,7 +348,11 @@ def main(args):
                                         'het': {'de_novo': 0, 'errors': 0, 'missing_in_parent': 0, 'total': 0},
                                         'hom': {'errors': 0, 'missing_in_parent': 0, 'total': 0}
                                         }
-                                }
+                                },
+                            'depth': {
+                                'RSTR': [],
+                                'DP': []
+                            }
                             })
     #end for
 
