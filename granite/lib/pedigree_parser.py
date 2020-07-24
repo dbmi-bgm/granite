@@ -36,7 +36,7 @@ class Pedigree(object):
             self.sample = sample
             self.gender = gender
             self.parents = []
-            self.childrens = []
+            self.children = []
         #end def __init__
 
         def add_parent(self, parent):
@@ -44,10 +44,10 @@ class Pedigree(object):
             self.parents.append(parent)
         #end def add_parent
 
-        def add_children(self, children):
-            ''' add a Member object that is children '''
-            self.childrens.append(children)
-        #end def add_children
+        def add_child(self, child):
+            ''' add a Member object that is child '''
+            self.children.append(child)
+        #end def add_child
 
         def is_sample(self):
             ''' '''
@@ -60,9 +60,9 @@ class Pedigree(object):
             ''' return a list of Member objects that are siblings '''
             siblings = []
             for parent in self.parents:
-                for children in parent.childrens:
-                    if children not in siblings and children != self:
-                        siblings.append(children)
+                for child in parent.children:
+                    if child not in siblings and child != self:
+                        siblings.append(child)
                     #end if
                 #end for
             #end for
@@ -74,10 +74,32 @@ class Pedigree(object):
             return self.parents
         #end def get_parents
 
-        def get_childrens(self):
-            ''' return a list of Member objects that are childrens '''
-            return self.childrens
-        #end def get_childrens
+        def get_children(self):
+            ''' return a list of Member objects that are children '''
+            return self.children
+        #end def get_children
+
+        def get_spouses(self):
+            ''' return a list of Member objects that are spouses,
+            sorted by descending number of common children '''
+            tmp_spouses = [] # [(num_children, spouse_obj), ...]
+            for child in self.children:
+                for parent in child.parents:
+                    if parent != self:
+                        num_children = len(self.common_children(parent))
+                        if (num_children, parent) not in tmp_spouses:
+                            tmp_spouses.append((num_children, parent))
+                        #end if
+                    #end if
+                #end for
+            #end for
+            return [tmp_spouse[1] for tmp_spouse in sorted(tmp_spouses, key=lambda x: x[0], reverse=True)]
+        #end def
+
+        def common_children(self, spouse):
+            ''' return a list of Member objects that are children in common with spouse '''
+            return list(set(self.children).intersection(set(spouse.children)))
+        #end def
 
     #end class Member
 
@@ -108,7 +130,7 @@ class Pedigree(object):
     #end def add_member
 
     def add_parent(self, name, parent_name):
-        ''' add parent-children relation to parent and children by name '''
+        ''' add parent-child relation to parent and child by name '''
         if name not in self.members:
             raise ValueError('\nERROR in pedigree structure, missing name {0} in pedigree\n'
                              .format(name))
@@ -118,7 +140,7 @@ class Pedigree(object):
                              .format(parent_name))
         #end if
         self.members[name].add_parent(self.members[parent_name])
-        self.members[parent_name].add_children(self.members[name])
+        self.members[parent_name].add_child(self.members[name])
     #end def add_parent
 
     def get_member_by_sample(self, sample):
@@ -141,6 +163,10 @@ class Pedigree(object):
         # Adding relations
         for member in pedigree:
             name = member['individual']
+            if len(member['parents']) > 2:
+                raise ValueError('\nERROR in pedigree structure, {0} has more than two parents\n'
+                                 .format(name))
+            #end if
             for parent_name in member['parents']:
                 self.add_parent(name, parent_name)
             #end for

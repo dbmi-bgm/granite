@@ -29,6 +29,7 @@ from granite import toBig
 from granite import rckTar
 from granite import cleanVCF
 from granite import qcVCF
+from granite import validateVCF
 
 
 #################################################################
@@ -168,6 +169,16 @@ def main():
     qcVCF_parser.add_argument('--het_hom', help='add heterozygosity ratio and statistics on zygosity to report', action='store_true', required=False)
     qcVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
+    # Add validateVCF to subparsers
+    validateVCF_parser = subparsers.add_parser('validateVCF', description='utility to calculate error models for input VCF file using full pedigree information',
+                                                    help='utility to calculate error models for input VCF file using full pedigree information')
+
+    validateVCF_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
+    validateVCF_parser.add_argument('-o', '--outputfile', help='output file to write results as JSON, use .json as extension', type=str, required=True)
+    validateVCF_parser.add_argument('-p', '--pedigree', help='pedigree information, either as json file or json representation as string', type=str, required=True)
+    validateVCF_parser.add_argument('--sample', help='sample ID to be used as anchor in pedigree', type=str, required=True)
+    validateVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
+
     # Add mergeVCF to subparsers
     # mergeVCF_parser = subparsers.add_parser('mergeVCF', description='utility to ',
     #                                             help='')
@@ -184,7 +195,8 @@ def main():
                     'mpileupCounts': mpileupCounts_parser,
                     'toBig': toBig_parser,
                     'rckTar': rckTar_parser,
-                    'qcVCF': qcVCF_parser
+                    'qcVCF': qcVCF_parser,
+                    'validateVCF': validateVCF_parser
                     }
 
     # Checking arguments
@@ -221,6 +233,8 @@ def main():
         cleanVCF.main(args)
     elif args['func'] == 'qcVCF':
         qcVCF.main(args)
+    elif args['func'] == 'validateVCF':
+        validateVCF.main(args)
     #end if
 #end def
 

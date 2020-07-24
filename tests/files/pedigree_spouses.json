@@ -1,0 +1,61 @@
+[
+  {
+    "individual": "NA12877",
+    "sample_name": "NA12877_sample",
+    "gender": "M",
+    "parents": []
+  },
+  {
+    "individual": "NA12878",
+    "sample_name": "NA12878_sample",
+    "gender": "F",
+    "parents": []
+  },
+  {
+    "individual": "NA12895",
+    "sample_name": "NA12895_sample",
+    "gender": "F",
+    "parents": []
+  },
+  {
+    "individual": "NA12896",
+    "sample_name": "NA12896_sample",
+    "gender": "F",
+    "parents": []
+  },
+  {
+    "individual": "NA12879",
+    "sample_name": "NA12879_sample",
+    "gender": "F",
+    "parents": ["NA12895", "NA12877"]
+  },
+  {
+    "individual": "NA12880",
+    "gender": "U",
+    "parents": ["NA12877", "NA12878"]
+  },
+  {
+    "individual": "NA12881",
+    "sample_name": "NA12881_smpl",
+    "gender": "U",
+    "parents": ["NA12877", "NA12878"]
+  },
+  {
+    "individual": "NA12882",
+    "sample_name": "NA12882_smpl",
+    "gender": "U",
+    "parents": ["NA12877", "NA12878"]
+  },
+  {
+    "individual": "NA12883",
+    "sample_name": "NA12883_smpl",
+    "gender": "U",
+    "parents": ["NA12877", "NA12896"]
+  },
+  {
+    "individual": "NA12884",
+    "sample_name": "NA12884_smpl",
+    "gender": "U",
+    "parents": ["NA12877", "NA12896"]
+  }
+]
