@@ -94,12 +94,12 @@ class Pedigree(object):
                 #end for
             #end for
             return [tmp_spouse[1] for tmp_spouse in sorted(tmp_spouses, key=lambda x: x[0], reverse=True)]
-        #end def
+        #end def get_spouses
 
         def common_children(self, spouse):
             ''' return a list of Member objects that are children in common with spouse '''
             return list(set(self.children).intersection(set(spouse.children)))
-        #end def
+        #end def common_children
 
     #end class Member
 

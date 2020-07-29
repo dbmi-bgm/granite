@@ -95,14 +95,14 @@ class VariantHet(object):
         if test:
             return IMPCT_decode[impct[0]] + impct[1] + '/' + IMPCT_decode[impct_[0]] + impct_[1]
         else:
-            impct_decoded = IMPCT_decode[impct[0]]
-            impct_decoded_ = IMPCT_decode[impct_[0]]
-            impct_else = impct[1] + impct_[1]
-            if impct_decoded_ in ['H', 'M'] \
-                 or 'S' in impct_else \
-                 or 'C' in impct_else:
+            STRONG_set = {'H', 'M', 'S', 'C'}
+            impct_set = set(list(IMPCT_decode[impct[0]] + impct[1]))
+            impct_set_ = set(list(IMPCT_decode[impct_[0]] + impct_[1]))
+            if impct_set.intersection(STRONG_set) and \
+               impct_set_.intersection(STRONG_set):
                 return 'STRONG_PAIR'
-            elif impct_decoded in ['H', 'M']:
+            elif impct_set.intersection(STRONG_set) or \
+                 impct_set_.intersection(STRONG_set):
                 return 'MEDIUM_PAIR'
             else:
                 return 'WEAK_PAIR'
