@@ -101,6 +101,18 @@ class Pedigree(object):
             return list(set(self.children).intersection(set(spouse.children)))
         #end def common_children
 
+        def has_parents(self):
+            ''' check if self has two parents with samples '''
+            for i, parent in enumerate(self.parents):
+                if not parent.sample: # missing parent sample information
+                    return False
+                #end if
+            #end for
+            if i != 1: return False # missing one or both parents
+            #end if
+            return True
+        #end def has_parents
+
     #end class Member
 
     def __init__(self, pedigree):
@@ -152,6 +164,56 @@ class Pedigree(object):
                              .format(sample))
         #end try
     #end def get_member_by_sample
+
+    def get_family(self, sample):
+        ''' given sample in pedigree,
+        build family structure around it '''
+        family = {
+            'children': [],
+            'parents': []
+        }
+        sample_obj = self.get_member_by_sample(sample)
+        if sample_obj.get_children(): # sample is the center of the family,
+                                      # check for parents and children
+            if sample_obj.has_parents(): # parents information complete
+                spouse = None
+                for spouse_ in sample_obj.get_spouses():
+                    if spouse_.has_parents():
+                        spouse = spouse_
+                        break
+                    #end if
+                #end for
+                if not spouse:
+                    raise ValueError('\nERROR in building family from pedigree, missing parents information for sample {0} spouse\n'
+                            .format(sample))
+                #end if
+                # Create family
+                family['children'] = sample_obj.common_children(spouse)
+                family['parents'] = [obj for obj in sorted([sample_obj, spouse], key=lambda x: x.name)]
+            else: # missing parents
+                raise ValueError('\nERROR in building family from pedigree, missing parents information for sample {0}\n'
+                        .format(sample))
+            #end if
+        else: # sample is the newest generation,
+              # check for siblings, parents and grandparents
+            if sample_obj.has_parents(): # parents information complete, check grandparents
+                parents = sample_obj.get_parents()
+                for parent in parents:
+                    if not parent.has_parents():
+                        raise ValueError('\nERROR in building family from pedigree, missing family information for sample {0}\n'
+                                .format(sample))
+                    #end if
+                #end for
+                # Create family
+                family['children'] = parents[0].common_children(parents[1])
+                family['parents'] = [obj for obj in sorted(parents, key=lambda x: x.name)]
+            else:
+                raise ValueError('\nERROR in building family from pedigree, missing parents information for sample {0}\n'
+                        .format(sample))
+            #end if
+        #end if
+        return family
+    #end def
 
     def parse_pedigree(self, pedigree):
         ''' read pedigree information to build Pedigree object,
