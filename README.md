@@ -20,7 +20,7 @@ A ready-to-use docker image is available to download.
 
     docker pull IMAGE
 
-To run locally, Python (3.x) is required together with the following libraries:
+To run locally, Python (`>=3.6`) is required together with the following libraries:
 
   - [*numpy*](https://docs.scipy.org/doc/ "numpy documentation")
   - [*pysam*](https://pysam.readthedocs.io/en/latest/ "pysam documentation")

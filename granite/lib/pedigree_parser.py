@@ -213,7 +213,7 @@ class Pedigree(object):
             #end if
         #end if
         return family
-    #end def
+    #end def get_family
 
     def parse_pedigree(self, pedigree):
         ''' read pedigree information to build Pedigree object,
