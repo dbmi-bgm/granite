@@ -10,6 +10,7 @@ granite (*genomic variants filtering utilities*) is a collection of software to 
     + [blackList](#blacklist)
     + [whiteList](#whitelist)
     + [cleanVCF](#cleanvcf)
+    + [qcVCF](#qcVCF)
     + [mpileupCounts](#mpileupcounts)
     + [toBig](#tobig)
     + [rckTar](#rcktar)
@@ -18,7 +19,7 @@ granite (*genomic variants filtering utilities*) is a collection of software to 
 ## Availability and requirements
 A ready-to-use docker image is available to download.
 
-    docker pull IMAGE
+    docker pull b3rse/granite:vx.x.x
 
 To run locally, Python (`>=3.6`) is required together with the following libraries:
 
@@ -27,6 +28,7 @@ To run locally, Python (`>=3.6`) is required together with the following librari
   - [*bitarray*](https://pypi.org/project/bitarray/ "bitarray documentation")
   - [*pytabix*](https://pypi.org/project/pytabix/ "pytabix documentation")
   - [*h5py*](https://www.h5py.org/ "h5py documentation")
+  - [*matplotlib*](https://matplotlib.org/ "matplotlib documentation")
 
 To install libraries with pip:
 
@@ -39,13 +41,13 @@ Additional software needs to be available in the environment:
   - [*bgzip*](http://www.htslib.org/doc/bgzip.1.html "bgzip documentation")
   - [*tabix*](http://www.htslib.org/doc/tabix.1.html "tabix documentation")
 
-To install the program, run the following command inside granite folder:
+To install the program from source, run the following command inside granite folder:
 
     python setup.py install
 
 &nbsp;
 ## File formats
-The program is compatible with standard BED, BAM and VCF formats (VCFv4.x).
+The program is compatible with standard BED, BAM and VCF formats (`VCFv4.x`).
 
 ### ReadCountKeeper (.rck)
 RCK is a tabular format that allows to efficiently store counts by strand (ForWard-ReVerse) for reads that support REFerence allele, ALTernate alleles, INSertions or DELetions at CHRomosome and POSition. RCK files can be further compressed with *bgzip* and indexed with *tabix* for storage, portability and faster random access. 1-based.
@@ -76,6 +78,32 @@ hdf5 format structure:
     chrM_del: array(bool)
 
 *note*: hdf5 keys are built as the chromosome name based on reference (e.g. chr1) plus the suffix specifying whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
+
+### Pedigree in JSON format
+When the program requires pedigree information, the expected format is as follow:
+
+    [
+      {
+        "individual": "NA12877",
+        "sample_name": "NA12877_sample",
+        "gender": "M",
+        "parents": []
+      },
+      {
+        "individual": "NA12878",
+        "sample_name": "NA12878_sample",
+        "gender": "F",
+        "parents": []
+      },
+      {
+        "individual": "NA12879",
+        "sample_name": "NA12879_sample",
+        "gender": "F",
+        "parents": ["NA12878", "NA12877"]
+      }
+    ]
+
+where `individual` is the unique identifier for member inside the pedigree, `sample_name` is the corresponding sample ID in VCF file, and `parents` is the list of unique identifiers for member parents if any.
 
 &nbsp;
 ## Tools
@@ -413,6 +441,34 @@ The program also accepts a SpliceAI threshold that will rescue annotations for "
 Combine the above filters.
 
     granite cleanVCF -i file.vcf -o file.out.vcf -t tag --VEP --VEPrescue <str> <str> --SpliceAI <float>
+
+&nbsp;
+### qcVCF
+qcVCF produces a report in JSON format with different quality metrics calculated for input VCF file. Both single sample and family-based metrics are available.
+
+#### Arguments
+    usage: granite qcVCF [-h] -i INPUTFILE -o OUTPUTFILE -p PEDIGREE --samples
+                         SAMPLES [SAMPLES ...] [--ti_tv] [--trio_errors]
+                         [--het_hom]
+
+    optional arguments:
+      -i INPUTFILE, --inputfile INPUTFILE
+                            input VCF file
+      -o OUTPUTFILE, --outputfile OUTPUTFILE
+                            output file to write results as JSON, use .json as
+                            extension
+      -p PEDIGREE, --pedigree PEDIGREE
+                            pedigree information, either as JSON file or JSON
+                            representation as string
+      --samples SAMPLES [SAMPLES ...]
+                            list of sample IDs to get stats for (e.g. --samples
+                            SampleID_1 [SampleID_2] ...)
+      --ti_tv               add transition-transversion ratio and statistics on
+                            substitutions to report
+      --trio_errors         add statistics on mendelian errors based on trio to
+                            report
+      --het_hom             add heterozygosity ratio and statistics on zygosity to
+                            report
 
 &nbsp;
 ### mpileupCounts

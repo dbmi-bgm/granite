@@ -29,7 +29,7 @@ WORKDIR /usr/local/bin
 
 # python libraries
 RUN conda install -c bioconda -y python=3.6.8 \
-    pysam==0.15.3 bitarray==1.2.1 pytabix==0.0.2 h5py==2.10.0 numpy==1.18.1 && \
+    pysam==0.15.3 bitarray==1.2.1 pytabix==0.0.2 h5py==2.10.0 numpy==1.18.1 matplotlib && \
     conda clean -a -y -f
 
 # granite
