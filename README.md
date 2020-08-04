@@ -1,7 +1,10 @@
 # granite
-granite (*genomic variants filtering utilities*) is a collection of software to call, filter and work with genomic variants.
 
-- [granite](#granite)
+[![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-360/)
+
+granite is a collection of software to call, filter and work with genomic variants.
+
+
   * [Availability and requirements](#availability-and-requirements)
   * [File formats](#file-formats)
   * [Tools](#tools)
@@ -19,9 +22,9 @@ granite (*genomic variants filtering utilities*) is a collection of software to 
 ## Availability and requirements
 A ready-to-use docker image is available to download.
 
-    docker pull b3rse/granite:vx.x.x
+    docker pull b3rse/granite:v0.1.0
 
-To run locally, Python (`>=3.6`) is required together with the following libraries:
+To run locally, python is required together with the following libraries:
 
   - [*numpy*](https://docs.scipy.org/doc/ "numpy documentation")
   - [*pysam*](https://pysam.readthedocs.io/en/latest/ "pysam documentation")
@@ -32,7 +35,7 @@ To run locally, Python (`>=3.6`) is required together with the following librari
 
 To install libraries with pip:
 
-    pip install numpy pysam bitarray h5py
+    pip install numpy pysam bitarray h5py matplotlib
     pip install --user pytabix
 
 Additional software needs to be available in the environment:
@@ -44,6 +47,10 @@ Additional software needs to be available in the environment:
 To install the program from source, run the following command inside granite folder:
 
     python setup.py install
+
+To install the program with pip:
+
+    pip install granite
 
 &nbsp;
 ## File formats

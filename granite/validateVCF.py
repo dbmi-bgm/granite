@@ -18,6 +18,9 @@
 import sys, os
 import json
 import numpy
+import copy
+# matplotlib
+from matplotlib import pyplot
 # shared_functions as *
 from granite.lib.shared_functions import *
 # vcf_parser
@@ -26,8 +29,6 @@ from granite.lib import vcf_parser
 from granite.lib import pedigree_parser
 # shared_vars
 from granite.lib.shared_vars import real_NA_chroms
-# matplotlib
-from matplotlib import pyplot
 
 
 #################################################################
@@ -36,20 +37,55 @@ from matplotlib import pyplot
 #
 #################################################################
 #################################################################
-#    Stats
+#    Heterozygosity stats
 #################################################################
-def get_stats(vnt_obj, stat_dict, family, NA_chroms):
-    ''' extract information from variant using family '''
+def get_stats_het(vnt_obj, stat_dict, family, NA_chroms):
+    ''' extract heterozygosity information from variant using family '''
     var_type = variant_type_ext(vnt_obj.REF, vnt_obj.ALT)
     if vnt_obj.CHROM.replace('chr', '') in NA_chroms:
         return # skip unbalanced chromosomes
     #end if
     if var_type == 'snv':
-        _error_het(vnt_obj, stat_dict, family)
+        _error_het_trio(vnt_obj, stat_dict, family)
+        _error_het_family(vnt_obj, stat_dict, family)
     #end if
 #end def
 
-def _error_het(vnt_obj, stat_dict, family):
+def _error_het_trio(vnt_obj, stat_dict, family):
+    ''' calculate error model for heterozygous calls using only trio '''
+    # Counting children that are heterozygous or homozygous alternate
+    cnt_children = 0
+    for child in family['children']:
+        try:
+            GT_ = vnt_obj.get_genotype_value(child.sample, 'GT').replace('|', '/')
+        except Exception: continue
+        #end try
+        if GT_ == './.': return
+        elif GT_ in ['0/1', '1/0', '1/1']: cnt_children += 1
+        #end if
+    #end for
+    # Parents samples
+    sample_0 = family['parents'][0].sample
+    sample_1 = family['parents'][1].sample
+    # Update stat_dict for cnt_children
+    stat_dict['error_het_trio'].setdefault(cnt_children, {})
+    for sample in [sample_0, sample_1]:
+        stat_dict['error_het_trio'][cnt_children].setdefault(sample, {
+                                                            'het': 0
+                                                        })
+    #end for
+    # Check parents genotype
+    GT_0 = vnt_obj.get_genotype_value(sample_0, 'GT').replace('|', '/')
+    GT_1 = vnt_obj.get_genotype_value(sample_1, 'GT').replace('|', '/')
+    if GT_0 in ['0/1', '1/0']:
+        stat_dict['error_het_trio'][cnt_children][sample_0]['het'] += 1
+    #end if
+    if GT_1 in ['0/1', '1/0']:
+        stat_dict['error_het_trio'][cnt_children][sample_1]['het'] += 1
+    #end if
+#end def
+
+def _error_het_family(vnt_obj, stat_dict, family):
     ''' calculate error model for heterozygous calls using family '''
     # Counting children that are heterozygous
     cnt_children = 0
@@ -58,7 +94,7 @@ def _error_het(vnt_obj, stat_dict, family):
             GT_ = vnt_obj.get_genotype_value(child.sample, 'GT').replace('|', '/')
         except Exception: continue
         #end try
-        if GT_ == './.': return
+        if GT_ == './.' or GT_ == '1/1': return
         elif GT_ in ['0/1', '1/0']: cnt_children += 1
         #end if
     #end for
@@ -68,9 +104,9 @@ def _error_het(vnt_obj, stat_dict, family):
     sample_0 = family['parents'][0].sample
     sample_1 = family['parents'][1].sample
     # Update stat_dict for cnt_children
-    stat_dict['error_het'].setdefault(cnt_children, {})
+    stat_dict['error_het_family'].setdefault(cnt_children, {})
     for sample in [sample_0, sample_1]:
-        stat_dict['error_het'][cnt_children].setdefault(sample, {
+        stat_dict['error_het_family'][cnt_children].setdefault(sample, {
                                                             'ref': 0, # undercalled het
                                                             'hom': 0, # overcalled het
                                                             'het': 0, # properly called het
@@ -84,15 +120,81 @@ def _error_het(vnt_obj, stat_dict, family):
     # Check trio genotypes combination
     if trio_0 and trio_1: # trio genotypes are complete
         if trio_0 == ['ref', {'ref'}] and trio_1[1] == {'ref', 'het'}:
-            stat_dict['error_het'][cnt_children][sample_1][trio_1[0]] += 1
-            stat_dict['error_het'][cnt_children][sample_1]['total'] += 1
+            stat_dict['error_het_family'][cnt_children][sample_1][trio_1[0]] += 1
+            stat_dict['error_het_family'][cnt_children][sample_1]['total'] += 1
         elif trio_1 == ['ref', {'ref'}] and trio_0[1] == {'ref', 'het'}:
-            stat_dict['error_het'][cnt_children][sample_0][trio_0[0]] += 1
-            stat_dict['error_het'][cnt_children][sample_0]['total'] += 1
+            stat_dict['error_het_family'][cnt_children][sample_0][trio_0[0]] += 1
+            stat_dict['error_het_family'][cnt_children][sample_0]['total'] += 1
         #end if
     #end if
 #end def
 
+#################################################################
+#    De novo stats
+#################################################################
+def get_stats_novo(vnt_obj, stat_dict, family, NA_chroms, sample_novo, novotag):
+    ''' extract de novo information from variant using family '''
+    var_type = variant_type_ext(vnt_obj.REF, vnt_obj.ALT)
+    if vnt_obj.CHROM.replace('chr', '') in NA_chroms:
+        return # skip unbalanced chromosomes
+    #end if
+    if var_type == 'snv':
+        try:
+            novoPP = float(vnt_obj.get_tag_value(novotag))
+        except Exception: return
+        #end try
+        if novoPP > 0:
+            _error_novo_family(vnt_obj, stat_dict, family, sample_novo, novoPP)
+        #end if
+    #end if
+#end def
+
+def _error_novo_family(vnt_obj, stat_dict, family, sample_novo, novoPP):
+    ''' calculate error model for de novo calls using family '''
+    # Counting children that are heterozygous or homozygous alternate
+    cnt_children = 0
+    for child in family['children']:
+        if child.sample != sample_novo:
+            try:
+                GT_ = vnt_obj.get_genotype_value(child.sample, 'GT').replace('|', '/')
+            except Exception: continue
+            #end try
+            if GT_ == './.': return
+            elif GT_ in ['0/1', '1/0', '1/1']: cnt_children += 1
+            #end if
+        #end if
+    #end for
+    if novoPP >= 0.9: bin = 0.9
+    elif novoPP >= 0.1: bin = 0.1
+    else: bin = 0
+    #end if
+    # Update stat_dict for cnt_children
+    stat_dict['error_novo_family'].setdefault(bin, {})
+    stat_dict['error_novo_family'][bin].setdefault(cnt_children, {
+                                                            'in_gparents': 0,
+                                                            'no_gparents': 0,
+                                                            'total': 0
+                                                        })
+    # Parents samples
+    sample_0 = family['parents'][0].sample
+    sample_1 = family['parents'][1].sample
+    # Get trio genotypes for parents
+    trio_0 = _GT_trio(vnt_obj, family['parents'][0])
+    trio_1 = _GT_trio(vnt_obj, family['parents'][1])
+    # Check trio genotypes combination
+    if trio_0 and trio_1: # trio genotypes are complete
+        stat_dict['error_novo_family'][bin][cnt_children]['total'] += 1
+        if trio_0[1] != {'ref'} or trio_1[1] != {'ref'}:
+            stat_dict['error_novo_family'][bin][cnt_children]['in_gparents'] += 1
+        else:
+            stat_dict['error_novo_family'][bin][cnt_children]['no_gparents'] += 1
+        #end if
+    #end if
+#end def
+
+#################################################################
+#    Routines for stats
+#################################################################
 def _GT_trio(vnt_obj, member_obj):
     ''' return genotype information for member_obj and parents,
     [GT_member_obj, set([GT_parent_0, GT_parent_1])] '''
@@ -113,115 +215,91 @@ def _GT_trio(vnt_obj, member_obj):
 #end def
 
 #################################################################
-#    Build family structure from pedigree
-#################################################################
-def get_family(pedigree_obj, anchor):
-    ''' given anchor in pedigree,
-    build family structure around it '''
-    family = {
-        'children': [],
-        'parents': []
-    }
-    anchor_obj = pedigree_obj.get_member_by_sample(anchor)
-    if anchor_obj.get_children(): # anchor is the center of the family,
-                                  # check for parents and children
-        if _check_parents(anchor_obj): # parents information complete
-            spouse = None
-            for spouse_ in anchor_obj.get_spouses():
-                if _check_parents(spouse_):
-                    spouse = spouse_
-                    break
-                #end if
-            #end for
-            if not spouse:
-                sys.exit('\nERROR in building family from pedigree: missing parents information for sample {0} spouse\n'
-                        .format(anchor))
-            #end if
-            # Create family
-            family['children'] = anchor_obj.common_children(spouse)
-            family['parents'] = [obj for obj in sorted([anchor_obj, spouse], key=lambda x: x.name)]
-        else: # missing parents
-            sys.exit('\nERROR in building family from pedigree: missing parents information for sample {0}\n'
-                    .format(anchor))
-        #end if
-    else: # anchor is the newest generation,
-          # check for siblings, parents and grandparents
-        if _check_parents(anchor_obj): # parents information complete, check grandparents
-            parents = anchor_obj.get_parents()
-            for parent in parents:
-                if not _check_parents(parent):
-                    sys.exit('\nERROR in building family from pedigree: missing family information for sample {0}\n'
-                            .format(anchor))
-                #end if
-            #end for
-            # Create family
-            family['children'] = parents[0].common_children(parents[1])
-            family['parents'] = [obj for obj in sorted(parents, key=lambda x: x.name)]
-        else:
-            sys.exit('\nERROR in building family from pedigree: missing parents information for sample {0}\n'
-                    .format(anchor))
-        #end if
-    #end if
-    return family
-#end def
-
-def _check_parents(member_obj):
-    ''' check if member_object has two parents with samples '''
-    parents = member_obj.get_parents()
-    if len(parents) < 2: return False # missing parent
-    #end if
-    for parent in parents:
-        if not parent.is_sample(): # missing parent sample information
-            return False
-        #end if
-    #end for
-    return True
-#end def
-
-#################################################################
 #
 #################################################################
-def to_json(stat_dict):
+def to_json(stat_dict_list, sample_het_list, sample_novo):
     ''' '''
-    stat_json = {
-        'autosomal heterozygous calls error': []
-    }
-    # Error heterozygous call
-    for cnt_children in sorted(stat_dict['error_het']):
-        tmp_dict = {
-            'children': cnt_children
-        }
-        for sample in stat_dict['error_het'][cnt_children]:
-            tmp_dict.setdefault(sample, {})
-            _counts = {
-                'total': stat_dict['error_het'][cnt_children][sample]['total']
-            }
-            for k, v in stat_dict['error_het'][cnt_children][sample].items():
-                # Counts
-                if k == 'ref': _counts.setdefault('undercall', v)
-                elif k == 'hom': _counts.setdefault('overcall', v)
-                elif k == 'het': _counts.setdefault('correct', v)
-                elif k == 'missing': _counts.setdefault('missing', v)
-                #end if
-            #end for
-            # Ratios
-            if _counts['total']:
-                tmp_dict[sample].setdefault('undercall ratio', round(_counts['undercall'] / _counts['total'], 3))
-                tmp_dict[sample].setdefault('overcall ratio', round(_counts['overcall'] / _counts['total'], 3))
-                tmp_dict[sample].setdefault('correct ratio', round(_counts['correct'] / _counts['total'], 3))
-                tmp_dict[sample].setdefault('missing ratio', round(_counts['missing'] / _counts['total'], 3))
+    stat_json = {}
+    # Error heterozygous calls
+    if sample_het_list:
+        stat_json.setdefault('autosomal heterozygous calls error', [])
+        # Calculate error
+        tmp_dict = {}
+        for stat_dict in stat_dict_list:
+            if stat_dict['error_het_family']:
+                for cnt_children in sorted(stat_dict['error_het_family']):
+                    tmp_dict.setdefault(cnt_children, {
+                                                        'children': cnt_children
+                                                        })
+                    for sample in stat_dict['error_het_family'][cnt_children]:
+                        if sample in sample_het_list:
+                            tmp_dict[cnt_children].setdefault(sample, {})
+                            _counts = {
+                                'total': stat_dict['error_het_family'][cnt_children][sample]['total']
+                            }
+                            for k, v in stat_dict['error_het_family'][cnt_children][sample].items():
+                                # Counts
+                                if k == 'ref': _counts.setdefault('undercall', v)
+                                elif k == 'hom': _counts.setdefault('overcall', v)
+                                elif k == 'het': _counts.setdefault('correct', v)
+                                elif k == 'missing': _counts.setdefault('missing', v)
+                                #end if
+                            #end for
+                            # Ratios
+                            if _counts['total']:
+                                tmp_dict[cnt_children][sample].setdefault('undercall ratio', round(_counts['undercall'] / _counts['total'], 3))
+                                tmp_dict[cnt_children][sample].setdefault('overcall ratio', round(_counts['overcall'] / _counts['total'], 3))
+                                tmp_dict[cnt_children][sample].setdefault('correct ratio', round(_counts['correct'] / _counts['total'], 3))
+                                tmp_dict[cnt_children][sample].setdefault('missing ratio', round(_counts['missing'] / _counts['total'], 3))
+                            #end if
+                            tmp_dict[cnt_children][sample].setdefault('counts', _counts)
+                        #end if
+                    #end for
+                #end for
             #end if
-            tmp_dict[sample].setdefault('counts', _counts)
         #end for
-        stat_json['autosomal heterozygous calls error'].append(tmp_dict)
-    #end for
-    _extend_json(stat_json)
+        for cnt_children in sorted(tmp_dict):
+            stat_json['autosomal heterozygous calls error'].append(tmp_dict[cnt_children])
+        #end for
+        _extend_json_het(stat_json)
+    #end if
+    # Error de novo calls
+    if sample_novo:
+        stat_json.setdefault('de novo calls error', [])
+        for stat_dict in stat_dict_list: # only one stat_dict at most
+            if stat_dict['error_novo_family']:
+                tmp_dict = {
+                        'novoPP': '',
+                        'total variants': 0,
+                        'not in grandparents': 0,
+                        'not in grandparents, in siblings': {}
+                        }
+                for bin in sorted(stat_dict['error_novo_family'], reverse=True):
+                    if bin != 0: tmp_dict['novoPP'] = '>= ' + str(bin)
+                    else: tmp_dict['novoPP'] = '> ' + str(bin)
+                    #end if
+                    for cnt_children in sorted(stat_dict['error_novo_family'][bin]):
+                        tmp_dict['not in grandparents, in siblings'].setdefault(cnt_children, 0)
+                        for k, v in stat_dict['error_novo_family'][bin][cnt_children].items():
+                            if k == 'total':
+                                tmp_dict['total variants'] += v
+                            elif k == 'no_gparents':
+                                tmp_dict['not in grandparents'] += v
+                                tmp_dict['not in grandparents, in siblings'][cnt_children] += v
+                            #end if
+                        #end for
+                    #end for
+                    stat_json['de novo calls error'].append(copy.deepcopy(tmp_dict))
+                #end for
+            #end if
+        #end for
+    #end if
     return stat_json
 #end def
 
-def _extend_json(stat_json):
+def _extend_json_het(stat_json):
     ''' '''
-    # Error heterozygous call in cnt_children range
+    # Error heterozygous calls in cnt_children range
     cnt_children = stat_json['autosomal heterozygous calls error'][-1]['children']
     median = cnt_children // 2 + 1
     range = cnt_children * 25 // 100
@@ -270,13 +348,13 @@ def _extend_json(stat_json):
 #end def
 
 #################################################################
-#   Plots
+#    Plots
 #################################################################
-def plot_error_het(stat_dict, family):
-    ''' '''
+def plot_error_het_family(stat_dict_list, sample_het_list):
+    ''' plot accuracy for autosomal heterozygous variants in parents,
+    family '''
     # Labels
-    sample_0 = family['parents'][0].sample
-    sample_1 = family['parents'][1].sample
+    sample_0, sample_1 = sorted(sample_het_list)
     # Data
     data = {
         'bins': [],
@@ -284,25 +362,109 @@ def plot_error_het(stat_dict, family):
         sample_1: []
     }
     # Get data points
-    for cnt_children in sorted(stat_dict['error_het']):
-        data['bins'].append(cnt_children)
-        for sample in stat_dict['error_het'][cnt_children]:
-            try:
-                correct = stat_dict['error_het'][cnt_children][sample]['het'] / stat_dict['error_het'][cnt_children][sample]['total']
-                data[sample].append(correct * 100)
-            except Exception: data[sample].append(0)
-            #end try
-        #end for
+    for stat_dict in stat_dict_list:
+        if stat_dict['error_het_family']:
+            for cnt_children in sorted(stat_dict['error_het_family']):
+                if cnt_children not in data['bins']:
+                    data['bins'].append(cnt_children)
+                #end if
+                for sample in stat_dict['error_het_family'][cnt_children]:
+                    if sample in sample_het_list:
+                        try:
+                            correct = stat_dict['error_het_family'][cnt_children][sample]['het'] / \
+                                      stat_dict['error_het_family'][cnt_children][sample]['total']
+                            data[sample].append(correct * 100)
+                        except Exception: data[sample].append(0)
+                        #end try
+                    #end if
+                #end for
+            #end for
+        #end if
     #end for
-    filename = 'autosomal_heterozygous_accuracy_{0}-{1}.png'.format(sample_0, sample_1)
+    filename = 'autosomal_heterozygous_accuracy_family_{0}-{1}.png'.format(sample_0, sample_1)
     xlabel = 'Number of heterozygous children'
     ylabel = '% of correct calls in parent'
-    title = 'Accuracy of autosomal heterozygous variant calls'
-    _plot_hist_2_percent(data['bins'], data[sample_0], data[sample_1],
+    title = 'Accuracy of autosomal heterozygous variant calls (family)'
+    _plot_hist_2(data['bins'], data[sample_0], data[sample_1],
+                        sample_0, sample_1, filename, xlabel, ylabel, title, percent=True)
+#end def
+
+def plot_distr_het_family(stat_dict_list, sample_het_list):
+    ''' plot distribution for autosomal heterozygous variants in parents,
+    family '''
+    # Labels
+    sample_0, sample_1 = sorted(sample_het_list)
+    # Data
+    data = {
+        'bins': [],
+        sample_0: [],
+        sample_1: []
+    }
+    # Get data points
+    for stat_dict in stat_dict_list:
+        if stat_dict['error_het_family']:
+            for cnt_children in sorted(stat_dict['error_het_family']):
+                if cnt_children not in data['bins']:
+                    data['bins'].append(cnt_children)
+                #end if
+                for sample in stat_dict['error_het_family'][cnt_children]:
+                    if sample in sample_het_list:
+                        try:
+                            correct = stat_dict['error_het_family'][cnt_children][sample]['het']
+                            data[sample].append(correct)
+                        except Exception: data[sample].append(0)
+                        #end try
+                    #end if
+                #end for
+            #end for
+        #end if
+    #end for
+    filename = 'autosomal_heterozygous_distribution_family_{0}-{1}.png'.format(sample_0, sample_1)
+    xlabel = 'Number of heterozygous children'
+    ylabel = 'Number of variants heterozygous in parent'
+    title = 'Distribution of autosomal heterozygous variant calls (family)'
+    _plot_hist_2(data['bins'], data[sample_0], data[sample_1],
                         sample_0, sample_1, filename, xlabel, ylabel, title)
 #end def
 
-def _plot_hist_2_percent(bins, data_0, data_1, label_0, label_1, filename, xlabel, ylabel, title):
+def plot_distr_het_trio(stat_dict_list, sample_het_list):
+    ''' plot distribution for autosomal heterozygous variants in parents,
+    trio '''
+    # Labels
+    sample_0, sample_1 = sorted(sample_het_list)
+    # Data
+    data = {
+        'bins': [],
+        sample_0: [],
+        sample_1: []
+    }
+    # Get data points
+    for stat_dict in stat_dict_list:
+        if stat_dict['error_het_trio']:
+            for cnt_children in sorted(stat_dict['error_het_trio']):
+                if cnt_children not in data['bins']:
+                    data['bins'].append(cnt_children)
+                #end if
+                for sample in stat_dict['error_het_trio'][cnt_children]:
+                    if sample in sample_het_list:
+                        try:
+                            data[sample].append(stat_dict['error_het_trio'][cnt_children][sample]['het'])
+                        except Exception: data[sample].append(0)
+                        #end try
+                    #end if
+                #end for
+            #end for
+        #end if
+    #end for
+    filename = 'autosomal_heterozygous_distribution_trio_{0}-{1}.png'.format(sample_0, sample_1)
+    xlabel = 'Number of heterozygous children'
+    ylabel = 'Number of variants heterozygous in parent'
+    title = 'Distribution of autosomal heterozygous variant calls (trio)'
+    _plot_hist_2(data['bins'], data[sample_0], data[sample_1],
+                        sample_0, sample_1, filename, xlabel, ylabel, title)
+#end def
+
+def _plot_hist_2(bins, data_0, data_1, label_0, label_1, filename, xlabel, ylabel, title, percent=False):
     ''' '''
     # Create plot
     fig, ax = pyplot.subplots()
@@ -314,7 +476,8 @@ def _plot_hist_2_percent(bins, data_0, data_1, label_0, label_1, filename, xlabe
     # Grid and axis
     pyplot.grid(axis='y', alpha=0.8, zorder=0, linestyle='--')
     pyplot.xticks(index + bar_width / 2 + 0.01, bins)
-    pyplot.ylim(0, 120)
+    if percent: pyplot.ylim(0, 120)
+    #end if
     yticks = ax.yaxis.get_major_ticks()
     yticks[-1].set_visible(False)
     # Labels and layout
@@ -335,7 +498,15 @@ def main(args):
     # Variables
     NA_chroms = real_NA_chroms
     is_verbose = True if args['verbose'] else False
-    anchor = args['sample']
+    sample_novo = args['novo'] if args['novo'] else ''
+    sample_het_list = args['het'] if args['het'] else []
+    anchor_list = args['anchor']
+
+    # Check pedigree and anchor args
+    if len(anchor_list) != len(args['pedigree']) and \
+       len(args['pedigree']) != 1:
+        sys.exit('\nERROR in parsing arguments: number of pedigrees and anchors is different\n')
+    #end if
 
     # Buffers
     fo = open(args['outputfile'], 'w')
@@ -343,28 +514,58 @@ def main(args):
     # Creating Vcf object
     vcf_obj = vcf_parser.Vcf(args['inputfile'])
 
-    # Loading pedigree
-    if os.path.isfile(args['pedigree']):
-        with open(args['pedigree']) as fi:
-            pedigree = json.load(fi)
-        #end with
-    else:
-        try: pedigree = json.loads(args['pedigree'])
+    # Get pedigree / pedigrees information
+    pedigree_list = []
+    for pedigree in args['pedigree']:
+        # Loading pedigree
+        if os.path.isfile(pedigree):
+            with open(pedigree) as fi:
+                pedigree_list.append(json.load(fi))
+            #end with
+        else:
+            try: pedigree_list.append(json.loads(pedigree))
+            except Exception:
+                sys.exit('\nERROR in parsing arguments: {0} must be either a json file or a string representing a json\n'
+                        .format(pedigree))
+            #end try
+        #end if
+    #end for
+
+    # Check novoPP
+    if sample_novo:
+        try: novotag, _ = vcf_obj.header.check_tag_definition('novoPP')
         except Exception:
-            sys.exit('\nERROR in parsing arguments: pedigree must be either a json file or a string representing a json\n')
+                sys.exit('\nERROR in parsing arguments: novoCaller information missing in VCF file\n')
         #end try
     #end if
 
-    # Creating Pedigree object
-    pedigree_obj = pedigree_parser.Pedigree(pedigree)
+    # Creating Pedigree object / objects
+    pedigree_obj_list = []
+    for pedigree in pedigree_list:
+        pedigree_obj_list.append(pedigree_parser.Pedigree(pedigree))
+    #end for
 
-    # Initializing stat_dict
-    stat_dict = {
-                'error_het': {}
-    }
+    # Initializing stat_dict for each anchor
+    stat_dict_list = []
+    for anchor in anchor_list:
+        stat_dict_list.append({
+                            'error_het_family': {},
+                            'error_het_trio': {},
+                            'error_novo_family': {}
+                             })
+    #end for
 
-    # Building family
-    family = get_family(pedigree_obj, anchor)
+    # Building family / families
+    family_list = []
+    if len(pedigree_obj_list) == 1:
+        for anchor in anchor_list:
+            family_list.append(pedigree_obj_list[0].get_family(anchor))
+        #end for
+    else:
+        for i, pedigree_obj in enumerate(pedigree_obj_list):
+            family_list.append(pedigree_obj.get_family(anchor_list[i]))
+        #end for
+    #end if
 
     # Reading variants
     analyzed = 0
@@ -380,19 +581,34 @@ def main(args):
         # #end if
         analyzed += 1
 
-        # Getting and updating stats
-        get_stats(vnt_obj, stat_dict, family, NA_chroms)
+        # Getting and updating stats for each stat_dict / family
+        for l, family in enumerate(family_list):
+            if sample_novo:
+                if anchor_list[l] == sample_novo:
+                    get_stats_novo(vnt_obj, stat_dict_list[l], family, NA_chroms, sample_novo, novotag)
+                #end if
+            #end if
+            if sample_het_list:
+                if anchor_list[l] in sample_het_list:
+                    get_stats_het(vnt_obj, stat_dict_list[l], family, NA_chroms)
+                #end if
+            #end if
+        #end for
     #end for
 
     # Writing output
     sys.stderr.write('\n\n...Writing results for ' + str(analyzed) + ' analyzed variants out of ' + str(i + 1) + ' total variants\n')
     sys.stderr.flush()
 
-    # Plots
-    plot_error_het(stat_dict, family)
-
     # Create json
-    stat_json = to_json(stat_dict)
+    stat_json = to_json(stat_dict_list, sample_het_list, sample_novo)
+
+    # Plots
+    if len(sample_het_list) == 2:
+        plot_error_het_family(stat_dict_list, sample_het_list)
+        plot_distr_het_family(stat_dict_list, sample_het_list)
+        plot_distr_het_trio(stat_dict_list, sample_het_list)
+    #end if
 
     # Write json to file
     json.dump(stat_json, fo, indent=2, sort_keys=False)

@@ -162,7 +162,7 @@ def main():
 
     qcVCF_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     qcVCF_parser.add_argument('-o', '--outputfile', help='output file to write results as JSON, use .json as extension', type=str, required=True)
-    qcVCF_parser.add_argument('-p', '--pedigree', help='pedigree information, either as json file or json representation as string', type=str, required=True)
+    qcVCF_parser.add_argument('-p', '--pedigree', help='pedigree information, either as JSON file or JSON representation as string', type=str, required=True)
     qcVCF_parser.add_argument('--samples', help='list of sample IDs to get stats for (e.g. --samples SampleID_1 [SampleID_2] ...)', nargs='+', required=True)
     qcVCF_parser.add_argument('--ti_tv', help='add transition-transversion ratio and statistics on substitutions to report', action='store_true', required=False)
     qcVCF_parser.add_argument('--trio_errors', help='add statistics on mendelian errors based on trio to report', action='store_true', required=False)
@@ -170,13 +170,15 @@ def main():
     qcVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add validateVCF to subparsers
-    validateVCF_parser = subparsers.add_parser('validateVCF', description='utility to calculate error models for input VCF file using full pedigree information',
-                                                    help='utility to calculate error models for input VCF file using full pedigree information')
+    validateVCF_parser = subparsers.add_parser('validateVCF', description='utility to calculate error models for input VCF file using pedigree information',
+                                                    help='utility to calculate error models for input VCF file using pedigree information')
 
     validateVCF_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     validateVCF_parser.add_argument('-o', '--outputfile', help='output file to write results as JSON, use .json as extension', type=str, required=True)
-    validateVCF_parser.add_argument('-p', '--pedigree', help='pedigree information, either as json file or json representation as string', type=str, required=True)
-    validateVCF_parser.add_argument('--sample', help='sample ID to be used as anchor in pedigree', type=str, required=True)
+    validateVCF_parser.add_argument('-p', '--pedigree', help='pedigree information, either as JSON file or JSON representation as string. It is possible to specify multiple pedigrees to load as list (e.g. --pedigree pedigree_1 [pedigree_2] ...)', nargs='+', required=True)
+    validateVCF_parser.add_argument('--anchor', help='sample ID to be used as anchor in pedigree to build family. It is possible to specify multiple sample IDs as list. If multiple pedigrees are specified in "--pedigree", anchors are positionally matched to corresponding pedigree', nargs='+', required=True)
+    validateVCF_parser.add_argument('--het', help='sample ID to be used to calculate error model for heterozygous mutations. It is possible to specify multiple sample IDs as list. Each sample ID must correspond to anchor specified in "--anchor"', nargs='+', required=False)
+    validateVCF_parser.add_argument('--novo', help='sample ID to be used to calculate error model for de novo mutations. Must correspond to anchor specified in "--anchor". Requires posterior probability from novoCaller', type=str, required=False)
     validateVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add mergeVCF to subparsers
