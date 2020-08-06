@@ -77,10 +77,10 @@ def _error_het_trio(vnt_obj, stat_dict, family):
     # Check parents genotype
     GT_0 = vnt_obj.get_genotype_value(sample_0, 'GT').replace('|', '/')
     GT_1 = vnt_obj.get_genotype_value(sample_1, 'GT').replace('|', '/')
-    if GT_0 in ['0/1', '1/0']:
+    if GT_0 in ['0/1', '1/0'] and GT_1 == '0/0':
         stat_dict['error_het_trio'][cnt_children][sample_0]['het'] += 1
     #end if
-    if GT_1 in ['0/1', '1/0']:
+    if GT_1 in ['0/1', '1/0'] and GT_0 == '0/0':
         stat_dict['error_het_trio'][cnt_children][sample_1]['het'] += 1
     #end if
 #end def
@@ -173,7 +173,9 @@ def _error_novo_family(vnt_obj, stat_dict, family, sample_novo, novoPP):
     stat_dict['error_novo_family'][bin].setdefault(cnt_children, {
                                                             'in_gparents': 0,
                                                             'no_gparents': 0,
-                                                            'total': 0
+                                                            'total': 0,
+                                                            'no_gparents_vnt': [],
+                                                            'total_vnt': []
                                                         })
     # Parents samples
     sample_0 = family['parents'][0].sample
@@ -184,10 +186,12 @@ def _error_novo_family(vnt_obj, stat_dict, family, sample_novo, novoPP):
     # Check trio genotypes combination
     if trio_0 and trio_1: # trio genotypes are complete
         stat_dict['error_novo_family'][bin][cnt_children]['total'] += 1
+        stat_dict['error_novo_family'][bin][cnt_children]['total_vnt'].append(vnt_obj)
         if trio_0[1] != {'ref'} or trio_1[1] != {'ref'}:
             stat_dict['error_novo_family'][bin][cnt_children]['in_gparents'] += 1
         else:
             stat_dict['error_novo_family'][bin][cnt_children]['no_gparents'] += 1
+            stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_vnt'].append(vnt_obj)
         #end if
     #end if
 #end def
@@ -279,11 +283,13 @@ def to_json(stat_dict_list, sample_het_list, sample_novo):
                     else: tmp_dict['novoPP'] = '> ' + str(bin)
                     #end if
                     for cnt_children in sorted(stat_dict['error_novo_family'][bin]):
-                        tmp_dict['not in grandparents, in siblings'].setdefault(cnt_children, 0)
+                        if stat_dict['error_novo_family'][bin][cnt_children]['no_gparents']:
+                            tmp_dict['not in grandparents, in siblings'].setdefault(cnt_children, 0)
+                        #end if
                         for k, v in stat_dict['error_novo_family'][bin][cnt_children].items():
                             if k == 'total':
                                 tmp_dict['total variants'] += v
-                            elif k == 'no_gparents':
+                            elif k == 'no_gparents' and v:
                                 tmp_dict['not in grandparents'] += v
                                 tmp_dict['not in grandparents, in siblings'][cnt_children] += v
                             #end if
@@ -344,6 +350,35 @@ def _extend_json_het(stat_json):
             dict_.setdefault('missing ratio', round(dict_['counts']['missing'] / dict_['counts']['total'], 3))
         #end if
         stat_json['autosomal heterozygous calls error'].append(dict_)
+    #end for
+#end def
+
+def novo_variants(stat_dict_list, filename):
+    ''' '''
+    for stat_dict in stat_dict_list: # only one stat_dict at most
+        if stat_dict['error_novo_family']:
+            fv = open(filename.replace('.vcf', '') + '_total_variants.txt', 'w')
+            for bin in sorted(stat_dict['error_novo_family'], reverse=True):
+                for cnt_children in sorted(stat_dict['error_novo_family'][bin]):
+                    if stat_dict['error_novo_family'][bin][cnt_children]['total_vnt']:
+                        with open(filename.replace('.vcf', '') + '_total_' + str(bin) + '-' + str(cnt_children) + '.txt', 'w') as fo:
+                            for vnt_obj in stat_dict['error_novo_family'][bin][cnt_children]['total_vnt']:
+                                fo.write('{0}\t{1}\t{2}\t{3}\n'.format(vnt_obj.CHROM, vnt_obj.POS, vnt_obj.REF, vnt_obj.ALT))
+                                fv.write(vnt_obj.to_string())
+                            #end for
+                        #end with
+                    #end if
+                    if stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_vnt']:
+                        with open(filename.replace('.vcf', '') + '_no-gprnts_' + str(bin) + '-' + str(cnt_children) + '.txt', 'w') as fo:
+                            for vnt_obj in stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_vnt']:
+                                fo.write('{0}\t{1}\t{2}\t{3}\n'.format(vnt_obj.CHROM, vnt_obj.POS, vnt_obj.REF, vnt_obj.ALT))
+                            #end for
+                        #end with
+                    #end if
+                #end for
+            #end for
+            fv.close()
+        #end if
     #end for
 #end def
 
@@ -602,6 +637,11 @@ def main(args):
 
     # Create json
     stat_json = to_json(stat_dict_list, sample_het_list, sample_novo)
+
+    # Write variants
+    if sample_novo:
+        novo_variants(stat_dict_list, args['outputfile'])
+    #end if
 
     # Plots
     if len(sample_het_list) == 2:
