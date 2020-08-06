@@ -2,6 +2,7 @@
 comHet is a variant calling algorithm for compound heterozygous mutations. The model uses genotype-level information in pedigree (trio) and VEP-based annotations to call possible compound heterozygous pairs. VEP annotations are used to assign variants to genes and transcripts, genotype information allows to refine calls based on inheritance mode. Calls are further flagged as "Phased" or "Unphased", where "Phased" means that genotype information supports in-trans inheritance for alternate alleles from parents.
 
 #### Arguments
+```text
     usage: granite comHet [-h] -i INPUTFILE -o OUTPUTFILE --trio TRIO [TRIO ...]
                           [--VEPtag VEPTAG] [--sep SEP] [--filter_cmpHet]
                           [--allow_undef] [--SpliceAItag SPLICEAITAG] [--impact]
@@ -38,6 +39,7 @@ comHet is a variant calling algorithm for compound heterozygous mutations. The m
                             impact to potential compound heterozygous. If
                             available, SpliceAI and CLINVAR "CLNSIG" information
                             is used together with VEP
+```
 
 #### Input
 comHet accepts files in VCF format as input. Files must contain genotype information for trio members to be used in addition to standard VCF columns. Column IDs for trio must match the sample IDs provided as argument (`--trio`). Proband genotype information is mandatory. If available, parents information will be used to improve specificity by ruling-out false calls based on inheritance mode. VEP annotations for "Gene" and "Feature" are also required in INFO column for transcripts.

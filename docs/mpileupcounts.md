@@ -2,6 +2,7 @@
 mpileupCounts uses *samtools* to access input BAM and calculates statistics for reads pileup at each position in the specified region, returns counts in RCK format.
 
 #### Arguments
+```text
     usage: granite mpileupCounts [-h] -i INPUTFILE -o OUTPUTFILE -r REFERENCE
                                  [--region REGION] [--MQthr MQTHR] [--BQthr BQTHR]
 
@@ -20,3 +21,4 @@ mpileupCounts uses *samtools* to access input BAM and calculates statistics for 
                             (>=) [0]
       --BQthr BQTHR         minimum base quality for a base to be considered (>=)
                             [13]
+```

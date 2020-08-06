@@ -2,6 +2,7 @@
 novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The model uses read-level information both in pedigree (trio) and unrelated samples to rank and assign a probabilty to each call. The software represents an updated and improved implementation of the original algorithm described in [Mohanty et al. 2019](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
 
 #### Arguments
+```text
     usage: granite novoCaller [-h] -i INPUTFILE -o OUTPUTFILE -u UNRELATEDFILES -t
                               TRIOFILES [--ppthr PPTHR] [--afthr AFTHR]
                               [--aftag AFTAG] [--bam] [--MQthr MQTHR]
@@ -39,6 +40,7 @@ novoCaller is a Bayesian variant calling algorithm for *de novo* mutations. The 
                             parents. This will ignore and set to "0" the posterior
                             probability for variants with a number of alternate
                             reads in parents higher than specified value
+```
 
 #### Input
 novoCaller accepts files in VCF format as input. Files must contain genotype information for trio in addition to standard VCF columns. Column IDs for trio must match the sample IDs provided together with the list of RCK/BAM files (`--triofiles`).

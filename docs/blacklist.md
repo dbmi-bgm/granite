@@ -2,6 +2,7 @@
 blackList allows to filter-out variants from input VCF file based on positions set in BIG format file and/or provided population allele frequency.
 
 #### Arguments
+```text
     usage: granite blackList [-h] -i INPUTFILE -o OUTPUTFILE [-b BIGFILE]
                              [--aftag AFTAG] [--afthr AFTHR]
 
@@ -17,6 +18,7 @@ blackList allows to filter-out variants from input VCF file based on positions s
                             population allele frequency
       --afthr AFTHR         threshold to filter by population allele frequency
                             (<=) [1]
+```
 
 #### Examples
 Blacklist variants based on position set to `True` in BIG format file.

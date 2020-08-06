@@ -11,9 +11,10 @@ Tabular format structure:
     13     2     35         18       15       1        1        0        0        0        0
 
 Commands to compress and index files:
-
+```text
     bgzip PATH/TO/FILE
     tabix -b 2 -s 1 -e 0 -c "#" PATH/TO/FILE.gz
+```
 
 ### BinaryIndexGenome (.big)
 BIG is a hdf5-based binary format that stores boolean values for each genomic position as bit arrays. Each position is represented in three complementary arrays that account for SNVs (Single-Nucleotide Variants), insertions and deletions respectively. 1-based.

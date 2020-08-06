@@ -2,6 +2,7 @@
 cleanVCF allows to clean INFO field of input VCF file. The software can remove a list of TAG from INFO field, or can be used to clean VEP annotations.
 
 #### Arguments
+```text
     usage: granite cleanVCF [-h] -i INPUTFILE -o OUTPUTFILE [-t TAG] [--VEP]
                             [--VEPtag VEPTAG]
                             [--VEPrescue VEPRESCUE [VEPRESCUE ...]]
@@ -38,6 +39,7 @@ cleanVCF allows to clean INFO field of input VCF file. The software can remove a
                             by default the program will search for "SpliceAI" TAG
                             (SpliceAI=<float>), use this parameter to specify a
                             different TAG | TAG field to be used (e.g. DS_DG)
+```
 
 #### Examples
 Remove tag from INFO field.

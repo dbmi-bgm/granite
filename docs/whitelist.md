@@ -2,6 +2,7 @@
 whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, CLINVAR or SpliceAI annotations. Positions can be also specfied as a BED format file.
 
 #### Arguments
+```text
     usage: granite whiteList [-h] -i INPUTFILE -o OUTPUTFILE [--SpliceAI SPLICEAI]
                              [--SpliceAItag SPLICEAITAG] [--CLINVAR]
                              [--CLINVARonly CLINVARONLY [CLINVARONLY ...]]
@@ -47,6 +48,7 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
                             intron_variant&splice_region_variant), use this
                             parameter to specify a different separator to be used
       --BEDfile BEDFILE     BED format file with positions to whitelist
+```
 
 #### Examples
 Whitelists variants with CLINVAR entry. If available, CLINVAR annotation must be provided in INFO column.

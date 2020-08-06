@@ -2,6 +2,7 @@
 toBig converts counts from bgzip and tabix indexed RCK format into BIG format. Positions are "called" by read counts or allelic balance for single or multiple files (joint calls) in specified regions. Positions "called" are set to True (or 1) in BIG binary structure.
 
 #### Arguments
+```text
     usage: granite toBig [-h] [-i INPUTFILE [INPUTFILE ...]] -o OUTPUTFILE -r
                          REGIONFILE -f CHROMFILE [--ncores NCORES] --fithr FITHR
                          [--rdthr RDTHR] [--abthr ABTHR]
@@ -31,6 +32,7 @@ toBig converts counts from bgzip and tabix indexed RCK format into BIG format. P
       --abthr ABTHR         minimum percentage of alternate reads compared to
                             reference reads to count the file in "--fithr" when
                             "calling" by allelic balance (>=) [15]
+```
 
 #### Examples
 toBig can be used to calculate positions to blacklist for common variants by using unrelated samples. This command will set to `True` in BIG structure positions with allelic balance for alternate allele equal/higher than `--abthr` in more that `--fithr` samples (joint calling).
