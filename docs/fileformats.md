@@ -1,4 +1,4 @@
-## File formats
+## File Formats
 The program is compatible with standard BED, BAM and VCF formats (VCFv4.x).
 
 ### ReadCountKeeper (.rck)

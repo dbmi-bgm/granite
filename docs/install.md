@@ -1,4 +1,5 @@
-## Installation
+## Install
+
 A ready-to-use docker image is available to download.
 
     docker pull b3rse/granite:v0.1.0
@@ -31,4 +32,4 @@ To install the program from source:
 
 To install the program with pip:
 
-    pip install granite
+    pip install granite-suite

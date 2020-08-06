@@ -1,3 +1,30 @@
+## Utilities
+
+### mpileupCounts
+mpileupCounts uses *samtools* to access input BAM and calculates statistics for reads pileup at each position in the specified region, returns counts in RCK format.
+
+#### Arguments
+```text
+    usage: granite mpileupCounts [-h] -i INPUTFILE -o OUTPUTFILE -r REFERENCE
+                                 [--region REGION] [--MQthr MQTHR] [--BQthr BQTHR]
+
+    optional arguments:
+      -i INPUTFILE, --inputfile INPUTFILE
+                            input file in BAM format
+      -o OUTPUTFILE, --outputfile OUTPUTFILE
+                            output file to write results as RCK format (TSV), use
+                            .rck as extension
+      -r REFERENCE, --reference REFERENCE
+                            reference file in FASTA format
+      --region REGION       region to be analyzed [e.g. chr1:1-10000000,
+                            1:1-10000000, chr1, 1], chromosome name must match the
+                            reference
+      --MQthr MQTHR         minimum mapping quality for an alignment to be used
+                            (>=) [0]
+      --BQthr BQTHR         minimum base quality for a base to be considered (>=)
+                            [13]
+```
+
 ### toBig
 toBig converts counts from bgzip and tabix indexed RCK format into BIG format. Positions are "called" by read counts or allelic balance for single or multiple files (joint calls) in specified regions. Positions "called" are set to True (or 1) in BIG binary structure.
 
@@ -42,3 +69,17 @@ toBig can be used to calculate positions to blacklist for common variants by usi
 Absolute reads count can be used instead of allelic balance to call positions. This command will set to `True` in BIG structure positions with reads count for alternate allele equal/higher than `--rdthr` in more that `--fithr` samples (joint calling).
 
     granite toBig -f file -f file -f file -f file -f ... -o file.out.big -c file.chrom.sizes -r file.regions --fithr <int> --rdthr <int>
+
+### rckTar
+rckTar creates a tar archive from bgzip and tabix indexed RCK files. Creates an index file for the archive.
+
+#### Arguments
+```text
+    usage: granite rckTar [-h] -t TTAR -f FILE
+
+    optional arguments:
+      -t TTAR, --ttar TTAR  target tar to write results, use .rck.tar as extension
+      -f FILE, --file FILE  file to be archived. Specify multiple files as: "-f
+                            SampleID_1.rck.gz -f SampleID_2.rck.gz -f ...". Files
+                            order is maintained while creating the index
+```

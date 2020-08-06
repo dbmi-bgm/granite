@@ -1,3 +1,5 @@
+## Quality Check
+
 ### qcVCF
 qcVCF produces a report in JSON format with different quality metrics calculated for input VCF file. Both single sample and family-based metrics are available.
 

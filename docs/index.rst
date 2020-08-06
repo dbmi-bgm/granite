@@ -13,16 +13,16 @@ granite is a collection of software to call, filter and work with genomic varian
 Contents:
 
 .. toctree::
-   :maxdepth: 1
+   :hidden:
+
+   self
+
+.. toctree::
+   :maxdepth: 2
 
    install
    fileformats
-   novocaller
-   comhet
-   whitelist
-   blacklist
-   cleanvcf
-   qcvcf
-   mpileupcounts
-   tobig
-   rcktar
+   callers
+   filters
+   quality
+   utilities
