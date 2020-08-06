@@ -21,7 +21,7 @@ tests_requires = [
 
 # Setup
 setup(
-    name = 'granite',
+    name = 'granite-suite',
     version = open('granite/_version.py').readlines()[-1].split()[-1].strip("\"'"),
     description = 'granite is a collection of software to call, filter and work with genomic variants',
     long_description = long_description,

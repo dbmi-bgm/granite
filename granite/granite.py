@@ -43,7 +43,7 @@ from granite import validateVCF
 def main():
     ''' command line wrapper around available tools '''
     # Adding parser and subparsers
-    parser = argparse.ArgumentParser(prog='granite', description='granite is a collection of software to call, filter and work with genomic variants')
+    parser = argparse.ArgumentParser(prog='granite', description='granite is a collection of software to work with genomic variants. The suite provides inheritance mode callers and utilities to filter and refine variants called by other methods in VCF format')
     subparsers = parser.add_subparsers(dest='func', metavar="<command>")
 
     # Add novoCaller to subparsers
