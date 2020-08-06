@@ -10,9 +10,10 @@ granite is a collection of software to call, filter and work with genomic varian
 
 .. image:: images/chart.png
 
+Contents:
+
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
 
    install
    fileformats
