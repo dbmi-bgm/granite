@@ -1,4 +1,4 @@
-## Variants Filtering
+## Variant Filtering
 
 ### whiteList
 whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, CLINVAR or SpliceAI annotations. Positions can be also specfied as a BED format file.
