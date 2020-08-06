@@ -357,11 +357,11 @@ def novo_variants(stat_dict_list, filename):
     ''' '''
     for stat_dict in stat_dict_list: # only one stat_dict at most
         if stat_dict['error_novo_family']:
-            fv = open(filename.replace('.vcf', '') + '_total_variants.txt', 'w')
+            fv = open(filename.split('.')[0] + '_total_variants.txt', 'w')
             for bin in sorted(stat_dict['error_novo_family'], reverse=True):
                 for cnt_children in sorted(stat_dict['error_novo_family'][bin]):
                     if stat_dict['error_novo_family'][bin][cnt_children]['total_vnt']:
-                        with open(filename.replace('.vcf', '') + '_total_' + str(bin) + '-' + str(cnt_children) + '.txt', 'w') as fo:
+                        with open(filename.split('.')[0] + '_total_' + str(bin) + '-' + str(cnt_children) + '.txt', 'w') as fo:
                             for vnt_obj in stat_dict['error_novo_family'][bin][cnt_children]['total_vnt']:
                                 fo.write('{0}\t{1}\t{2}\t{3}\n'.format(vnt_obj.CHROM, vnt_obj.POS, vnt_obj.REF, vnt_obj.ALT))
                                 fv.write(vnt_obj.to_string())
@@ -369,7 +369,7 @@ def novo_variants(stat_dict_list, filename):
                         #end with
                     #end if
                     if stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_vnt']:
-                        with open(filename.replace('.vcf', '') + '_no-gprnts_' + str(bin) + '-' + str(cnt_children) + '.txt', 'w') as fo:
+                        with open(filename.split('.')[0] + '_no-gprnts_' + str(bin) + '-' + str(cnt_children) + '.txt', 'w') as fo:
                             for vnt_obj in stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_vnt']:
                                 fo.write('{0}\t{1}\t{2}\t{3}\n'.format(vnt_obj.CHROM, vnt_obj.POS, vnt_obj.REF, vnt_obj.ALT))
                             #end for
