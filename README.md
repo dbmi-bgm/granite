@@ -4,7 +4,7 @@
 
 granite is a collection of software to work with genomic variants. The suite provides inheritance mode callers and utilities to filter and refine variants called by other methods in VCF format.
 
-For more details, see granite [*documentation*](https://granite-suite.readthedocs.io/en/latest/ "granite documentation")
+For more details, see granite [*documentation*](https://granite-suite.readthedocs.io/en/latest/ "granite documentation").
 
 ## Availability and requirements
 A ready-to-use docker image is available to download.
@@ -22,7 +22,7 @@ Additional software needs to be available in the environment:
   - [*bgzip*](http://www.htslib.org/doc/bgzip.1.html "bgzip documentation")
   - [*tabix*](http://www.htslib.org/doc/tabix.1.html "tabix documentation")
 
-To install the program from source, run the following command inside granite folder:
+To install the program from source, run the following commands:
 
     git clone https://github.com/dbmi-bgm/granite
     cd granite
