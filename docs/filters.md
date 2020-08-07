@@ -163,7 +163,7 @@ Remove tag from INFO field.
 
     granite cleanVCF -i file.vcf -o file.out.vcf -t tag
 
-Clean VEP based on VEP "Consequence" annotations. This remove annotations flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant", "regulatory_region_", "non_coding_transcript_". It is possible to specify additional [*terms*](https://m.ensembl.org/info/genome/variation/prediction/predicted_data.html "VEP calculated consequences") to remove using `--VEPremove` and terms to rescue using `--VEPrescue`. VEP annotation must be provided for each variant in INFO column.
+Clean VEP based on VEP "Consequence" annotations. This removes annotations flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant", "regulatory_region_", "non_coding_transcript_". It is possible to specify additional [*terms*](https://m.ensembl.org/info/genome/variation/prediction/predicted_data.html "VEP calculated consequences") to remove using `--VEPremove` and terms to rescue using `--VEPrescue`. VEP annotation must be provided for each variant in INFO column.
 
     granite cleanVCF -i file.vcf -o file.out.vcf --VEP
     granite cleanVCF -i file.vcf -o file.out.vcf --VEP --VEPremove <str> <str>

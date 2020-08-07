@@ -148,7 +148,7 @@ comHet generates output in VCF format. The program adds a VEP-like tag to INFO f
     ##INFO=<ID=comHet,Number=.,Type=String,Description="Putative compound heterozygous pairs. Subembedded:'cmpHet':Format:'phase|gene|transcript|impact_gene|impact_transcript|mate_variant'">
 
 #### Examples
-Calls *compound heterozygous* variants.
+Calls compound heterozygous variants.
 
     granite comHet -i file.vcf -o file.out.vcf --trio PROBAND_ID [PARENT_ID] [PARENT_ID]
 
