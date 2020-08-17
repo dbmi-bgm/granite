@@ -77,10 +77,10 @@ def _error_het_trio(vnt_obj, stat_dict, family):
     # Check parents genotype
     GT_0 = vnt_obj.get_genotype_value(sample_0, 'GT').replace('|', '/')
     GT_1 = vnt_obj.get_genotype_value(sample_1, 'GT').replace('|', '/')
-    if GT_0 in ['0/1', '1/0'] and GT_1 == '0/0':
+    if GT_0 in ['0/1', '1/0']:
         stat_dict['error_het_trio'][cnt_children][sample_0]['het'] += 1
     #end if
-    if GT_1 in ['0/1', '1/0'] and GT_0 == '0/0':
+    if GT_1 in ['0/1', '1/0']:
         stat_dict['error_het_trio'][cnt_children][sample_1]['het'] += 1
     #end if
 #end def
@@ -98,8 +98,6 @@ def _error_het_family(vnt_obj, stat_dict, family):
         elif GT_ in ['0/1', '1/0']: cnt_children += 1
         #end if
     #end for
-    if not cnt_children: return
-    #end if
     # Parents samples
     sample_0 = family['parents'][0].sample
     sample_1 = family['parents'][1].sample
