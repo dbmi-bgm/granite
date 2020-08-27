@@ -30,6 +30,7 @@ from granite import rckTar
 from granite import cleanVCF
 from granite import qcVCF
 from granite import validateVCF
+from granite import toPED
 
 
 #################################################################
@@ -181,6 +182,14 @@ def main():
     validateVCF_parser.add_argument('--novo', help='sample ID to be used to calculate error model for de novo mutations. Must correspond to anchor specified in "--anchor". Requires posterior probability from novoCaller', type=str, required=False)
     validateVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
+    # Add toPED to subparsers
+    toPED_parser = subparsers.add_parser('toPED', description='utility to convert pedigree in JSON format to PED format',
+                                                    help='utility to convert pedigree in JSON format to PED format')
+
+    toPED_parser.add_argument('-p', '--pedigree', help='pedigree information, either as JSON file or JSON representation as string', type=str, required=True)
+    toPED_parser.add_argument('-o', '--outputfile', help='output file to write results as PED, use .ped as extension', type=str, required=True)
+    toPED_parser.add_argument('--family', help='family ID to be used [FAM]', type=str, required=False)
+
     # Add mergeVCF to subparsers
     # mergeVCF_parser = subparsers.add_parser('mergeVCF', description='utility to ',
     #                                             help='')
@@ -198,7 +207,8 @@ def main():
                     'toBig': toBig_parser,
                     'rckTar': rckTar_parser,
                     'qcVCF': qcVCF_parser,
-                    'validateVCF': validateVCF_parser
+                    'validateVCF': validateVCF_parser,
+                    'toPED': toPED_parser
                     }
 
     # Checking arguments
@@ -237,6 +247,8 @@ def main():
         qcVCF.main(args)
     elif args['func'] == 'validateVCF':
         validateVCF.main(args)
+    elif args['func'] == 'toPED':
+        toPED.main(args)
     #end if
 #end def
 

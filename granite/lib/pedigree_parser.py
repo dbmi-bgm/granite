@@ -108,8 +108,11 @@ class Pedigree(object):
                     return False
                 #end if
             #end for
-            if i != 1: return False # missing one or both parents
-            #end if
+            try:
+                if i != 1: return False # missing one parent
+                #end if
+            except Exception: return False # missing both parents
+            #end try
             return True
         #end def has_parents
 
