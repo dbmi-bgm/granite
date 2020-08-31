@@ -45,48 +45,15 @@ def get_stats_het(vnt_obj, stat_dict, family, NA_chroms):
     if vnt_obj.CHROM.replace('chr', '') in NA_chroms:
         return # skip unbalanced chromosomes
     #end if
+    is_ID = True if vnt_obj.ID != '.' else False
     if var_type == 'snv':
-        _error_het_trio(vnt_obj, stat_dict, family)
+        _error_het(vnt_obj, stat_dict, family, is_ID)
         _error_het_family(vnt_obj, stat_dict, family)
     #end if
 #end def
 
-def _error_het_trio(vnt_obj, stat_dict, family):
-    ''' calculate error model for heterozygous calls using only trio '''
-    # Counting children that are heterozygous or homozygous alternate
-    cnt_children = 0
-    for child in family['children']:
-        try:
-            GT_ = vnt_obj.get_genotype_value(child.sample, 'GT').replace('|', '/')
-        except Exception: continue
-        #end try
-        if GT_ == './.': return
-        elif GT_ in ['0/1', '1/0', '1/1']: cnt_children += 1
-        #end if
-    #end for
-    # Parents samples
-    sample_0 = family['parents'][0].sample
-    sample_1 = family['parents'][1].sample
-    # Update stat_dict for cnt_children
-    stat_dict['error_het_trio'].setdefault(cnt_children, {})
-    for sample in [sample_0, sample_1]:
-        stat_dict['error_het_trio'][cnt_children].setdefault(sample, {
-                                                            'het': 0
-                                                        })
-    #end for
-    # Check parents genotype
-    GT_0 = vnt_obj.get_genotype_value(sample_0, 'GT').replace('|', '/')
-    GT_1 = vnt_obj.get_genotype_value(sample_1, 'GT').replace('|', '/')
-    if GT_0 in ['0/1', '1/0']:
-        stat_dict['error_het_trio'][cnt_children][sample_0]['het'] += 1
-    #end if
-    if GT_1 in ['0/1', '1/0']:
-        stat_dict['error_het_trio'][cnt_children][sample_1]['het'] += 1
-    #end if
-#end def
-
 def _error_het_family(vnt_obj, stat_dict, family):
-    ''' calculate error model for heterozygous calls using family '''
+    ''' calculate error model for heterozygous calls using family, MODEL '''
     # Counting children that are heterozygous
     cnt_children = 0
     for child in family['children']:
@@ -127,6 +94,80 @@ def _error_het_family(vnt_obj, stat_dict, family):
     #end if
 #end def
 
+def _error_het(vnt_obj, stat_dict, family, is_ID):
+    ''' calculate error model for heterozygous calls using family, GENERAL '''
+    # Counting children that are heterozygous or homozygous alternate
+    cnt_children = 0
+    for child in family['children']:
+        try:
+            GT_ = vnt_obj.get_genotype_value(child.sample, 'GT').replace('|', '/')
+        except Exception: continue
+        #end try
+        if GT_ == './.': return
+        # if GT_ == './.' or GT_ == '1/1': return
+        elif GT_ in ['0/1', '1/0', '1/1']: cnt_children += 1
+        # elif GT_ in ['0/1', '1/0']: cnt_children += 1
+        #end if
+    #end for
+    # Parents samples
+    sample_0 = family['parents'][0].sample
+    sample_1 = family['parents'][1].sample
+    # Update stat_dict for cnt_children
+    stat_dict['error_het'].setdefault(cnt_children, {})
+    for sample in [sample_0, sample_1]:
+        stat_dict['error_het'][cnt_children].setdefault(sample, {
+                                                    'no_spouse': {
+                                                        'is_ID': {
+                                                            'in_gparents': 0,
+                                                            'no_gparents': 0,
+                                                            'total': 0
+                                                        },
+                                                        'no_ID': {
+                                                            'in_gparents': 0,
+                                                            'no_gparents': 0,
+                                                            'total': 0
+                                                        }
+                                                    },
+                                                    'in_spouse': {
+                                                        'is_ID': {
+                                                            'in_gparents': 0,
+                                                            'no_gparents': 0,
+                                                            'total': 0
+                                                        },
+                                                        'no_ID': {
+                                                            'in_gparents': 0,
+                                                            'no_gparents': 0,
+                                                            'total': 0
+                                                        }
+                                                    }
+                                                })
+    #end for
+    # Get trio genotypes for parents
+    trio_0 = _GT_trio(vnt_obj, family['parents'][0])
+    trio_1 = _GT_trio(vnt_obj, family['parents'][1])
+    key_ID = 'is_ID' if is_ID else 'no_ID'
+    if trio_0 and trio_1:
+        if trio_0[0] == 'het':
+            key_sps = 'no_spouse' if trio_1 == ['ref', {'ref'}] else 'in_spouse'
+            stat_dict['error_het'][cnt_children][sample_0][key_sps][key_ID]['total'] += 1
+            if trio_0[1] != {'ref'}:
+                stat_dict['error_het'][cnt_children][sample_0][key_sps][key_ID]['in_gparents'] += 1
+            else:
+                stat_dict['error_het'][cnt_children][sample_0][key_sps][key_ID]['no_gparents'] += 1
+            #end if
+        #end if
+        if trio_1[0] == 'het':
+            key_sps = 'no_spouse' if trio_0 == ['ref', {'ref'}] else 'in_spouse'
+            stat_dict['error_het'][cnt_children][sample_1][key_sps][key_ID]['total'] += 1
+            if trio_1[1] != {'ref'}:
+                stat_dict['error_het'][cnt_children][sample_1][key_sps][key_ID]['in_gparents'] += 1
+            else:
+                stat_dict['error_het'][cnt_children][sample_1][key_sps][key_ID]['no_gparents'] += 1
+            #end if
+        #end if
+    #end if
+#end def
+
 #################################################################
 #    De novo stats
 #################################################################
@@ -150,7 +191,7 @@ def get_stats_novo(vnt_obj, stat_dict, family, NA_chroms, sample_novo, novotag):
 def _error_novo_family(vnt_obj, stat_dict, family, sample_novo, novoPP):
     ''' calculate error model for de novo calls using family '''
     # Counting children that are heterozygous or homozygous alternate
-    cnt_children = 0
+    cnt_children, is_child = 0, False
     for child in family['children']:
         if child.sample != sample_novo:
             try:
@@ -160,6 +201,7 @@ def _error_novo_family(vnt_obj, stat_dict, family, sample_novo, novoPP):
             if GT_ == './.': return
             elif GT_ in ['0/1', '1/0', '1/1']: cnt_children += 1
             #end if
+        else: is_child = True
         #end if
     #end for
     if novoPP >= 0.9: bin = 0.9
@@ -173,11 +215,19 @@ def _error_novo_family(vnt_obj, stat_dict, family, sample_novo, novoPP):
                                                             'no_gparents': 0,
                                                             'total': 0,
                                                             'no_gparents_vnt': [],
-                                                            'total_vnt': []
+                                                            'total_vnt': [],
+                                                            'no_gparents_AD-DP': []
                                                         })
-    # Parents samples
-    sample_0 = family['parents'][0].sample
-    sample_1 = family['parents'][1].sample
+    # Check if sample_novo is child or parent
+    if is_child:
+        _error_novo_child(vnt_obj, stat_dict, family, bin, cnt_children, sample_novo)
+    else:
+        _error_novo_parent(vnt_obj, stat_dict, family, bin, cnt_children, sample_novo)
+    #end if
+#end def
+
+def _error_novo_child(vnt_obj, stat_dict, family, bin, cnt_children, sample_novo):
+    ''' sample to calculate error for is child '''
     # Get trio genotypes for parents
     trio_0 = _GT_trio(vnt_obj, family['parents'][0])
     trio_1 = _GT_trio(vnt_obj, family['parents'][1])
@@ -190,6 +240,35 @@ def _error_novo_family(vnt_obj, stat_dict, family, sample_novo, novoPP):
         else:
             stat_dict['error_novo_family'][bin][cnt_children]['no_gparents'] += 1
             stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_vnt'].append(vnt_obj)
+            # Get AD-DP ratio
+            AD = sum(map(int, vnt_obj.get_genotype_value(sample_novo, 'AD').split(',')[1:]))
+            DP = int(vnt_obj.get_genotype_value(sample_novo, 'DP'))
+            stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_AD-DP'].append(AD / DP)
+        #end if
+    #end if
+#end def
+
+def _error_novo_parent(vnt_obj, stat_dict, family, bin, cnt_children, sample_novo):
+    ''' sample to calculate error for is parent '''
+    # Get trio for parent only
+    for parent in family['parents']:
+        if parent.sample == sample_novo:
+            trio = _GT_trio(vnt_obj, parent)
+            break
+        #end if
+    #end for
+    if trio: # ignoring spouse family, checking parent only
+        stat_dict['error_novo_family'][bin][cnt_children]['total'] += 1
+        stat_dict['error_novo_family'][bin][cnt_children]['total_vnt'].append(vnt_obj)
+        if trio[1] != {'ref'}:
+            stat_dict['error_novo_family'][bin][cnt_children]['in_gparents'] += 1
+        else:
+            stat_dict['error_novo_family'][bin][cnt_children]['no_gparents'] += 1
+            stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_vnt'].append(vnt_obj)
+            # Get AD-DP ratio
+            AD = sum(map(int, vnt_obj.get_genotype_value(sample_novo, 'AD').split(',')[1:]))
+            DP = int(vnt_obj.get_genotype_value(sample_novo, 'DP'))
+            stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_AD-DP'].append(AD / DP)
         #end if
     #end if
 #end def
@@ -222,9 +301,9 @@ def _GT_trio(vnt_obj, member_obj):
 def to_json(stat_dict_list, sample_het_list, sample_novo):
     ''' '''
     stat_json = {}
-    # Error heterozygous calls
+    # Error heterozygous calls, model
     if sample_het_list:
-        stat_json.setdefault('autosomal heterozygous calls error', [])
+        stat_json.setdefault('autosomal heterozygous calls error, MODEL', [])
         # Calculate error
         tmp_dict = {}
         for stat_dict in stat_dict_list:
@@ -261,9 +340,73 @@ def to_json(stat_dict_list, sample_het_list, sample_novo):
             #end if
         #end for
         for cnt_children in sorted(tmp_dict):
-            stat_json['autosomal heterozygous calls error'].append(tmp_dict[cnt_children])
+            stat_json['autosomal heterozygous calls error, MODEL'].append(tmp_dict[cnt_children])
         #end for
         _extend_json_het(stat_json)
+    #end if
+    # Error heterozygous calls, general
+    if sample_het_list:
+        stat_json.setdefault('autosomal heterozygous calls error, GENERAL', [])
+        # Calculate error
+        tmp_dict = {}
+        for sample in sample_het_list:
+            tmp_dict.setdefault(sample, {
+                                'sample': sample,
+                                'by_siblings': {}
+                                })
+        #end for
+        for stat_dict in stat_dict_list:
+            if stat_dict['error_het']:
+                for cnt_children in sorted(stat_dict['error_het']):
+                    for sample in stat_dict['error_het'][cnt_children]:
+                        if sample in tmp_dict:
+                            tmp_dict[sample]['by_siblings'].setdefault(cnt_children, {
+                                                                            'in_gparents': 0,
+                                                                            'no_gparents': 0,
+                                                                            'total': 0,
+                                                                            'is_ID': {
+                                                                                'in_gparents': 0,
+                                                                                'no_gparents': 0,
+                                                                                'total': 0
+                                                                            },
+                                                                            'no_spouse': {
+                                                                                'is_ID': {
+                                                                                    'in_gparents': 0,
+                                                                                    'no_gparents': 0,
+                                                                                    'total': 0
+                                                                                },
+                                                                                'in_gparents': 0,
+                                                                                'no_gparents': 0,
+                                                                                'total': 0
+                                                                            }
+                                                                        })
+                            # In spouse
+                            for k, v in stat_dict['error_het'][cnt_children][sample]['in_spouse']['is_ID'].items():
+                                tmp_dict[sample]['by_siblings'][cnt_children][k] += v
+                                tmp_dict[sample]['by_siblings'][cnt_children]['is_ID'][k] += v
+                            #end for
+                            for k, v in stat_dict['error_het'][cnt_children][sample]['in_spouse']['no_ID'].items():
+                                tmp_dict[sample]['by_siblings'][cnt_children][k] += v
+                            #end for
+                            # No spouse
+                            for k, v in stat_dict['error_het'][cnt_children][sample]['no_spouse']['is_ID'].items():
+                                tmp_dict[sample]['by_siblings'][cnt_children][k] += v
+                                tmp_dict[sample]['by_siblings'][cnt_children]['is_ID'][k] += v
+                                tmp_dict[sample]['by_siblings'][cnt_children]['no_spouse'][k] += v
+                                tmp_dict[sample]['by_siblings'][cnt_children]['no_spouse']['is_ID'][k] += v
+                            #end for
+                            for k, v in stat_dict['error_het'][cnt_children][sample]['no_spouse']['no_ID'].items():
+                                tmp_dict[sample]['by_siblings'][cnt_children][k] += v
+                                tmp_dict[sample]['by_siblings'][cnt_children]['no_spouse'][k] += v
+                            #end for
+                        #end if
+                    #end for
+                #end for
+            #end if
+        #end for
+        for sample in sorted(tmp_dict):
+            stat_json['autosomal heterozygous calls error, GENERAL'].append(tmp_dict[sample])
+        #end for
     #end if
     # Error de novo calls
     if sample_novo:
@@ -304,7 +447,7 @@ def to_json(stat_dict_list, sample_het_list, sample_novo):
 def _extend_json_het(stat_json):
     ''' '''
     # Error heterozygous calls in cnt_children range
-    cnt_children = stat_json['autosomal heterozygous calls error'][-1]['children']
+    cnt_children = stat_json['autosomal heterozygous calls error, MODEL'][-1]['children']
     median = cnt_children // 2 + 1
     range = cnt_children * 25 // 100
     min = median - range
@@ -323,7 +466,7 @@ def _extend_json_het(stat_json):
           "correct": 0, "missing": 0, "total": 0
         }
     }
-    for tmp_dict in stat_json['autosomal heterozygous calls error']:
+    for tmp_dict in stat_json['autosomal heterozygous calls error, MODEL']:
         cnt_children_ = tmp_dict['children']
         if cnt_children_ >= min:
             for k, v in tmp_dict.items():
@@ -347,7 +490,7 @@ def _extend_json_het(stat_json):
             dict_.setdefault('correct ratio', round(dict_['counts']['correct'] / dict_['counts']['total'], 3))
             dict_.setdefault('missing ratio', round(dict_['counts']['missing'] / dict_['counts']['total'], 3))
         #end if
-        stat_json['autosomal heterozygous calls error'].append(dict_)
+        stat_json['autosomal heterozygous calls error, MODEL'].append(dict_)
     #end for
 #end def
 
@@ -460,7 +603,7 @@ def plot_distr_het_family(stat_dict_list, sample_het_list):
                         sample_0, sample_1, filename, xlabel, ylabel, title)
 #end def
 
-def plot_distr_het_trio(stat_dict_list, sample_het_list):
+def plot_distr_het(stat_dict_list, sample_het_list):
     ''' plot distribution for autosomal heterozygous variants in parents,
     trio '''
     # Labels
@@ -473,15 +616,15 @@ def plot_distr_het_trio(stat_dict_list, sample_het_list):
     }
     # Get data points
     for stat_dict in stat_dict_list:
-        if stat_dict['error_het_trio']:
-            for cnt_children in sorted(stat_dict['error_het_trio']):
+        if stat_dict['error_het']:
+            for cnt_children in sorted(stat_dict['error_het']):
                 if cnt_children not in data['bins']:
                     data['bins'].append(cnt_children)
                 #end if
-                for sample in stat_dict['error_het_trio'][cnt_children]:
+                for sample in stat_dict['error_het'][cnt_children]:
                     if sample in sample_het_list:
                         try:
-                            data[sample].append(stat_dict['error_het_trio'][cnt_children][sample]['het'])
+                            data[sample].append(stat_dict['error_het'][cnt_children][sample]['no_spouse']['is_ID']['in_gparents'])
                         except Exception: data[sample].append(0)
                         #end try
                     #end if
@@ -495,6 +638,26 @@ def plot_distr_het_trio(stat_dict_list, sample_het_list):
     title = 'Distribution of autosomal heterozygous variant calls (trio)'
     _plot_hist_2(data['bins'], data[sample_0], data[sample_1],
                         sample_0, sample_1, filename, xlabel, ylabel, title)
+#end def
+
+def plot_AD_DP_ratio(stat_dict, sample_novo):
+    ''' '''
+    data_0, data_no_0 = [], []
+    for cnt_children in stat_dict['error_novo_family'][0.9]:
+        if cnt_children == 0:
+            data_0 += stat_dict['error_novo_family'][0.9][cnt_children]['no_gparents_AD-DP']
+        else:
+            data_no_0 += stat_dict['error_novo_family'][0.9][cnt_children]['no_gparents_AD-DP']
+        #end if
+    #end for
+    # Plotting
+    pyplot.hist(numpy.array(data_0), alpha=0.5, color='#67a9cf', label='in 0 children')
+    pyplot.hist(numpy.array(data_no_0), alpha=0.5, color='#ef8a62', label='in 1+ children')
+    # Format and save
+    pyplot.gca().set(title='AD-DP ratio distribution (novoPP >= 0.9)', ylabel='Frequency')
+    pyplot.legend()
+    filename = 'AD-DP_distribution_denovo_{0}.png'.format(sample_novo)
+    pyplot.savefig(filename)
 #end def
 
 def _plot_hist_2(bins, data_0, data_1, label_0, label_1, filename, xlabel, ylabel, title, percent=False):
@@ -583,7 +746,7 @@ def main(args):
     for anchor in anchor_list:
         stat_dict_list.append({
                             'error_het_family': {},
-                            'error_het_trio': {},
+                            'error_het': {},
                             'error_novo_family': {}
                              })
     #end for
@@ -602,6 +765,7 @@ def main(args):
 
     # Reading variants
     analyzed = 0
+    vnt_obj_ = None
     for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
         if is_verbose:
             sys.stderr.write('\rAnalyzing variant... ' + str(i + 1))
@@ -613,6 +777,14 @@ def main(args):
         #     continue
         # #end if
         analyzed += 1
+
+        # Skip MAV that are redundant
+        if vnt_obj_:
+            if vnt_obj_.CHROM == vnt_obj.CHROM and vnt_obj_.POS == vnt_obj.POS:
+                continue
+            #end if
+        #end if
+        vnt_obj_ = vnt_obj
 
         # Getting and updating stats for each stat_dict / family
         for l, family in enumerate(family_list):
@@ -639,13 +811,18 @@ def main(args):
     # Write variants
     if sample_novo:
         novo_variants(stat_dict_list, args['outputfile'])
+        for l, family in enumerate(family_list):
+            if anchor_list[l] == sample_novo:
+                plot_AD_DP_ratio(stat_dict_list[l], sample_novo)
+            #end if
+        #end for
     #end if
 
     # Plots
     if len(sample_het_list) == 2:
         plot_error_het_family(stat_dict_list, sample_het_list)
         plot_distr_het_family(stat_dict_list, sample_het_list)
-        plot_distr_het_trio(stat_dict_list, sample_het_list)
+        plot_distr_het(stat_dict_list, sample_het_list)
     #end if
 
     # Write json to file
