@@ -28,3 +28,39 @@ qcVCF produces a report in JSON format with different quality metrics calculated
       --het_hom             add heterozygosity ratio and statistics on zygosity to
                             report
 ```
+
+### validateVCF
+validateVCF produces a report in JSON format with error models for different inheritance modes calculated for input VCF file. Additional supporting plots are generated in PNG format.
+
+#### Arguments
+```text
+    usage: granite validateVCF [-h] -i INPUTFILE -o OUTPUTFILE -p PEDIGREE
+                               [PEDIGREE ...] --anchor ANCHOR [ANCHOR ...]
+                               [--het HET [HET ...]] [--novo NOVO] [--verbose]
+
+    optional arguments:
+      -i INPUTFILE, --inputfile INPUTFILE
+                            input VCF file
+      -o OUTPUTFILE, --outputfile OUTPUTFILE
+                            output file to write results as JSON, use .json as
+                            extension
+      -p PEDIGREE [PEDIGREE ...], --pedigree PEDIGREE [PEDIGREE ...]
+                            pedigree information, either as JSON file or JSON
+                            representation as string. It is possible to specify
+                            multiple pedigrees to load as list (e.g. --pedigree
+                            pedigree_1 [pedigree_2] ...)
+      --anchor ANCHOR [ANCHOR ...]
+                            sample ID to be used as anchor in pedigree to build
+                            family. It is possible to specify multiple sample IDs
+                            as list. If multiple pedigrees are specified in "--
+                            pedigree", anchors are positionally matched to
+                            corresponding pedigree
+      --het HET [HET ...]   sample ID to be used to calculate error model for
+                            heterozygous mutations. It is possible to specify
+                            multiple sample IDs as list. Each sample ID must
+                            correspond to anchor specified in "--anchor"
+      --novo NOVO           sample ID to be used to calculate error model for de
+                            novo mutations. Must correspond to anchor specified in
+                            "--anchor". Requires posterior probability from
+                            novoCaller
+```

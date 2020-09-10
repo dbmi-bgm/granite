@@ -151,8 +151,7 @@ class Pedigree(object):
                              .format(name))
         #end if
         if parent_name not in self.members:
-            raise ValueError('\nERROR in pedigree structure, missing parent name {0} in pedigree\n'
-                             .format(parent_name))
+            return
         #end if
         self.members[name].add_parent(self.members[parent_name])
         self.members[parent_name].add_child(self.members[name])

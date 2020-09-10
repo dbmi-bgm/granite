@@ -37,9 +37,9 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
       --VEP                 use VEP "Consequence" annotations to whitelist exonic
                             and relevant variants (removed by default variants in
                             intronic, intergenic, or regulatory regions)
-      --VEPtag VEPTAG       by default the program will search for "VEP" TAG
-                            (VEP=<values>), use this parameter to specify a
-                            different TAG to be used (e.g. CSQ)
+      --VEPtag VEPTAG       by default the program will search for "CSQ" TAG
+                            (CSQ=<values>), use this parameter to specify a
+                            different TAG to be used (e.g. VEP)
       --VEPrescue VEPRESCUE [VEPRESCUE ...]
                             additional terms to overrule removed flags to rescue
                             and whitelist variants
@@ -138,9 +138,9 @@ cleanVCF allows to clean INFO field of input VCF file. The software can remove a
       --VEP                 clean VEP "Consequence" annotations (removed by
                             default terms for intronic, intergenic, or regulatory
                             regions from annotations)
-      --VEPtag VEPTAG       by default the program will search for "VEP" TAG
-                            (VEP=<values>), use this parameter to specify a
-                            different TAG to be used (e.g. CSQ)
+      --VEPtag VEPTAG       by default the program will search for "CSQ" TAG
+                            (CSQ=<values>), use this parameter to specify a
+                            different TAG to be used (e.g. VEP)
       --VEPrescue VEPRESCUE [VEPRESCUE ...]
                             additional terms to overrule removed flags to rescue
                             annotations

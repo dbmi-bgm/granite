@@ -9,7 +9,7 @@ For more details, see granite [*documentation*](https://granite-suite.readthedoc
 ## Availability and requirements
 A ready-to-use docker image is available to download.
 
-    docker pull b3rse/granite:v0.1.1
+    docker pull b3rse/granite:v0.1.2
 
 To run locally, install the following libraries:
 
@@ -146,3 +146,6 @@ toBig converts counts from bgzip and tabix indexed RCK format into BIG format. P
 
 ### rckTar
 rckTar creates a tar archive from bgzip and tabix indexed RCK files. Creates an index file for the archive.
+
+### validateVCF
+validateVCF allows to calculate error models for different inheritance modes for input VCF file using pedigree information.

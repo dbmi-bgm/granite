@@ -105,9 +105,9 @@ comHet is a calling algorithm for compound heterozygous mutations. The model use
                             list of sample IDs for trio, PROBAND is required and
                             must be listed FIRST (e.g. --trio PROBAND_ID
                             [PARENT_ID] [PARENT_ID])
-      --VEPtag VEPTAG       by default the program will search for "VEP" TAG
-                            (VEP=<values>), use this parameter to specify a
-                            different TAG to be used (e.g. CSQ)
+      --VEPtag VEPTAG       by default the program will search for "CSQ" TAG
+                            (CSQ=<values>), use this parameter to specify a
+                            different TAG to be used (e.g. VEP)
       --sep SEP             by default the program uses "&" as separator for
                             subfields in annotating VCF (e.g.
                             ENST00000643759&ENST00000643774), use this parameter

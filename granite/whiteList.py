@@ -46,7 +46,7 @@ def main(args):
     is_CLINVAR = True if args['CLINVAR'] else False
     SpliceAI_thr = float(args['SpliceAI']) if args['SpliceAI'] else 0.
     is_BEDfile = True if args['BEDfile'] else False
-    VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
+    VEPtag = args['VEPtag'] if args['VEPtag'] else 'CSQ'
     CLINVARtag = args['CLINVARtag'] if args['CLINVARtag'] else 'ALLELEID'
     SpliceAItag = args['SpliceAItag'] if args['SpliceAItag'] else 'SpliceAI'
     VEPsep = args['VEPsep'] if args['VEPsep'] else '&'

@@ -41,7 +41,7 @@ def main(args):
     # VEPSpliceAI = {...} -> import from shared_vars
     SpAItag, SpAI_idx = '', 0
     is_VEP = True if args['VEP'] else False
-    VEPtag = args['VEPtag'] if args['VEPtag'] else 'VEP'
+    VEPtag = args['VEPtag'] if args['VEPtag'] else 'CSQ'
     VEPsep = args['VEPsep'] if args['VEPsep'] else '&'
     SpliceAI_thr = float(args['SpliceAI']) if args['SpliceAI'] else 0.
     SpliceAItag = args['SpliceAItag'] if args['SpliceAItag'] else 'SpliceAI'

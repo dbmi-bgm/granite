@@ -15,7 +15,7 @@ def test_run_comHet_proband(): # NA12879
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+            'trio': ['NA12879_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
             'impact': None, 'SpliceAItag': None}
     # Run
     main_comHet(args)
@@ -31,7 +31,7 @@ def test_run_comHet_proband_plus_NA12877():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12877_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+            'trio': ['NA12879_sample', 'NA12877_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
             'impact': None, 'SpliceAItag': None}
     # Run
     main_comHet(args)
@@ -47,7 +47,7 @@ def test_run_comHet_proband_plus_NA12878():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12878_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+            'trio': ['NA12879_sample', 'NA12878_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
             'impact': None, 'SpliceAItag': None}
     # Run
     main_comHet(args)
@@ -63,7 +63,7 @@ def test_run_comHet_proband_plus_NA12877_NA12878():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12877_sample', 'NA12878_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+            'trio': ['NA12879_sample', 'NA12877_sample', 'NA12878_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
             'impact': None, 'SpliceAItag': None}
     # Run
     main_comHet(args)
@@ -79,7 +79,7 @@ def test_run_comHet_proband_plus_NA12877_NA12878_GT():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet_GT.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12877_sample', 'NA12878_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+            'trio': ['NA12879_sample', 'NA12877_sample', 'NA12878_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
             'impact': None, 'SpliceAItag': None}
     # Run
     main_comHet(args)
@@ -95,7 +95,7 @@ def test_run_comHet_proband_VEP_as_CSQ_plus_NA12877_NA12878():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet_VEP_as_CSQ.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12877_sample', 'NA12878_sample'], 'VEPtag': 'CSQ', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+            'trio': ['NA12879_sample', 'NA12877_sample', 'NA12878_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
             'impact': None, 'SpliceAItag': None}
     # Run
     main_comHet(args)
@@ -111,7 +111,7 @@ def test_run_comHet_proband_plus_NA12877_allow_undef():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12877_sample'], 'VEPtag': None, 'allow_undef': True, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+            'trio': ['NA12879_sample', 'NA12877_sample'], 'VEPtag': 'VEP', 'allow_undef': True, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
             'impact': None, 'SpliceAItag': None}
     # Run
     main_comHet(args)
@@ -127,7 +127,7 @@ def test_run_comHet_proband_plus_NA12878_allow_undef():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12878_sample'], 'VEPtag': None, 'allow_undef': True, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+            'trio': ['NA12879_sample', 'NA12878_sample'], 'VEPtag': 'VEP', 'allow_undef': True, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
             'impact': None, 'SpliceAItag': None}
     # Run
     main_comHet(args)
@@ -143,7 +143,7 @@ def test_run_comHet_proband_plus_NA12878_NA12877_allow_undef():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample'], 'VEPtag': None, 'allow_undef': True, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample'], 'VEPtag': 'VEP', 'allow_undef': True, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
             'impact': None, 'SpliceAItag': None}
     # Run
     main_comHet(args)
@@ -159,7 +159,7 @@ def test_run_comHet_NA12878():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12878_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+            'trio': ['NA12878_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
             'impact': None, 'SpliceAItag': None}
     # Run
     main_comHet(args)
@@ -175,7 +175,7 @@ def test_run_comHet_proband_plus_NA12878_NA12877_denovo():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet_denovo.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': '~',
+            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': '~',
             'impact': None, 'SpliceAItag': None}
     # Run
     main_comHet(args)
@@ -193,7 +193,7 @@ def test_run_comHet_proband_plus_NA12878_NA12877_denovo_impact_test():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet_denovo_impact.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None,
+            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None,
             'sep': '~', 'impact': True, 'SpliceAItag': None}
     # Run
     main_comHet(args, test=True)
@@ -211,7 +211,7 @@ def test_run_comHet_proband_plus_NA12878_NA12877_denovo_impact_dict_test():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet_denovo_impact_dict.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': '~',
+            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': '~',
             'impact': True, 'SpliceAItag': None}
     # Run
     main_comHet(args, test=True)
@@ -232,7 +232,7 @@ def test_run_trio_error(): # NA12879
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample', 'extra_sample'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample', 'extra_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
             'impact': None, 'SpliceAItag': None}
     # Run and Tests
     with pytest.raises(SystemExit) as e:
