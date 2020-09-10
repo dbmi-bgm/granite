@@ -152,8 +152,8 @@ def main():
     toBig_parser.add_argument('--abthr', help='minimum percentage of alternate reads compared to reference reads to count the file in "--fithr" when "calling" by allelic balance (>=) [15]', type=int, required=False)
 
     # Add rckTar to subparsers
-    rckTar_parser = subparsers.add_parser('rckTar', description='utility to create a tar archive from bgzip and tabix indexed RCK files. Create an index file for the archive',
-                                                help='utility to create a tar archive from bgzip and tabix indexed RCK files. Create an index file for the archive')
+    rckTar_parser = subparsers.add_parser('rckTar', description='utility to create a tar archive from bgzip and tabix indexed RCK files. Creates an index file for the archive',
+                                                help='utility to create a tar archive from bgzip and tabix indexed RCK files. Creates an index file for the archive')
 
     rckTar_parser.add_argument('-t', '--ttar', help='target tar to write results, use .rck.tar as extension', type=str, required=True)
     rckTar_parser.add_argument('-f', '--file', help='file to be archived. Specify multiple files as: "-f SampleID_1.rck.gz -f SampleID_2.rck.gz -f ...". Files order is maintained while creating the index', action='append', required=True)
