@@ -234,7 +234,7 @@ def get_ADs_bam(bamfile, chrom, pos, REF, MQthr, BQthr, deletion=False, insertio
 
     # Getting AD info
     for pileupcolumn in SP:
-        if(pileupcolumn.pos == position):
+        if pileupcolumn.pos == position:
             for pileupread in pileupcolumn.pileups:
                 if not pileupread.is_del and not pileupread.is_refskip:
                     qp = pileupread.query_position
