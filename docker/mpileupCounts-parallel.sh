@@ -44,5 +44,5 @@ if [[ -v  chr_M  ]]; then
 fi
 
 # compress and index mpileup.out
-bgzip mpileup.out
-tabix -f -b 2 -s 1 -e 0 -c "#" mpileup.out.gz
+bgzip mpileup.out || exit 1
+tabix -f -b 2 -s 1 -e 0 -c "#" mpileup.out.gz || exit 1
