@@ -243,7 +243,11 @@ def _error_novo_child(vnt_obj, stat_dict, family, bin, cnt_children, sample_novo
             # Get AD-DP ratio
             AD = sum(map(int, vnt_obj.get_genotype_value(sample_novo, 'AD').split(',')[1:]))
             DP = int(vnt_obj.get_genotype_value(sample_novo, 'DP'))
-            stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_AD-DP'].append(AD / DP)
+            try:
+                stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_AD-DP'].append(AD / DP)
+            except Exception:
+                stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_AD-DP'].append(0)
+            #end try
         #end if
     #end if
 #end def
@@ -813,7 +817,10 @@ def main(args):
         novo_variants(stat_dict_list, args['outputfile'])
         for l, family in enumerate(family_list):
             if anchor_list[l] == sample_novo:
-                plot_AD_DP_ratio(stat_dict_list[l], sample_novo)
+                try: plot_AD_DP_ratio(stat_dict_list[l], sample_novo)
+                except Exception: # no variants with novoPP >= 0.9, skip
+                    pass
+                #end try
             #end if
         #end for
     #end if

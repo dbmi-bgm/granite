@@ -289,3 +289,20 @@ def clean_VEP(vnt_obj, idx, VEPremove, VEPrescue, VEPtag, sep='&'):
     #end for
     return ','.join(trscrpt_clean)
 #end def
+
+def clean_VEP_byfield(vnt_obj, idx, values, VEPtag):
+    ''' clean VEP annotations from VEPtag using a set of values,
+    if VEPtag field at idx not in values remove transcript '''
+    try: val_get = vnt_obj.get_tag_value(VEPtag)
+    except Exception: return False
+    #end try
+    trscrpt_clean = []
+    trscrpt_list = val_get.split(',')
+    # Check field and clean transcripts
+    for trscrpt in trscrpt_list:
+        if trscrpt.split('|')[idx] in values:
+            trscrpt_clean.append(trscrpt)
+        #end if
+    #end for
+    return ','.join(trscrpt_clean)
+#end def

@@ -32,6 +32,7 @@ from granite import cleanVCF
 from granite import qcVCF
 from granite import validateVCF
 from granite import toPED
+from granite import geneList
 
 
 #################################################################
@@ -138,6 +139,16 @@ def main():
     cleanVCF_parser.add_argument('--SpliceAItag', help='by default the program will search for "SpliceAI" TAG (SpliceAI=<float>), use this parameter to specify a different TAG | TAG field to be used (e.g. DS_DG)', type=str, required=False)
     cleanVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
+    # Add geneList to subparsers
+    geneList_parser = subparsers.add_parser('geneList', description='utility to clean VEP annotations of input VCF file using a list of genes',
+                                                help='utility to clean VEP annotations of input VCF file using a list of genes')
+
+    geneList_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
+    geneList_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
+    geneList_parser.add_argument('-g', '--geneslist', help='text file listing ensembl gene (ENSG) IDs for all genes to save annotations for, IDs must be listed as a column', type=str, required=True)
+    geneList_parser.add_argument('--VEPtag', help='by default the program will search for "CSQ" TAG (CSQ=<values>), use this parameter to specify a different TAG to be used (e.g. VEP)', type=str, required=False)
+    geneList_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
+
     # Add toBig to subparsers
     toBig_parser = subparsers.add_parser('toBig', description='utility that converts counts from bgzip and tabix indexed RCK format into BIG format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions',
                                                 help='utility that converts counts from bgzip and tabix indexed RCK format into BIG format. Positions are "called" by reads counts or allelic balance for single or multiple files (joint calls) in specified regions')
@@ -204,6 +215,7 @@ def main():
                     'blackList': blackList_parser,
                     'whiteList': whiteList_parser,
                     'cleanVCF': cleanVCF_parser,
+                    'geneList': geneList_parser,
                     'mpileupCounts': mpileupCounts_parser,
                     'toBig': toBig_parser,
                     'rckTar': rckTar_parser,
@@ -244,6 +256,8 @@ def main():
         rckTar.main(args)
     elif args['func'] == 'cleanVCF':
         cleanVCF.main(args)
+    elif args['func'] == 'geneList':
+        geneList.main(args)
     elif args['func'] == 'qcVCF':
         qcVCF.main(args)
     elif args['func'] == 'validateVCF':
