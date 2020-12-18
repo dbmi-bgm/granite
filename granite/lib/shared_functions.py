@@ -169,26 +169,58 @@ def check_VEP(vnt_obj, idx, VEPremove, VEPrescue, VEPtag, sep='&'):
     return False
 #end def
 
-def check_spliceAI(vnt_obj, idx, SpAItag, thr=0.8):
-    ''' check if SpliceAI tag value is over threshold thr '''
-    try: val_get = vnt_obj.get_tag_value(SpAItag)
-    except Exception: return False
-    #end try
-    if float(val_get.split('|')[idx]) >= thr:
+def check_spliceAI(vnt_obj, idx_list, SpAItag_list, thr=0.8):
+    ''' check if SpliceAI max delta score value is over threshold thr,
+    either access the max delta score directly from a tag,
+    or calculate as the max of the different delta scores '''
+    # if SpliceAI is within VEP annotations,
+    # this fetch only the first transcript
+    # and assumes all the transcripts share the same scores
+    # Get max delta score
+    if len(SpAItag_list) == 1: # max score from tag
+        try:
+            val_get = vnt_obj.get_tag_value(SpAItag_list[0])
+            max_DS = float(val_get.split('|')[idx_list[0]])
+        except Exception: return False
+        #end try
+    else: # default, multiple delta scores
+        DS_list = []
+        for i, SpAItag in enumerate(SpAItag_list):
+            try:
+                # if SpliceAI is within VEP and is at the end of Format
+                # need to remove , that separate next transcript
+                val_get = vnt_obj.get_tag_value(SpAItag)
+                DS = val_get.split('|')[idx_list[i]]
+                DS_list.append(float(DS.split(',')[0]))
+            except Exception: return False
+            #end try
+        #end for
+        max_DS = max(DS_list)
+    #end if
+    # Check max delta score
+    if max_DS >= thr:
         return True
     #end if
     return False
 #end def
 
-def check_CLINVAR(vnt_obj, CLNtag, idx=0, CLNSIGtag='', CLINVARonly=[]):
+def check_CLINVAR(vnt_obj, CLN_idx, CLNtag, CLNSIG_idx=0, CLNSIGtag='', CLINVARonly=[]):
     ''' check if CLNtag is present, if CLINVARonly
     check if variant has specified tags or keywords in CLNSIGtag '''
+    # if clinvar is within VEP annotations,
+    # this fetch only the first transcript
+    # and assumes all the transcripts share the same clinvar
     try: val_get = vnt_obj.get_tag_value(CLNtag)
     except Exception: return False
     #end try
+    # Check CLN
+    CLN = val_get.split('|')[CLN_idx]
+    if not CLN: return False
+    #end if
+    # Check CLNSIG
     if CLINVARonly:
         val_get = vnt_obj.get_tag_value(CLNSIGtag)
-        CLNSIG = val_get.split('|')[idx]
+        CLNSIG = val_get.split('|')[CLNSIG_idx]
         for term in CLINVARonly:
             if term.lower() in CLNSIG.lower():
                 return True

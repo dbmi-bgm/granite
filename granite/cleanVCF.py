@@ -23,6 +23,7 @@ from granite.lib import vcf_parser
 # shared_vars
 from granite.lib.shared_vars import VEPremove
 from granite.lib.shared_vars import VEPSpliceAI
+from granite.lib.shared_vars import DStags
 
 
 #################################################################
@@ -39,12 +40,13 @@ def main(args):
     VEPrescue, consequence_idx = set(), 0
     # VEPremove = {...} -> import from shared_vars
     # VEPSpliceAI = {...} -> import from shared_vars
-    SpAItag, SpAI_idx = '', 0
+    # DStags = {...} -> import from shared_vars
+    SpAItag_list, SpAI_idx_list = [], []
     is_VEP = True if args['VEP'] else False
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'CSQ'
     VEPsep = args['VEPsep'] if args['VEPsep'] else '&'
     SpliceAI_thr = float(args['SpliceAI']) if args['SpliceAI'] else 0.
-    SpliceAItag = args['SpliceAItag'] if args['SpliceAItag'] else 'SpliceAI'
+    SpliceAItag = args['SpliceAItag'] # default None
     is_SpAI = False
     is_verbose = True if args['verbose'] else False
 
@@ -78,7 +80,17 @@ def main(args):
 
     # SpliceAI
     if SpliceAI_thr:
-        SpAItag, SpAI_idx = vcf_obj.header.check_tag_definition(SpliceAItag)
+        if SpliceAItag: # single tag has been specified
+            tag, idx = vcf_obj.header.check_tag_definition(SpliceAItag)
+            SpAItag_list.append(tag)
+            SpAI_idx_list.append(idx)
+        else: # search for delta scores as default
+            for DStag in DStags:
+                tag, idx = vcf_obj.header.check_tag_definition(DStag)
+                SpAItag_list.append(tag)
+                SpAI_idx_list.append(idx)
+            #end for
+        #end if
     #end if
 
     # Reading variants and writing passed
@@ -107,7 +119,7 @@ def main(args):
 
         # Check SpliceAI
         if SpliceAI_thr:
-            if check_spliceAI(vnt_obj, SpAI_idx, SpAItag, SpliceAI_thr):
+            if check_spliceAI(vnt_obj, SpAI_idx_list, SpAItag_list, SpliceAI_thr):
                 is_SpAI = True
             #end if
         #end if

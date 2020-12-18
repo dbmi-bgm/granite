@@ -1,0 +1,496 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##ALT=<ID=NON_REF,Description="Represents any possible alternative allele at this location">
+##FILTER=<ID=LowQual,Description="Low quality">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=MIN_DP,Number=1,Type=Integer,Description="Minimum DP observed within the GVCF block">
+##FORMAT=<ID=PGT,Number=1,Type=String,Description="Physical phasing haplotype information, describing how the alternate alleles are phased in relation to one another">
+##FORMAT=<ID=PID,Number=1,Type=String,Description="Physical phasing ID information, where each unique ID within a given sample (but not across samples) connects records within a phasing group">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification">
+##FORMAT=<ID=PS,Number=1,Type=Integer,Description="Phasing set (typically the position of the first variant in the set)">
+##FORMAT=<ID=RGQ,Number=1,Type=Integer,Description="Unconditional reference genotype confidence, encoded as a phred quality -10*log10 p(genotype call is wrong)">
+##FORMAT=<ID=SB,Number=4,Type=Integer,Description="Per-sample component statistics which comprise the Fisher's Exact Test to detect strand bias.">
+##GATKCommandLine=<ID=CombineGVCFs,CommandLine="CombineGVCFs  --output GVCFS/out.chr1.g.vcf --variant /var/lib/cwl/stgc27d52b4-0911-42e8-900b-542fdde187ad/GAPFIMK9Z47X.gvcf.gz --variant /var/lib/cwl/stgb1c887b6-8366-44c5-8c92-72b7f1ba967c/GAPFIDCQG5OX.gvcf.gz --variant /var/lib/cwl/stgfcf89a07-85e4-49bd-a3a3-794f93b7544e/GAPFIJ2IGMQI.gvcf.gz --intervals chr1 --reference /var/lib/cwl/stg8920aa29-98ad-42c0-b36a-b34ae2e503e6/GAPFIXRDPDK5.fa  --convert-to-base-pair-resolution false --break-bands-at-multiples-of 0 --input-is-somatic false --drop-somatic-filtering-annotations false --ignore-variants-starting-outside-interval false --interval-set-rule UNION --interval-padding 0 --interval-exclusion-padding 0 --interval-merging-rule ALL --read-validation-stringency SILENT --seconds-between-progress-updates 10.0 --disable-sequence-dictionary-validation false --create-output-bam-index true --create-output-bam-md5 false --create-output-variant-index true --create-output-variant-md5 false --lenient false --add-output-sam-program-record true --add-output-vcf-command-line true --cloud-prefetch-buffer 40 --cloud-index-prefetch-buffer -1 --disable-bam-index-caching false --sites-only-vcf-output false --help false --version false --showHidden false --verbosity INFO --QUIET false --use-jdk-deflater false --use-jdk-inflater false --gcs-max-retries 20 --gcs-project-for-requester-pays  --disable-tool-default-read-filters false --disable-tool-default-annotations false --enable-all-annotations false",Version="4.1.2.0",Date="August 4, 2020 7:58:55 PM UTC">
+##GATKCommandLine=<ID=GenotypeGVCFs,CommandLine="GenotypeGVCFs  --output VCFS/out.chr1.vcf --dbsnp /var/lib/cwl/stgc0f62bfa-d0be-4c9b-85a4-0d2175dc5479/GAPFI4LJRN98.vcf.gz --variant /var/lib/cwl/stg25818f08-3238-41bc-888a-928f878ca6a0/GAPFI8NET237.gvcf.gz --intervals chr1 --reference /var/lib/cwl/stg39b4e5d1-6512-4932-95aa-539e479d1263/GAPFIXRDPDK5.fa --verbosity INFO --annotations-to-exclude ExcessHet  --include-non-variant-sites false --merge-input-intervals false --input-is-somatic false --tumor-lod-to-emit 3.5 --allele-fraction-error 0.001 --keep-combined-raw-annotations false --use-new-qual-calculator true --use-old-qual-calculator false --annotate-with-num-discovered-alleles false --heterozygosity 0.001 --indel-heterozygosity 1.25E-4 --heterozygosity-stdev 0.01 --standard-min-confidence-threshold-for-calling 30.0 --max-alternate-alleles 6 --max-genotype-count 1024 --sample-ploidy 2 --num-reference-samples-if-no-call 0 --only-output-calls-starting-in-intervals false --interval-set-rule UNION --interval-padding 0 --interval-exclusion-padding 0 --interval-merging-rule ALL --read-validation-stringency SILENT --seconds-between-progress-updates 10.0 --disable-sequence-dictionary-validation false --create-output-bam-index true --create-output-bam-md5 false --create-output-variant-index true --create-output-variant-md5 false --lenient false --add-output-sam-program-record true --add-output-vcf-command-line true --cloud-prefetch-buffer 40 --cloud-index-prefetch-buffer -1 --disable-bam-index-caching false --sites-only-vcf-output false --help false --version false --showHidden false --QUIET false --use-jdk-deflater false --use-jdk-inflater false --gcs-max-retries 20 --gcs-project-for-requester-pays  --disable-tool-default-read-filters false --disable-tool-default-annotations false --enable-all-annotations false",Version="4.1.2.0",Date="August 4, 2020 9:03:15 PM UTC">
+##GATKCommandLine=<ID=HaplotypeCaller,CommandLine="HaplotypeCaller  --standard-min-confidence-threshold-for-calling 0.0 --max-alternate-alleles 3 --emit-ref-confidence GVCF --output GVCFS/out.chr1:1-10000000.g.vcf --intervals chr1:1-10000000 --input chr1:1-10000000.sharded.bam --reference /var/lib/cwl/stgdf4ac018-0e44-48d2-810c-8af846792c53/GAPFIXRDPDK5.fa --read-filter OverclippedReadFilter  --use-new-qual-calculator true --use-old-qual-calculator false --annotate-with-num-discovered-alleles false --heterozygosity 0.001 --indel-heterozygosity 1.25E-4 --heterozygosity-stdev 0.01 --max-genotype-count 1024 --sample-ploidy 2 --num-reference-samples-if-no-call 0 --genotyping-mode DISCOVERY --genotype-filtered-alleles false --contamination-fraction-to-filter 0.0 --output-mode EMIT_VARIANTS_ONLY --all-site-pls false --gvcf-gq-bands 1 --gvcf-gq-bands 2 --gvcf-gq-bands 3 --gvcf-gq-bands 4 --gvcf-gq-bands 5 --gvcf-gq-bands 6 --gvcf-gq-bands 7 --gvcf-gq-bands 8 --gvcf-gq-bands 9 --gvcf-gq-bands 10 --gvcf-gq-bands 11 --gvcf-gq-bands 12 --gvcf-gq-bands 13 --gvcf-gq-bands 14 --gvcf-gq-bands 15 --gvcf-gq-bands 16 --gvcf-gq-bands 17 --gvcf-gq-bands 18 --gvcf-gq-bands 19 --gvcf-gq-bands 20 --gvcf-gq-bands 21 --gvcf-gq-bands 22 --gvcf-gq-bands 23 --gvcf-gq-bands 24 --gvcf-gq-bands 25 --gvcf-gq-bands 26 --gvcf-gq-bands 27 --gvcf-gq-bands 28 --gvcf-gq-bands 29 --gvcf-gq-bands 30 --gvcf-gq-bands 31 --gvcf-gq-bands 32 --gvcf-gq-bands 33 --gvcf-gq-bands 34 --gvcf-gq-bands 35 --gvcf-gq-bands 36 --gvcf-gq-bands 37 --gvcf-gq-bands 38 --gvcf-gq-bands 39 --gvcf-gq-bands 40 --gvcf-gq-bands 41 --gvcf-gq-bands 42 --gvcf-gq-bands 43 --gvcf-gq-bands 44 --gvcf-gq-bands 45 --gvcf-gq-bands 46 --gvcf-gq-bands 47 --gvcf-gq-bands 48 --gvcf-gq-bands 49 --gvcf-gq-bands 50 --gvcf-gq-bands 51 --gvcf-gq-bands 52 --gvcf-gq-bands 53 --gvcf-gq-bands 54 --gvcf-gq-bands 55 --gvcf-gq-bands 56 --gvcf-gq-bands 57 --gvcf-gq-bands 58 --gvcf-gq-bands 59 --gvcf-gq-bands 60 --gvcf-gq-bands 70 --gvcf-gq-bands 80 --gvcf-gq-bands 90 --gvcf-gq-bands 99 --indel-size-to-eliminate-in-ref-model 10 --use-alleles-trigger false --disable-optimizations false --just-determine-active-regions false --dont-genotype false --do-not-run-physical-phasing false --use-filtered-reads-for-annotations false --correct-overlapping-quality false --adaptive-pruning false --do-not-recover-dangling-branches false --recover-dangling-heads false --consensus false --dont-trim-active-regions false --max-disc-ar-extension 25 --max-gga-ar-extension 300 --padding-around-indels 150 --padding-around-snps 20 --kmer-size 10 --kmer-size 25 --dont-increase-kmer-sizes-for-cycles false --allow-non-unique-kmers-in-ref false --num-pruning-samples 1 --min-dangling-branch-length 4 --recover-all-dangling-branches false --max-num-haplotypes-in-population 128 --min-pruning 2 --adaptive-pruning-initial-error-rate 0.001 --pruning-lod-threshold 2.302585092994046 --max-unpruned-variants 100 --debug-assembly false --debug-graph-transformations false --capture-assembly-failure-bam false --error-correct-reads false --kmer-length-for-read-error-correction 25 --min-observations-for-kmer-to-be-solid 20 --likelihood-calculation-engine PairHMM --base-quality-score-threshold 18 --pair-hmm-gap-continuation-penalty 10 --pair-hmm-implementation FASTEST_AVAILABLE --pcr-indel-model CONSERVATIVE --phred-scaled-global-read-mismapping-rate 45 --native-pair-hmm-threads 4 --native-pair-hmm-use-double-precision false --bam-writer-type CALLED_HAPLOTYPES --dont-use-soft-clipped-bases false --min-base-quality-score 10 --smith-waterman JAVA --max-mnp-distance 0 --min-assembly-region-size 50 --max-assembly-region-size 300 --assembly-region-padding 100 --max-reads-per-alignment-start 50 --active-probability-threshold 0.002 --max-prob-propagation-distance 50 --force-active false --interval-set-rule UNION --interval-padding 0 --interval-exclusion-padding 0 --interval-merging-rule ALL --read-validation-stringency SILENT --seconds-between-progress-updates 10.0 --disable-sequence-dictionary-validation false --create-output-bam-index true --create-output-bam-md5 false --create-output-variant-index true --create-output-variant-md5 false --lenient false --add-output-sam-program-record true --add-output-vcf-command-line true --cloud-prefetch-buffer 40 --cloud-index-prefetch-buffer -1 --disable-bam-index-caching false --sites-only-vcf-output false --help false --version false --showHidden false --verbosity INFO --QUIET false --use-jdk-deflater false --use-jdk-inflater false --gcs-max-retries 20 --gcs-project-for-requester-pays  --disable-tool-default-read-filters false --minimum-mapping-quality 20 --filter-too-short 30 --dont-require-soft-clips-both-ends false --disable-tool-default-annotations false --enable-all-annotations false",Version="4.1.2.0",Date="November 26, 2019 5:07:03 PM UTC">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes, for each ALT allele, in the same order as listed">
+##INFO=<ID=AF,Number=A,Type=Float,Description="Allele Frequency, for each ALT allele, in the same order as listed">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=BaseQRankSum,Number=1,Type=Float,Description="Z-score from Wilcoxon rank sum test of Alt Vs. Ref base qualities">
+##INFO=<ID=DB,Number=0,Type=Flag,Description="dbSNP Membership">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth; some reads may have been filtered">
+##INFO=<ID=DS,Number=0,Type=Flag,Description="Were any of the samples downsampled?">
+##INFO=<ID=END,Number=1,Type=Integer,Description="Stop position of the interval">
+##INFO=<ID=ExcessHet,Number=1,Type=Float,Description="Phred-scaled p-value for exact test of excess heterozygosity">
+##INFO=<ID=FS,Number=1,Type=Float,Description="Phred-scaled p-value using Fisher's exact test to detect strand bias">
+##INFO=<ID=InbreedingCoeff,Number=1,Type=Float,Description="Inbreeding coefficient as estimated from the genotype likelihoods per-sample when compared against the Hardy-Weinberg expectation">
+##INFO=<ID=MLEAC,Number=A,Type=Integer,Description="Maximum likelihood expectation (MLE) for the allele counts (not necessarily the same as the AC), for each ALT allele, in the same order as listed">
+##INFO=<ID=MLEAF,Number=A,Type=Float,Description="Maximum likelihood expectation (MLE) for the allele frequency (not necessarily the same as the AF), for each ALT allele, in the same order as listed">
+##INFO=<ID=MQ,Number=1,Type=Float,Description="RMS Mapping Quality">
+##INFO=<ID=MQRankSum,Number=1,Type=Float,Description="Z-score From Wilcoxon rank sum test of Alt vs. Ref read mapping qualities">
+##INFO=<ID=QD,Number=1,Type=Float,Description="Variant Confidence/Quality by Depth">
+##INFO=<ID=RAW_MQandDP,Number=2,Type=Integer,Description="Raw data (sum of squared MQ and total depth) for improved RMS Mapping Quality calculation. Incompatible with deprecated RAW_MQ formulation.">
+##INFO=<ID=ReadPosRankSum,Number=1,Type=Float,Description="Z-score from Wilcoxon rank sum test of Alt vs. Ref read position bias">
+##INFO=<ID=SOR,Number=1,Type=Float,Description="Symmetric Odds Ratio of 2x2 contingency table to detect strand bias">
+##source=CombineGVCFs
+##source=GenotypeGVCFs
+##source=HaplotypeCaller
+##bcftools_normVersion=1.11+htslib-1.11
+##bcftools_normCommand=norm --multiallelics - -o split_tmp.vcf -O v /var/lib/cwl/stg0a24e324-8087-43de-a423-4cb49ee00b50/GAPFIAOKGUJQ.vcf.gz; Date=Mon Dec  7 16:08:55 2020
+##VEP="v101" time="2020-12-07 16:12:10" cache="./homo_sapiens/101_GRCh38" ensembl-variation=101.819eef2 ensembl=101.856c8e8 ensembl-io=101.943b6c2 ensembl-funcgen=101.b918a49 1000genomes="phase3" COSMIC="90" ClinVar="202003" ESP="V2-SSA137" HGMD-PUBLIC="20194" assembly="GRCh38.p13" dbSNP="153" gencode="GENCODE 35" genebuild="2014-07" gnomAD="r2.1" polyphen="2.2.2" regbuild="1.0" sift="sift5.2.2"
+##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Allele|Consequence|IMPACT|SYMBOL|Gene|Feature_type|Feature|BIOTYPE|EXON|INTRON|HGVSc|HGVSp|cDNA_position|CDS_position|Protein_position|Amino_acids|Codons|Existing_variation|DISTANCE|STRAND|FLAGS|VARIANT_CLASS|SYMBOL_SOURCE|HGNC_ID|CANONICAL|MANE|TSL|APPRIS|CCDS|ENSP|SWISSPROT|TREMBL|UNIPARC|SOURCE|GENE_PHENO|SIFT|PolyPhen|DOMAINS|miRNA|HGVS_OFFSET|AF|AFR_AF|AMR_AF|EAS_AF|EUR_AF|SAS_AF|AA_AF|EA_AF|gnomAD_AF|gnomAD_AFR_AF|gnomAD_AMR_AF|gnomAD_ASJ_AF|gnomAD_EAS_AF|gnomAD_FIN_AF|gnomAD_NFE_AF|gnomAD_OTH_AF|gnomAD_SAS_AF|MAX_AF|MAX_AF_POPS|CLIN_SIG|SOMATIC|PHENO|PUBMED|VAR_SYNONYMS|MOTIF_NAME|MOTIF_POS|HIGH_INF_POS|MOTIF_SCORE_CHANGE|TRANSCRIPTION_FACTORS|SpliceRegion|TSSDistance|MaxEntScan_alt|MaxEntScan_diff|MaxEntScan_ref|1000Gp3_AC|1000Gp3_AF|1000Gp3_AFR_AC|1000Gp3_AFR_AF|1000Gp3_AMR_AC|1000Gp3_AMR_AF|1000Gp3_EAS_AC|1000Gp3_EAS_AF|1000Gp3_EUR_AC|1000Gp3_EUR_AF|1000Gp3_SAS_AC|1000Gp3_SAS_AF|ALSPAC_AC|ALSPAC_AF|APPRIS|Aloft_Confidence|Aloft_Fraction_transcripts_affected|Aloft_pred|Aloft_prob_Dominant|Aloft_prob_Recessive|Aloft_prob_Tolerant|AltaiNeandertal|Ancestral_allele|BayesDel_addAF_pred|BayesDel_addAF_rankscore|BayesDel_addAF_score|BayesDel_noAF_pred|BayesDel_noAF_rankscore|BayesDel_noAF_score|CADD_phred|CADD_phred_hg19|CADD_raw|CADD_raw_hg19|CADD_raw_rankscore|CADD_raw_rankscore_hg19|ClinPred_pred|ClinPred_rankscore|ClinPred_score|DANN_rankscore|DANN_score|DEOGEN2_pred|DEOGEN2_rankscore|DEOGEN2_score|Denisova|ESP6500_AA_AC|ESP6500_AA_AF|ESP6500_EA_AC|ESP6500_EA_AF|Eigen-PC-phred_coding|Eigen-PC-raw_coding|Eigen-PC-raw_coding_rankscore|Eigen-phred_coding|Eigen-raw_coding|Eigen-raw_coding_rankscore|Ensembl_geneid|Ensembl_proteinid|Ensembl_transcriptid|ExAC_AC|ExAC_AF|ExAC_AFR_AC|ExAC_AFR_AF|ExAC_AMR_AC|ExAC_AMR_AF|ExAC_Adj_AC|ExAC_Adj_AF|ExAC_EAS_AC|ExAC_EAS_AF|ExAC_FIN_AC|ExAC_FIN_AF|ExAC_NFE_AC|ExAC_NFE_AF|ExAC_SAS_AC|ExAC_SAS_AF|ExAC_nonTCGA_AC|ExAC_nonTCGA_AF|ExAC_nonTCGA_AFR_AC|ExAC_nonTCGA_AFR_AF|ExAC_nonTCGA_AMR_AC|ExAC_nonTCGA_AMR_AF|ExAC_nonTCGA_Adj_AC|ExAC_nonTCGA_Adj_AF|ExAC_nonTCGA_EAS_AC|ExAC_nonTCGA_EAS_AF|ExAC_nonTCGA_FIN_AC|ExAC_nonTCGA_FIN_AF|ExAC_nonTCGA_NFE_AC|ExAC_nonTCGA_NFE_AF|ExAC_nonTCGA_SAS_AC|ExAC_nonTCGA_SAS_AF|ExAC_nonpsych_AC|ExAC_nonpsych_AF|ExAC_nonpsych_AFR_AC|ExAC_nonpsych_AFR_AF|ExAC_nonpsych_AMR_AC|ExAC_nonpsych_AMR_AF|ExAC_nonpsych_Adj_AC|ExAC_nonpsych_Adj_AF|ExAC_nonpsych_EAS_AC|ExAC_nonpsych_EAS_AF|ExAC_nonpsych_FIN_AC|ExAC_nonpsych_FIN_AF|ExAC_nonpsych_NFE_AC|ExAC_nonpsych_NFE_AF|ExAC_nonpsych_SAS_AC|ExAC_nonpsych_SAS_AF|FATHMM_converted_rankscore|FATHMM_pred|FATHMM_score|GENCODE_basic|GERP++_NR|GERP++_RS|GERP++_RS_rankscore|GM12878_confidence_value|GM12878_fitCons_rankscore|GM12878_fitCons_score|GTEx_V8_gene|GTEx_V8_tissue|GenoCanyon_rankscore|GenoCanyon_score|Geuvadis_eQTL_target_gene|H1-hESC_confidence_value|H1-hESC_fitCons_rankscore|H1-hESC_fitCons_score|HGVSc_ANNOVAR|HGVSc_VEP|HGVSc_snpEff|HGVSp_ANNOVAR|HGVSp_VEP|HGVSp_snpEff|HUVEC_confidence_value|HUVEC_fitCons_rankscore|HUVEC_fitCons_score|Interpro_domain|LINSIGHT|LINSIGHT_rankscore|LIST-S2_pred|LIST-S2_rankscore|LIST-S2_score|LRT_Omega|LRT_converted_rankscore|LRT_pred|LRT_score|M-CAP_pred|M-CAP_rankscore|M-CAP_score|MPC_rankscore|MPC_score|MVP_rankscore|MVP_score|MetaLR_pred|MetaLR_rankscore|MetaLR_score|MetaSVM_pred|MetaSVM_rankscore|MetaSVM_score|MutPred_AAchange|MutPred_Top5features|MutPred_protID|MutPred_rankscore|MutPred_score|MutationAssessor_pred|MutationAssessor_rankscore|MutationAssessor_score|MutationTaster_AAE|MutationTaster_converted_rankscore|MutationTaster_model|MutationTaster_pred|MutationTaster_score|PROVEAN_converted_rankscore|PROVEAN_pred|PROVEAN_score|Polyphen2_HDIV_pred|Polyphen2_HDIV_rankscore|Polyphen2_HDIV_score|Polyphen2_HVAR_pred|Polyphen2_HVAR_rankscore|Polyphen2_HVAR_score|PrimateAI_pred|PrimateAI_rankscore|PrimateAI_score|REVEL_rankscore|REVEL_score|Reliability_index|SIFT4G_converted_rankscore|SIFT4G_pred|SIFT4G_score|SIFT_converted_rankscore|SIFT_pred|SIFT_score|SiPhy_29way_logOdds|SiPhy_29way_logOdds_rankscore|SiPhy_29way_pi|TSL|TWINSUK_AC|TWINSUK_AF|UK10K_AC|UK10K_AF|Uniprot_acc|Uniprot_entry|VEP_canonical|VEST4_rankscore|VEST4_score|VindijiaNeandertal|aaalt|aapos|aaref|alt|bStatistic|bStatistic_converted_rankscore|cds_strand|chr|clinvar_MedGen_id|clinvar_OMIM_id|clinvar_Orphanet_id|clinvar_clnsig|clinvar_hgvs|clinvar_id|clinvar_review|clinvar_trait|clinvar_var_source|codon_degeneracy|codonpos|fathmm-MKL_coding_group|fathmm-MKL_coding_pred|fathmm-MKL_coding_rankscore|fathmm-MKL_coding_score|fathmm-XF_coding_pred|fathmm-XF_coding_rankscore|fathmm-XF_coding_score|genename|gnomAD_exomes_AC|gnomAD_exomes_AF|gnomAD_exomes_AFR_AC|gnomAD_exomes_AFR_AF|gnomAD_exomes_AFR_AN|gnomAD_exomes_AFR_nhomalt|gnomAD_exomes_AMR_AC|gnomAD_exomes_AMR_AF|gnomAD_exomes_AMR_AN|gnomAD_exomes_AMR_nhomalt|gnomAD_exomes_AN|gnomAD_exomes_ASJ_AC|gnomAD_exomes_ASJ_AF|gnomAD_exomes_ASJ_AN|gnomAD_exomes_ASJ_nhomalt|gnomAD_exomes_EAS_AC|gnomAD_exomes_EAS_AF|gnomAD_exomes_EAS_AN|gnomAD_exomes_EAS_nhomalt|gnomAD_exomes_FIN_AC|gnomAD_exomes_FIN_AF|gnomAD_exomes_FIN_AN|gnomAD_exomes_FIN_nhomalt|gnomAD_exomes_NFE_AC|gnomAD_exomes_NFE_AF|gnomAD_exomes_NFE_AN|gnomAD_exomes_NFE_nhomalt|gnomAD_exomes_POPMAX_AC|gnomAD_exomes_POPMAX_AF|gnomAD_exomes_POPMAX_AN|gnomAD_exomes_POPMAX_nhomalt|gnomAD_exomes_SAS_AC|gnomAD_exomes_SAS_AF|gnomAD_exomes_SAS_AN|gnomAD_exomes_SAS_nhomalt|gnomAD_exomes_controls_AC|gnomAD_exomes_controls_AF|gnomAD_exomes_controls_AFR_AC|gnomAD_exomes_controls_AFR_AF|gnomAD_exomes_controls_AFR_AN|gnomAD_exomes_controls_AFR_nhomalt|gnomAD_exomes_controls_AMR_AC|gnomAD_exomes_controls_AMR_AF|gnomAD_exomes_controls_AMR_AN|gnomAD_exomes_controls_AMR_nhomalt|gnomAD_exomes_controls_AN|gnomAD_exomes_controls_ASJ_AC|gnomAD_exomes_controls_ASJ_AF|gnomAD_exomes_controls_ASJ_AN|gnomAD_exomes_controls_ASJ_nhomalt|gnomAD_exomes_controls_EAS_AC|gnomAD_exomes_controls_EAS_AF|gnomAD_exomes_controls_EAS_AN|gnomAD_exomes_controls_EAS_nhomalt|gnomAD_exomes_controls_FIN_AC|gnomAD_exomes_controls_FIN_AF|gnomAD_exomes_controls_FIN_AN|gnomAD_exomes_controls_FIN_nhomalt|gnomAD_exomes_controls_NFE_AC|gnomAD_exomes_controls_NFE_AF|gnomAD_exomes_controls_NFE_AN|gnomAD_exomes_controls_NFE_nhomalt|gnomAD_exomes_controls_POPMAX_AC|gnomAD_exomes_controls_POPMAX_AF|gnomAD_exomes_controls_POPMAX_AN|gnomAD_exomes_controls_POPMAX_nhomalt|gnomAD_exomes_controls_SAS_AC|gnomAD_exomes_controls_SAS_AF|gnomAD_exomes_controls_SAS_AN|gnomAD_exomes_controls_SAS_nhomalt|gnomAD_exomes_controls_nhomalt|gnomAD_exomes_flag|gnomAD_exomes_nhomalt|gnomAD_genomes_AC|gnomAD_genomes_AF|gnomAD_genomes_AFR_AC|gnomAD_genomes_AFR_AF|gnomAD_genomes_AFR_AN|gnomAD_genomes_AFR_nhomalt|gnomAD_genomes_AMI_AC|gnomAD_genomes_AMI_AF|gnomAD_genomes_AMI_AN|gnomAD_genomes_AMI_nhomalt|gnomAD_genomes_AMR_AC|gnomAD_genomes_AMR_AF|gnomAD_genomes_AMR_AN|gnomAD_genomes_AMR_nhomalt|gnomAD_genomes_AN|gnomAD_genomes_ASJ_AC|gnomAD_genomes_ASJ_AF|gnomAD_genomes_ASJ_AN|gnomAD_genomes_ASJ_nhomalt|gnomAD_genomes_EAS_AC|gnomAD_genomes_EAS_AF|gnomAD_genomes_EAS_AN|gnomAD_genomes_EAS_nhomalt|gnomAD_genomes_FIN_AC|gnomAD_genomes_FIN_AF|gnomAD_genomes_FIN_AN|gnomAD_genomes_FIN_nhomalt|gnomAD_genomes_NFE_AC|gnomAD_genomes_NFE_AF|gnomAD_genomes_NFE_AN|gnomAD_genomes_NFE_nhomalt|gnomAD_genomes_POPMAX_AC|gnomAD_genomes_POPMAX_AF|gnomAD_genomes_POPMAX_AN|gnomAD_genomes_POPMAX_nhomalt|gnomAD_genomes_SAS_AC|gnomAD_genomes_SAS_AF|gnomAD_genomes_SAS_AN|gnomAD_genomes_SAS_nhomalt|gnomAD_genomes_flag|gnomAD_genomes_nhomalt|hg18_chr|hg18_pos(1-based)|hg19_chr|hg19_pos(1-based)|integrated_confidence_value|integrated_fitCons_rankscore|integrated_fitCons_score|phastCons100way_vertebrate|phastCons100way_vertebrate_rankscore|phastCons17way_primate|phastCons17way_primate_rankscore|phastCons30way_mammalian|phastCons30way_mammalian_rankscore|phyloP100way_vertebrate|phyloP100way_vertebrate_rankscore|phyloP17way_primate|phyloP17way_primate_rankscore|phyloP30way_mammalian|phyloP30way_mammalian_rankscore|pos(1-based)|ref|refcodon|rs_dbSNP151|SpliceAI_pred_DP_AG|SpliceAI_pred_DP_AL|SpliceAI_pred_DP_DG|SpliceAI_pred_DP_DL|SpliceAI_pred_DS_AG|SpliceAI_pred_DS_AL|SpliceAI_pred_DS_DG|SpliceAI_pred_DS_DL|SpliceAI_pred_SYMBOL|ClinVar|ClinVar_ALLELEID|ClinVar_CLNSIG|ClinVar_CLNREVSTAT|ClinVar_CLNDN|ClinVar_CLNDISDB|gnomADg|gnomADg_AC|gnomADg_AC-XX|gnomADg_AC-XY|gnomADg_AC-afr|gnomADg_AC-ami|gnomADg_AC-amr|gnomADg_AC-asj|gnomADg_AC-eas|gnomADg_AC-fin|gnomADg_AC-mid|gnomADg_AC-nfe|gnomADg_AC-oth|gnomADg_AC-sas|gnomADg_AF|gnomADg_AF-XX|gnomADg_AF-XY|gnomADg_AF-afr|gnomADg_AF-ami|gnomADg_AF-amr|gnomADg_AF-asj|gnomADg_AF-eas|gnomADg_AF-fin|gnomADg_AF-mid|gnomADg_AF-nfe|gnomADg_AF-oth|gnomADg_AF-sas|gnomADg_AF_popmax|gnomADg_AN|gnomADg_AN-XX|gnomADg_AN-XY|gnomADg_AN-afr|gnomADg_AN-ami|gnomADg_AN-amr|gnomADg_AN-asj|gnomADg_AN-eas|gnomADg_AN-fin|gnomADg_AN-mid|gnomADg_AN-nfe|gnomADg_AN-oth|gnomADg_AN-sas|gnomADg_nhomalt|gnomADg_nhomalt-XX|gnomADg_nhomalt-XY|gnomADg_nhomalt-afr|gnomADg_nhomalt-ami|gnomADg_nhomalt-amr|gnomADg_nhomalt-asj|gnomADg_nhomalt-eas|gnomADg_nhomalt-fin|gnomADg_nhomalt-mid|gnomADg_nhomalt-nfe|gnomADg_nhomalt-oth|gnomADg_nhomalt-sas">
+##SpliceRegion=SpliceRegion predictions
+##TSSDistance=Distance from the transcription start site
+##MaxEntScan_alt=MaxEntScan alternate sequence score
+##MaxEntScan_diff=MaxEntScan score difference
+##MaxEntScan_ref=MaxEntScan reference sequence score
+##1000Gp3_AC=1000Gp3_AC from dbNSFP file
+##1000Gp3_AF=1000Gp3_AF from dbNSFP file
+##1000Gp3_AFR_AC=1000Gp3_AFR_AC from dbNSFP file
+##1000Gp3_AFR_AF=1000Gp3_AFR_AF from dbNSFP file
+##1000Gp3_AMR_AC=1000Gp3_AMR_AC from dbNSFP file
+##1000Gp3_AMR_AF=1000Gp3_AMR_AF from dbNSFP file
+##1000Gp3_EAS_AC=1000Gp3_EAS_AC from dbNSFP file
+##1000Gp3_EAS_AF=1000Gp3_EAS_AF from dbNSFP file
+##1000Gp3_EUR_AC=1000Gp3_EUR_AC from dbNSFP file
+##1000Gp3_EUR_AF=1000Gp3_EUR_AF from dbNSFP file
+##1000Gp3_SAS_AC=1000Gp3_SAS_AC from dbNSFP file
+##1000Gp3_SAS_AF=1000Gp3_SAS_AF from dbNSFP file
+##ALSPAC_AC=ALSPAC_AC from dbNSFP file
+##ALSPAC_AF=ALSPAC_AF from dbNSFP file
+##APPRIS=APPRIS from dbNSFP file
+##Aloft_Confidence=Aloft_Confidence from dbNSFP file
+##Aloft_Fraction_transcripts_affected=Aloft_Fraction_transcripts_affected from dbNSFP file
+##Aloft_pred=Aloft_pred from dbNSFP file
+##Aloft_prob_Dominant=Aloft_prob_Dominant from dbNSFP file
+##Aloft_prob_Recessive=Aloft_prob_Recessive from dbNSFP file
+##Aloft_prob_Tolerant=Aloft_prob_Tolerant from dbNSFP file
+##AltaiNeandertal=AltaiNeandertal from dbNSFP file
+##Ancestral_allele=Ancestral_allele from dbNSFP file
+##BayesDel_addAF_pred=BayesDel_addAF_pred from dbNSFP file
+##BayesDel_addAF_rankscore=BayesDel_addAF_rankscore from dbNSFP file
+##BayesDel_addAF_score=BayesDel_addAF_score from dbNSFP file
+##BayesDel_noAF_pred=BayesDel_noAF_pred from dbNSFP file
+##BayesDel_noAF_rankscore=BayesDel_noAF_rankscore from dbNSFP file
+##BayesDel_noAF_score=BayesDel_noAF_score from dbNSFP file
+##CADD_phred=CADD_phred from dbNSFP file
+##CADD_phred_hg19=CADD_phred_hg19 from dbNSFP file
+##CADD_raw=CADD_raw from dbNSFP file
+##CADD_raw_hg19=CADD_raw_hg19 from dbNSFP file
+##CADD_raw_rankscore=CADD_raw_rankscore from dbNSFP file
+##CADD_raw_rankscore_hg19=CADD_raw_rankscore_hg19 from dbNSFP file
+##ClinPred_pred=ClinPred_pred from dbNSFP file
+##ClinPred_rankscore=ClinPred_rankscore from dbNSFP file
+##ClinPred_score=ClinPred_score from dbNSFP file
+##DANN_rankscore=DANN_rankscore from dbNSFP file
+##DANN_score=DANN_score from dbNSFP file
+##DEOGEN2_pred=DEOGEN2_pred from dbNSFP file
+##DEOGEN2_rankscore=DEOGEN2_rankscore from dbNSFP file
+##DEOGEN2_score=DEOGEN2_score from dbNSFP file
+##Denisova=Denisova from dbNSFP file
+##ESP6500_AA_AC=ESP6500_AA_AC from dbNSFP file
+##ESP6500_AA_AF=ESP6500_AA_AF from dbNSFP file
+##ESP6500_EA_AC=ESP6500_EA_AC from dbNSFP file
+##ESP6500_EA_AF=ESP6500_EA_AF from dbNSFP file
+##Eigen-PC-phred_coding=Eigen-PC-phred_coding from dbNSFP file
+##Eigen-PC-raw_coding=Eigen-PC-raw_coding from dbNSFP file
+##Eigen-PC-raw_coding_rankscore=Eigen-PC-raw_coding_rankscore from dbNSFP file
+##Eigen-phred_coding=Eigen-phred_coding from dbNSFP file
+##Eigen-raw_coding=Eigen-raw_coding from dbNSFP file
+##Eigen-raw_coding_rankscore=Eigen-raw_coding_rankscore from dbNSFP file
+##Ensembl_geneid=Ensembl_geneid from dbNSFP file
+##Ensembl_proteinid=Ensembl_proteinid from dbNSFP file
+##Ensembl_transcriptid=Ensembl_transcriptid from dbNSFP file
+##ExAC_AC=ExAC_AC from dbNSFP file
+##ExAC_AF=ExAC_AF from dbNSFP file
+##ExAC_AFR_AC=ExAC_AFR_AC from dbNSFP file
+##ExAC_AFR_AF=ExAC_AFR_AF from dbNSFP file
+##ExAC_AMR_AC=ExAC_AMR_AC from dbNSFP file
+##ExAC_AMR_AF=ExAC_AMR_AF from dbNSFP file
+##ExAC_Adj_AC=ExAC_Adj_AC from dbNSFP file
+##ExAC_Adj_AF=ExAC_Adj_AF from dbNSFP file
+##ExAC_EAS_AC=ExAC_EAS_AC from dbNSFP file
+##ExAC_EAS_AF=ExAC_EAS_AF from dbNSFP file
+##ExAC_FIN_AC=ExAC_FIN_AC from dbNSFP file
+##ExAC_FIN_AF=ExAC_FIN_AF from dbNSFP file
+##ExAC_NFE_AC=ExAC_NFE_AC from dbNSFP file
+##ExAC_NFE_AF=ExAC_NFE_AF from dbNSFP file
+##ExAC_SAS_AC=ExAC_SAS_AC from dbNSFP file
+##ExAC_SAS_AF=ExAC_SAS_AF from dbNSFP file
+##ExAC_nonTCGA_AC=ExAC_nonTCGA_AC from dbNSFP file
+##ExAC_nonTCGA_AF=ExAC_nonTCGA_AF from dbNSFP file
+##ExAC_nonTCGA_AFR_AC=ExAC_nonTCGA_AFR_AC from dbNSFP file
+##ExAC_nonTCGA_AFR_AF=ExAC_nonTCGA_AFR_AF from dbNSFP file
+##ExAC_nonTCGA_AMR_AC=ExAC_nonTCGA_AMR_AC from dbNSFP file
+##ExAC_nonTCGA_AMR_AF=ExAC_nonTCGA_AMR_AF from dbNSFP file
+##ExAC_nonTCGA_Adj_AC=ExAC_nonTCGA_Adj_AC from dbNSFP file
+##ExAC_nonTCGA_Adj_AF=ExAC_nonTCGA_Adj_AF from dbNSFP file
+##ExAC_nonTCGA_EAS_AC=ExAC_nonTCGA_EAS_AC from dbNSFP file
+##ExAC_nonTCGA_EAS_AF=ExAC_nonTCGA_EAS_AF from dbNSFP file
+##ExAC_nonTCGA_FIN_AC=ExAC_nonTCGA_FIN_AC from dbNSFP file
+##ExAC_nonTCGA_FIN_AF=ExAC_nonTCGA_FIN_AF from dbNSFP file
+##ExAC_nonTCGA_NFE_AC=ExAC_nonTCGA_NFE_AC from dbNSFP file
+##ExAC_nonTCGA_NFE_AF=ExAC_nonTCGA_NFE_AF from dbNSFP file
+##ExAC_nonTCGA_SAS_AC=ExAC_nonTCGA_SAS_AC from dbNSFP file
+##ExAC_nonTCGA_SAS_AF=ExAC_nonTCGA_SAS_AF from dbNSFP file
+##ExAC_nonpsych_AC=ExAC_nonpsych_AC from dbNSFP file
+##ExAC_nonpsych_AF=ExAC_nonpsych_AF from dbNSFP file
+##ExAC_nonpsych_AFR_AC=ExAC_nonpsych_AFR_AC from dbNSFP file
+##ExAC_nonpsych_AFR_AF=ExAC_nonpsych_AFR_AF from dbNSFP file
+##ExAC_nonpsych_AMR_AC=ExAC_nonpsych_AMR_AC from dbNSFP file
+##ExAC_nonpsych_AMR_AF=ExAC_nonpsych_AMR_AF from dbNSFP file
+##ExAC_nonpsych_Adj_AC=ExAC_nonpsych_Adj_AC from dbNSFP file
+##ExAC_nonpsych_Adj_AF=ExAC_nonpsych_Adj_AF from dbNSFP file
+##ExAC_nonpsych_EAS_AC=ExAC_nonpsych_EAS_AC from dbNSFP file
+##ExAC_nonpsych_EAS_AF=ExAC_nonpsych_EAS_AF from dbNSFP file
+##ExAC_nonpsych_FIN_AC=ExAC_nonpsych_FIN_AC from dbNSFP file
+##ExAC_nonpsych_FIN_AF=ExAC_nonpsych_FIN_AF from dbNSFP file
+##ExAC_nonpsych_NFE_AC=ExAC_nonpsych_NFE_AC from dbNSFP file
+##ExAC_nonpsych_NFE_AF=ExAC_nonpsych_NFE_AF from dbNSFP file
+##ExAC_nonpsych_SAS_AC=ExAC_nonpsych_SAS_AC from dbNSFP file
+##ExAC_nonpsych_SAS_AF=ExAC_nonpsych_SAS_AF from dbNSFP file
+##FATHMM_converted_rankscore=FATHMM_converted_rankscore from dbNSFP file
+##FATHMM_pred=FATHMM_pred from dbNSFP file
+##FATHMM_score=FATHMM_score from dbNSFP file
+##GENCODE_basic=GENCODE_basic from dbNSFP file
+##GERP++_NR=GERP++_NR from dbNSFP file
+##GERP++_RS=GERP++_RS from dbNSFP file
+##GERP++_RS_rankscore=GERP++_RS_rankscore from dbNSFP file
+##GM12878_confidence_value=GM12878_confidence_value from dbNSFP file
+##GM12878_fitCons_rankscore=GM12878_fitCons_rankscore from dbNSFP file
+##GM12878_fitCons_score=GM12878_fitCons_score from dbNSFP file
+##GTEx_V8_gene=GTEx_V8_gene from dbNSFP file
+##GTEx_V8_tissue=GTEx_V8_tissue from dbNSFP file
+##GenoCanyon_rankscore=GenoCanyon_rankscore from dbNSFP file
+##GenoCanyon_score=GenoCanyon_score from dbNSFP file
+##Geuvadis_eQTL_target_gene=Geuvadis_eQTL_target_gene from dbNSFP file
+##H1-hESC_confidence_value=H1-hESC_confidence_value from dbNSFP file
+##H1-hESC_fitCons_rankscore=H1-hESC_fitCons_rankscore from dbNSFP file
+##H1-hESC_fitCons_score=H1-hESC_fitCons_score from dbNSFP file
+##HGVSc_ANNOVAR=HGVSc_ANNOVAR from dbNSFP file
+##HGVSc_VEP=HGVSc_VEP from dbNSFP file
+##HGVSc_snpEff=HGVSc_snpEff from dbNSFP file
+##HGVSp_ANNOVAR=HGVSp_ANNOVAR from dbNSFP file
+##HGVSp_VEP=HGVSp_VEP from dbNSFP file
+##HGVSp_snpEff=HGVSp_snpEff from dbNSFP file
+##HUVEC_confidence_value=HUVEC_confidence_value from dbNSFP file
+##HUVEC_fitCons_rankscore=HUVEC_fitCons_rankscore from dbNSFP file
+##HUVEC_fitCons_score=HUVEC_fitCons_score from dbNSFP file
+##Interpro_domain=Interpro_domain from dbNSFP file
+##LINSIGHT=LINSIGHT from dbNSFP file
+##LINSIGHT_rankscore=LINSIGHT_rankscore from dbNSFP file
+##LIST-S2_pred=LIST-S2_pred from dbNSFP file
+##LIST-S2_rankscore=LIST-S2_rankscore from dbNSFP file
+##LIST-S2_score=LIST-S2_score from dbNSFP file
+##LRT_Omega=LRT_Omega from dbNSFP file
+##LRT_converted_rankscore=LRT_converted_rankscore from dbNSFP file
+##LRT_pred=LRT_pred from dbNSFP file
+##LRT_score=LRT_score from dbNSFP file
+##M-CAP_pred=M-CAP_pred from dbNSFP file
+##M-CAP_rankscore=M-CAP_rankscore from dbNSFP file
+##M-CAP_score=M-CAP_score from dbNSFP file
+##MPC_rankscore=MPC_rankscore from dbNSFP file
+##MPC_score=MPC_score from dbNSFP file
+##MVP_rankscore=MVP_rankscore from dbNSFP file
+##MVP_score=MVP_score from dbNSFP file
+##MetaLR_pred=MetaLR_pred from dbNSFP file
+##MetaLR_rankscore=MetaLR_rankscore from dbNSFP file
+##MetaLR_score=MetaLR_score from dbNSFP file
+##MetaSVM_pred=MetaSVM_pred from dbNSFP file
+##MetaSVM_rankscore=MetaSVM_rankscore from dbNSFP file
+##MetaSVM_score=MetaSVM_score from dbNSFP file
+##MutPred_AAchange=MutPred_AAchange from dbNSFP file
+##MutPred_Top5features=MutPred_Top5features from dbNSFP file
+##MutPred_protID=MutPred_protID from dbNSFP file
+##MutPred_rankscore=MutPred_rankscore from dbNSFP file
+##MutPred_score=MutPred_score from dbNSFP file
+##MutationAssessor_pred=MutationAssessor_pred from dbNSFP file
+##MutationAssessor_rankscore=MutationAssessor_rankscore from dbNSFP file
+##MutationAssessor_score=MutationAssessor_score from dbNSFP file
+##MutationTaster_AAE=MutationTaster_AAE from dbNSFP file
+##MutationTaster_converted_rankscore=MutationTaster_converted_rankscore from dbNSFP file
+##MutationTaster_model=MutationTaster_model from dbNSFP file
+##MutationTaster_pred=MutationTaster_pred from dbNSFP file
+##MutationTaster_score=MutationTaster_score from dbNSFP file
+##PROVEAN_converted_rankscore=PROVEAN_converted_rankscore from dbNSFP file
+##PROVEAN_pred=PROVEAN_pred from dbNSFP file
+##PROVEAN_score=PROVEAN_score from dbNSFP file
+##Polyphen2_HDIV_pred=Polyphen2_HDIV_pred from dbNSFP file
+##Polyphen2_HDIV_rankscore=Polyphen2_HDIV_rankscore from dbNSFP file
+##Polyphen2_HDIV_score=Polyphen2_HDIV_score from dbNSFP file
+##Polyphen2_HVAR_pred=Polyphen2_HVAR_pred from dbNSFP file
+##Polyphen2_HVAR_rankscore=Polyphen2_HVAR_rankscore from dbNSFP file
+##Polyphen2_HVAR_score=Polyphen2_HVAR_score from dbNSFP file
+##PrimateAI_pred=PrimateAI_pred from dbNSFP file
+##PrimateAI_rankscore=PrimateAI_rankscore from dbNSFP file
+##PrimateAI_score=PrimateAI_score from dbNSFP file
+##REVEL_rankscore=REVEL_rankscore from dbNSFP file
+##REVEL_score=REVEL_score from dbNSFP file
+##Reliability_index=Reliability_index from dbNSFP file
+##SIFT4G_converted_rankscore=SIFT4G_converted_rankscore from dbNSFP file
+##SIFT4G_pred=SIFT4G_pred from dbNSFP file
+##SIFT4G_score=SIFT4G_score from dbNSFP file
+##SIFT_converted_rankscore=SIFT_converted_rankscore from dbNSFP file
+##SIFT_pred=SIFT_pred from dbNSFP file
+##SIFT_score=SIFT_score from dbNSFP file
+##SiPhy_29way_logOdds=SiPhy_29way_logOdds from dbNSFP file
+##SiPhy_29way_logOdds_rankscore=SiPhy_29way_logOdds_rankscore from dbNSFP file
+##SiPhy_29way_pi=SiPhy_29way_pi from dbNSFP file
+##TSL=TSL from dbNSFP file
+##TWINSUK_AC=TWINSUK_AC from dbNSFP file
+##TWINSUK_AF=TWINSUK_AF from dbNSFP file
+##UK10K_AC=UK10K_AC from dbNSFP file
+##UK10K_AF=UK10K_AF from dbNSFP file
+##Uniprot_acc=Uniprot_acc from dbNSFP file
+##Uniprot_entry=Uniprot_entry from dbNSFP file
+##VEP_canonical=VEP_canonical from dbNSFP file
+##VEST4_rankscore=VEST4_rankscore from dbNSFP file
+##VEST4_score=VEST4_score from dbNSFP file
+##VindijiaNeandertal=VindijiaNeandertal from dbNSFP file
+##aaalt=aaalt from dbNSFP file
+##aapos=aapos from dbNSFP file
+##aaref=aaref from dbNSFP file
+##alt=alt from dbNSFP file
+##bStatistic=bStatistic from dbNSFP file
+##bStatistic_converted_rankscore=bStatistic_converted_rankscore from dbNSFP file
+##cds_strand=cds_strand from dbNSFP file
+##chr=chr from dbNSFP file
+##clinvar_MedGen_id=clinvar_MedGen_id from dbNSFP file
+##clinvar_OMIM_id=clinvar_OMIM_id from dbNSFP file
+##clinvar_Orphanet_id=clinvar_Orphanet_id from dbNSFP file
+##clinvar_clnsig=clinvar_clnsig from dbNSFP file
+##clinvar_hgvs=clinvar_hgvs from dbNSFP file
+##clinvar_id=clinvar_id from dbNSFP file
+##clinvar_review=clinvar_review from dbNSFP file
+##clinvar_trait=clinvar_trait from dbNSFP file
+##clinvar_var_source=clinvar_var_source from dbNSFP file
+##codon_degeneracy=codon_degeneracy from dbNSFP file
+##codonpos=codonpos from dbNSFP file
+##fathmm-MKL_coding_group=fathmm-MKL_coding_group from dbNSFP file
+##fathmm-MKL_coding_pred=fathmm-MKL_coding_pred from dbNSFP file
+##fathmm-MKL_coding_rankscore=fathmm-MKL_coding_rankscore from dbNSFP file
+##fathmm-MKL_coding_score=fathmm-MKL_coding_score from dbNSFP file
+##fathmm-XF_coding_pred=fathmm-XF_coding_pred from dbNSFP file
+##fathmm-XF_coding_rankscore=fathmm-XF_coding_rankscore from dbNSFP file
+##fathmm-XF_coding_score=fathmm-XF_coding_score from dbNSFP file
+##genename=genename from dbNSFP file
+##gnomAD_exomes_AC=gnomAD_exomes_AC from dbNSFP file
+##gnomAD_exomes_AF=gnomAD_exomes_AF from dbNSFP file
+##gnomAD_exomes_AFR_AC=gnomAD_exomes_AFR_AC from dbNSFP file
+##gnomAD_exomes_AFR_AF=gnomAD_exomes_AFR_AF from dbNSFP file
+##gnomAD_exomes_AFR_AN=gnomAD_exomes_AFR_AN from dbNSFP file
+##gnomAD_exomes_AFR_nhomalt=gnomAD_exomes_AFR_nhomalt from dbNSFP file
+##gnomAD_exomes_AMR_AC=gnomAD_exomes_AMR_AC from dbNSFP file
+##gnomAD_exomes_AMR_AF=gnomAD_exomes_AMR_AF from dbNSFP file
+##gnomAD_exomes_AMR_AN=gnomAD_exomes_AMR_AN from dbNSFP file
+##gnomAD_exomes_AMR_nhomalt=gnomAD_exomes_AMR_nhomalt from dbNSFP file
+##gnomAD_exomes_AN=gnomAD_exomes_AN from dbNSFP file
+##gnomAD_exomes_ASJ_AC=gnomAD_exomes_ASJ_AC from dbNSFP file
+##gnomAD_exomes_ASJ_AF=gnomAD_exomes_ASJ_AF from dbNSFP file
+##gnomAD_exomes_ASJ_AN=gnomAD_exomes_ASJ_AN from dbNSFP file
+##gnomAD_exomes_ASJ_nhomalt=gnomAD_exomes_ASJ_nhomalt from dbNSFP file
+##gnomAD_exomes_EAS_AC=gnomAD_exomes_EAS_AC from dbNSFP file
+##gnomAD_exomes_EAS_AF=gnomAD_exomes_EAS_AF from dbNSFP file
+##gnomAD_exomes_EAS_AN=gnomAD_exomes_EAS_AN from dbNSFP file
+##gnomAD_exomes_EAS_nhomalt=gnomAD_exomes_EAS_nhomalt from dbNSFP file
+##gnomAD_exomes_FIN_AC=gnomAD_exomes_FIN_AC from dbNSFP file
+##gnomAD_exomes_FIN_AF=gnomAD_exomes_FIN_AF from dbNSFP file
+##gnomAD_exomes_FIN_AN=gnomAD_exomes_FIN_AN from dbNSFP file
+##gnomAD_exomes_FIN_nhomalt=gnomAD_exomes_FIN_nhomalt from dbNSFP file
+##gnomAD_exomes_NFE_AC=gnomAD_exomes_NFE_AC from dbNSFP file
+##gnomAD_exomes_NFE_AF=gnomAD_exomes_NFE_AF from dbNSFP file
+##gnomAD_exomes_NFE_AN=gnomAD_exomes_NFE_AN from dbNSFP file
+##gnomAD_exomes_NFE_nhomalt=gnomAD_exomes_NFE_nhomalt from dbNSFP file
+##gnomAD_exomes_POPMAX_AC=gnomAD_exomes_POPMAX_AC from dbNSFP file
+##gnomAD_exomes_POPMAX_AF=gnomAD_exomes_POPMAX_AF from dbNSFP file
+##gnomAD_exomes_POPMAX_AN=gnomAD_exomes_POPMAX_AN from dbNSFP file
+##gnomAD_exomes_POPMAX_nhomalt=gnomAD_exomes_POPMAX_nhomalt from dbNSFP file
+##gnomAD_exomes_SAS_AC=gnomAD_exomes_SAS_AC from dbNSFP file
+##gnomAD_exomes_SAS_AF=gnomAD_exomes_SAS_AF from dbNSFP file
+##gnomAD_exomes_SAS_AN=gnomAD_exomes_SAS_AN from dbNSFP file
+##gnomAD_exomes_SAS_nhomalt=gnomAD_exomes_SAS_nhomalt from dbNSFP file
+##gnomAD_exomes_controls_AC=gnomAD_exomes_controls_AC from dbNSFP file
+##gnomAD_exomes_controls_AF=gnomAD_exomes_controls_AF from dbNSFP file
+##gnomAD_exomes_controls_AFR_AC=gnomAD_exomes_controls_AFR_AC from dbNSFP file
+##gnomAD_exomes_controls_AFR_AF=gnomAD_exomes_controls_AFR_AF from dbNSFP file
+##gnomAD_exomes_controls_AFR_AN=gnomAD_exomes_controls_AFR_AN from dbNSFP file
+##gnomAD_exomes_controls_AFR_nhomalt=gnomAD_exomes_controls_AFR_nhomalt from dbNSFP file
+##gnomAD_exomes_controls_AMR_AC=gnomAD_exomes_controls_AMR_AC from dbNSFP file
+##gnomAD_exomes_controls_AMR_AF=gnomAD_exomes_controls_AMR_AF from dbNSFP file
+##gnomAD_exomes_controls_AMR_AN=gnomAD_exomes_controls_AMR_AN from dbNSFP file
+##gnomAD_exomes_controls_AMR_nhomalt=gnomAD_exomes_controls_AMR_nhomalt from dbNSFP file
+##gnomAD_exomes_controls_AN=gnomAD_exomes_controls_AN from dbNSFP file
+##gnomAD_exomes_controls_ASJ_AC=gnomAD_exomes_controls_ASJ_AC from dbNSFP file
+##gnomAD_exomes_controls_ASJ_AF=gnomAD_exomes_controls_ASJ_AF from dbNSFP file
+##gnomAD_exomes_controls_ASJ_AN=gnomAD_exomes_controls_ASJ_AN from dbNSFP file
+##gnomAD_exomes_controls_ASJ_nhomalt=gnomAD_exomes_controls_ASJ_nhomalt from dbNSFP file
+##gnomAD_exomes_controls_EAS_AC=gnomAD_exomes_controls_EAS_AC from dbNSFP file
+##gnomAD_exomes_controls_EAS_AF=gnomAD_exomes_controls_EAS_AF from dbNSFP file
+##gnomAD_exomes_controls_EAS_AN=gnomAD_exomes_controls_EAS_AN from dbNSFP file
+##gnomAD_exomes_controls_EAS_nhomalt=gnomAD_exomes_controls_EAS_nhomalt from dbNSFP file
+##gnomAD_exomes_controls_FIN_AC=gnomAD_exomes_controls_FIN_AC from dbNSFP file
+##gnomAD_exomes_controls_FIN_AF=gnomAD_exomes_controls_FIN_AF from dbNSFP file
+##gnomAD_exomes_controls_FIN_AN=gnomAD_exomes_controls_FIN_AN from dbNSFP file
+##gnomAD_exomes_controls_FIN_nhomalt=gnomAD_exomes_controls_FIN_nhomalt from dbNSFP file
+##gnomAD_exomes_controls_NFE_AC=gnomAD_exomes_controls_NFE_AC from dbNSFP file
+##gnomAD_exomes_controls_NFE_AF=gnomAD_exomes_controls_NFE_AF from dbNSFP file
+##gnomAD_exomes_controls_NFE_AN=gnomAD_exomes_controls_NFE_AN from dbNSFP file
+##gnomAD_exomes_controls_NFE_nhomalt=gnomAD_exomes_controls_NFE_nhomalt from dbNSFP file
+##gnomAD_exomes_controls_POPMAX_AC=gnomAD_exomes_controls_POPMAX_AC from dbNSFP file
+##gnomAD_exomes_controls_POPMAX_AF=gnomAD_exomes_controls_POPMAX_AF from dbNSFP file
+##gnomAD_exomes_controls_POPMAX_AN=gnomAD_exomes_controls_POPMAX_AN from dbNSFP file
+##gnomAD_exomes_controls_POPMAX_nhomalt=gnomAD_exomes_controls_POPMAX_nhomalt from dbNSFP file
+##gnomAD_exomes_controls_SAS_AC=gnomAD_exomes_controls_SAS_AC from dbNSFP file
+##gnomAD_exomes_controls_SAS_AF=gnomAD_exomes_controls_SAS_AF from dbNSFP file
+##gnomAD_exomes_controls_SAS_AN=gnomAD_exomes_controls_SAS_AN from dbNSFP file
+##gnomAD_exomes_controls_SAS_nhomalt=gnomAD_exomes_controls_SAS_nhomalt from dbNSFP file
+##gnomAD_exomes_controls_nhomalt=gnomAD_exomes_controls_nhomalt from dbNSFP file
+##gnomAD_exomes_flag=gnomAD_exomes_flag from dbNSFP file
+##gnomAD_exomes_nhomalt=gnomAD_exomes_nhomalt from dbNSFP file
+##gnomAD_genomes_AC=gnomAD_genomes_AC from dbNSFP file
+##gnomAD_genomes_AF=gnomAD_genomes_AF from dbNSFP file
+##gnomAD_genomes_AFR_AC=gnomAD_genomes_AFR_AC from dbNSFP file
+##gnomAD_genomes_AFR_AF=gnomAD_genomes_AFR_AF from dbNSFP file
+##gnomAD_genomes_AFR_AN=gnomAD_genomes_AFR_AN from dbNSFP file
+##gnomAD_genomes_AFR_nhomalt=gnomAD_genomes_AFR_nhomalt from dbNSFP file
+##gnomAD_genomes_AMI_AC=gnomAD_genomes_AMI_AC from dbNSFP file
+##gnomAD_genomes_AMI_AF=gnomAD_genomes_AMI_AF from dbNSFP file
+##gnomAD_genomes_AMI_AN=gnomAD_genomes_AMI_AN from dbNSFP file
+##gnomAD_genomes_AMI_nhomalt=gnomAD_genomes_AMI_nhomalt from dbNSFP file
+##gnomAD_genomes_AMR_AC=gnomAD_genomes_AMR_AC from dbNSFP file
+##gnomAD_genomes_AMR_AF=gnomAD_genomes_AMR_AF from dbNSFP file
+##gnomAD_genomes_AMR_AN=gnomAD_genomes_AMR_AN from dbNSFP file
+##gnomAD_genomes_AMR_nhomalt=gnomAD_genomes_AMR_nhomalt from dbNSFP file
+##gnomAD_genomes_AN=gnomAD_genomes_AN from dbNSFP file
+##gnomAD_genomes_ASJ_AC=gnomAD_genomes_ASJ_AC from dbNSFP file
+##gnomAD_genomes_ASJ_AF=gnomAD_genomes_ASJ_AF from dbNSFP file
+##gnomAD_genomes_ASJ_AN=gnomAD_genomes_ASJ_AN from dbNSFP file
+##gnomAD_genomes_ASJ_nhomalt=gnomAD_genomes_ASJ_nhomalt from dbNSFP file
+##gnomAD_genomes_EAS_AC=gnomAD_genomes_EAS_AC from dbNSFP file
+##gnomAD_genomes_EAS_AF=gnomAD_genomes_EAS_AF from dbNSFP file
+##gnomAD_genomes_EAS_AN=gnomAD_genomes_EAS_AN from dbNSFP file
+##gnomAD_genomes_EAS_nhomalt=gnomAD_genomes_EAS_nhomalt from dbNSFP file
+##gnomAD_genomes_FIN_AC=gnomAD_genomes_FIN_AC from dbNSFP file
+##gnomAD_genomes_FIN_AF=gnomAD_genomes_FIN_AF from dbNSFP file
+##gnomAD_genomes_FIN_AN=gnomAD_genomes_FIN_AN from dbNSFP file
+##gnomAD_genomes_FIN_nhomalt=gnomAD_genomes_FIN_nhomalt from dbNSFP file
+##gnomAD_genomes_NFE_AC=gnomAD_genomes_NFE_AC from dbNSFP file
+##gnomAD_genomes_NFE_AF=gnomAD_genomes_NFE_AF from dbNSFP file
+##gnomAD_genomes_NFE_AN=gnomAD_genomes_NFE_AN from dbNSFP file
+##gnomAD_genomes_NFE_nhomalt=gnomAD_genomes_NFE_nhomalt from dbNSFP file
+##gnomAD_genomes_POPMAX_AC=gnomAD_genomes_POPMAX_AC from dbNSFP file
+##gnomAD_genomes_POPMAX_AF=gnomAD_genomes_POPMAX_AF from dbNSFP file
+##gnomAD_genomes_POPMAX_AN=gnomAD_genomes_POPMAX_AN from dbNSFP file
+##gnomAD_genomes_POPMAX_nhomalt=gnomAD_genomes_POPMAX_nhomalt from dbNSFP file
+##gnomAD_genomes_SAS_AC=gnomAD_genomes_SAS_AC from dbNSFP file
+##gnomAD_genomes_SAS_AF=gnomAD_genomes_SAS_AF from dbNSFP file
+##gnomAD_genomes_SAS_AN=gnomAD_genomes_SAS_AN from dbNSFP file
+##gnomAD_genomes_SAS_nhomalt=gnomAD_genomes_SAS_nhomalt from dbNSFP file
+##gnomAD_genomes_flag=gnomAD_genomes_flag from dbNSFP file
+##gnomAD_genomes_nhomalt=gnomAD_genomes_nhomalt from dbNSFP file
+##hg18_chr=hg18_chr from dbNSFP file
+##hg18_pos(1-based)=hg18_pos(1-based) from dbNSFP file
+##hg19_chr=hg19_chr from dbNSFP file
+##hg19_pos(1-based)=hg19_pos(1-based) from dbNSFP file
+##integrated_confidence_value=integrated_confidence_value from dbNSFP file
+##integrated_fitCons_rankscore=integrated_fitCons_rankscore from dbNSFP file
+##integrated_fitCons_score=integrated_fitCons_score from dbNSFP file
+##phastCons100way_vertebrate=phastCons100way_vertebrate from dbNSFP file
+##phastCons100way_vertebrate_rankscore=phastCons100way_vertebrate_rankscore from dbNSFP file
+##phastCons17way_primate=phastCons17way_primate from dbNSFP file
+##phastCons17way_primate_rankscore=phastCons17way_primate_rankscore from dbNSFP file
+##phastCons30way_mammalian=phastCons30way_mammalian from dbNSFP file
+##phastCons30way_mammalian_rankscore=phastCons30way_mammalian_rankscore from dbNSFP file
+##phyloP100way_vertebrate=phyloP100way_vertebrate from dbNSFP file
+##phyloP100way_vertebrate_rankscore=phyloP100way_vertebrate_rankscore from dbNSFP file
+##phyloP17way_primate=phyloP17way_primate from dbNSFP file
+##phyloP17way_primate_rankscore=phyloP17way_primate_rankscore from dbNSFP file
+##phyloP30way_mammalian=phyloP30way_mammalian from dbNSFP file
+##phyloP30way_mammalian_rankscore=phyloP30way_mammalian_rankscore from dbNSFP file
+##pos(1-based)=pos(1-based) from dbNSFP file
+##ref=ref from dbNSFP file
+##refcodon=refcodon from dbNSFP file
+##rs_dbSNP151=rs_dbSNP151 from dbNSFP file
+##SpliceAI_pred_DP_AG=SpliceAI predicted effect on splicing. Delta position for acceptor gain
+##SpliceAI_pred_DP_AL=SpliceAI predicted effect on splicing. Delta position for acceptor loss
+##SpliceAI_pred_DP_DG=SpliceAI predicted effect on splicing. Delta position for donor gain
+##SpliceAI_pred_DP_DL=SpliceAI predicted effect on splicing. Delta position for donor loss
+##SpliceAI_pred_DS_AG=SpliceAI predicted effect on splicing. Delta score for acceptor gain
+##SpliceAI_pred_DS_AL=SpliceAI predicted effect on splicing. Delta score for acceptor loss
+##SpliceAI_pred_DS_DG=SpliceAI predicted effect on splicing. Delta score for donor gain
+##SpliceAI_pred_DS_DL=SpliceAI predicted effect on splicing. Delta score for donor loss
+##SpliceAI_pred_SYMBOL=SpliceAI gene symbol
+##INFO=<ID=ClinVar,Number=.,Type=String,Description="/var/lib/cwl/stg5a5e06ca-ad55-4c58-b48f-d78ec226297d/GAPFI121RWQE.vcf.gz (exact)">
+##INFO=<ID=ClinVar_ALLELEID,Number=.,Type=String,Description="ALLELEID field from /var/lib/cwl/stg5a5e06ca-ad55-4c58-b48f-d78ec226297d/GAPFI121RWQE.vcf.gz">
+##INFO=<ID=ClinVar_CLNSIG,Number=.,Type=String,Description="CLNSIG field from /var/lib/cwl/stg5a5e06ca-ad55-4c58-b48f-d78ec226297d/GAPFI121RWQE.vcf.gz">
+##INFO=<ID=ClinVar_CLNREVSTAT,Number=.,Type=String,Description="CLNREVSTAT field from /var/lib/cwl/stg5a5e06ca-ad55-4c58-b48f-d78ec226297d/GAPFI121RWQE.vcf.gz">
+##INFO=<ID=ClinVar_CLNDN,Number=.,Type=String,Description="CLNDN field from /var/lib/cwl/stg5a5e06ca-ad55-4c58-b48f-d78ec226297d/GAPFI121RWQE.vcf.gz">
+##INFO=<ID=ClinVar_CLNDISDB,Number=.,Type=String,Description="CLNDISDB field from /var/lib/cwl/stg5a5e06ca-ad55-4c58-b48f-d78ec226297d/GAPFI121RWQE.vcf.gz">
+##INFO=<ID=gnomADg,Number=.,Type=String,Description="/var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz (exact)">
+##INFO=<ID=gnomADg_AC,Number=.,Type=String,Description="AC field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AC-XX,Number=.,Type=String,Description="AC-XX field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AC-XY,Number=.,Type=String,Description="AC-XY field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AC-afr,Number=.,Type=String,Description="AC-afr field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AC-ami,Number=.,Type=String,Description="AC-ami field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AC-amr,Number=.,Type=String,Description="AC-amr field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AC-asj,Number=.,Type=String,Description="AC-asj field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AC-eas,Number=.,Type=String,Description="AC-eas field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AC-fin,Number=.,Type=String,Description="AC-fin field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AC-mid,Number=.,Type=String,Description="AC-mid field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AC-nfe,Number=.,Type=String,Description="AC-nfe field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AC-oth,Number=.,Type=String,Description="AC-oth field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AC-sas,Number=.,Type=String,Description="AC-sas field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF,Number=.,Type=String,Description="AF field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF-XX,Number=.,Type=String,Description="AF-XX field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF-XY,Number=.,Type=String,Description="AF-XY field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF-afr,Number=.,Type=String,Description="AF-afr field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF-ami,Number=.,Type=String,Description="AF-ami field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF-amr,Number=.,Type=String,Description="AF-amr field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF-asj,Number=.,Type=String,Description="AF-asj field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF-eas,Number=.,Type=String,Description="AF-eas field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF-fin,Number=.,Type=String,Description="AF-fin field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF-mid,Number=.,Type=String,Description="AF-mid field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF-nfe,Number=.,Type=String,Description="AF-nfe field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF-oth,Number=.,Type=String,Description="AF-oth field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF-sas,Number=.,Type=String,Description="AF-sas field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AF_popmax,Number=.,Type=String,Description="AF_popmax field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN,Number=.,Type=String,Description="AN field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN-XX,Number=.,Type=String,Description="AN-XX field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN-XY,Number=.,Type=String,Description="AN-XY field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN-afr,Number=.,Type=String,Description="AN-afr field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN-ami,Number=.,Type=String,Description="AN-ami field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN-amr,Number=.,Type=String,Description="AN-amr field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN-asj,Number=.,Type=String,Description="AN-asj field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN-eas,Number=.,Type=String,Description="AN-eas field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN-fin,Number=.,Type=String,Description="AN-fin field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN-mid,Number=.,Type=String,Description="AN-mid field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN-nfe,Number=.,Type=String,Description="AN-nfe field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN-oth,Number=.,Type=String,Description="AN-oth field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_AN-sas,Number=.,Type=String,Description="AN-sas field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt,Number=.,Type=String,Description="nhomalt field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt-XX,Number=.,Type=String,Description="nhomalt-XX field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt-XY,Number=.,Type=String,Description="nhomalt-XY field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt-afr,Number=.,Type=String,Description="nhomalt-afr field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt-ami,Number=.,Type=String,Description="nhomalt-ami field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt-amr,Number=.,Type=String,Description="nhomalt-amr field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt-asj,Number=.,Type=String,Description="nhomalt-asj field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt-eas,Number=.,Type=String,Description="nhomalt-eas field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt-fin,Number=.,Type=String,Description="nhomalt-fin field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt-mid,Number=.,Type=String,Description="nhomalt-mid field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt-nfe,Number=.,Type=String,Description="nhomalt-nfe field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt-oth,Number=.,Type=String,Description="nhomalt-oth field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+##INFO=<ID=gnomADg_nhomalt-sas,Number=.,Type=String,Description="nhomalt-sas field from /var/lib/cwl/stg353ab7ed-b5dd-4777-bdfd-a551e81b030d/GAPFIJOMA2Q8.vcf.gz">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	NA12877_sample	NA12878_sample	NA12879_sample
+chr1	94051711	.	G	C	526.25	.	AC=1;AF=0.167;AN=6;BaseQRankSum=0;DP=133;ExcessHet=3.01;FS=5.937;MLEAC=1;MLEAF=0.167;MQ=60;MQRankSum=0;QD=9.93;ReadPosRankSum=-2.075;SOR=0.582;CSQ=C|missense_variant|MODIFIER|ABCA4|ENSG00000198691|Transcript|ENST00000370225|protein_coding||16/49|ENST00000370225.4:c.2588-12C>G|||||||rs61751396||-1||SNV|HGNC|HGNC:34|YES|NM_000350.3|1|P1|CCDS747.1|ENSP00000359245|P78363||UPI000012511C||1||||||0.0004|0|0|0|0.002|0|0|0.003837|0.002188|0.000432|0.0008682|0.008454|0.0001091|0.00222|0.003022|0.0008167|0.0009508|0.008454|gnomAD_ASJ|likely_benign&uncertain_significance&benign||1|28118664&21911583|ClinVar::RCV000408485&RCV000211875&VCV000099148&RCV000085493--PhenCode::RISN_ABCR:c.2588-12C>G||||||||10.872|0.313|11.185|||||||||||||||P1||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||1|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||9|-15|47|-15|0.00|0.01|0.00|0.00|ABCA4|99148|105037|Conflicting_interpretations_of_pathogenicity|criteria_provided&_conflicting_interpretations|Stargardt_disease_1&not_specified&ABCA4-Related_Disorders&not_provided|MONDO:MONDO:0009549&MeSH:C535804&MedGen:C1855465&OMIM:248200&Orphanet:ORPHA364055&MedGen:CN169374&MedGen:CN239167&MedGen:CN517202|rs61751396|269|145|124|10|0|6|24|0|20|0|198|6|5|0.00176748|0.00186260|0.00166788|0.000241243|0.00000|0.000392773|0.00692042|0.00000|0.00188395|0.00000|0.00291022|0.00286807|0.00103605|0.00291022|152194|77848|74346|41452|912|15276|3468|5200|10616|316|68036|2092|4826|1|0|1|0|0|0|0|0|0|0|1|0|0,C|missense_variant|MODIFIER|ABCA4|ENSG00000198691|Transcript|ENST00000536513|protein_coding||1/27|ENST00000536513.5:c.-65+11464C>G|||||||rs61751396||-1||SNV|HGNC|HGNC:34|||1|||ENSP00000439707||F6TT59|UPI0002065063||1||||||0.0004|0|0|0|0.002|0|0|0.003837|0.002188|0.000432|0.0008682|0.008454|0.0001091|0.00222|0.003022|0.0008167|0.0009508|0.008454|gnomAD_ASJ|likely_benign&uncertain_significance&benign||1|28118664&21911583|ClinVar::RCV000408485&RCV000211875&VCV000099148&RCV000085493--PhenCode::RISN_ABCR:c.2588-12C>G|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||1|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||9|-15|47|-15|0.00|0.01|0.00|0.00|ABCA4|99148|105037|Benign|criteria_provided&_conflicting_interpretations|Stargardt_disease_1&not_specified&ABCA4-Related_Disorders&not_provided|MONDO:MONDO:0009549&MeSH:C535804&MedGen:C1855465&OMIM:248200&Orphanet:ORPHA364055&MedGen:CN169374&MedGen:CN239167&MedGen:CN517202|rs61751396|269|145|124|10|0|6|24|0|20|0|198|6|5|0.00176748|0.00186260|0.00166788|0.000241243|0.00000|0.000392773|0.00692042|0.00000|0.00188395|0.00000|0.00291022|0.00286807|0.00103605|0.00291022|152194|77848|74346|41452|912|15276|3468|5200|10616|316|68036|2092|4826|1|0|1|0|0|0|0|0|0|0|1|0|0	GT:AD:DP:GQ:PL	0/1:33,20:53:99:535,0,987	0/0:39,0:39:99:0,99,1485	0/0:40,0:40:99:0,108,1356
+chr1	94051712	.	G	C	526.25	.	AC=1;AF=0.167;AN=6;BaseQRankSum=0;DP=133;ExcessHet=3.01;FS=5.937;MLEAC=1;MLEAF=0.167;MQ=60;MQRankSum=0;QD=9.93;ReadPosRankSum=-2.075;SOR=0.582;CSQ=C|inframe_insertion&start_lost|MODIFIER|ABCA4|ENSG00000198691|Transcript|ENST00000370225|protein_coding||16/49|ENST00000370225.4:c.2588-12C>G|||||||rs61751396||-1||SNV|HGNC|HGNC:34|YES|NM_000350.3|1|P1|CCDS747.1|ENSP00000359245|P78363||UPI000012511C||1||||||0.0004|0|0|0|0.002|0|0|0.003837|0.002188|0.000432|0.0008682|0.008454|0.0001091|0.00222|0.003022|0.0008167|0.0009508|0.008454|gnomAD_ASJ|likely_benign&uncertain_significance&benign||1|28118664&21911583|ClinVar::RCV000408485&RCV000211875&VCV000099148&RCV000085493--PhenCode::RISN_ABCR:c.2588-12C>G||||||||10.872|0.313|11.185|||||||||||||||P1||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||1|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||9|-15|47|-15|0.00|0.01|0.20|0.00|ABCA4|99148|105037|Benign|criteria_provided&_conflicting_interpretations|Stargardt_disease_1&not_specified&ABCA4-Related_Disorders&not_provided|MONDO:MONDO:0009549&MeSH:C535804&MedGen:C1855465&OMIM:248200&Orphanet:ORPHA364055&MedGen:CN169374&MedGen:CN239167&MedGen:CN517202|rs61751396|269|145|124|10|0|6|24|0|20|0|198|6|5|0.00176748|0.00186260|0.00166788|0.000241243|0.00000|0.000392773|0.00692042|0.00000|0.00188395|0.00000|0.00291022|0.00286807|0.00103605|0.00291022|152194|77848|74346|41452|912|15276|3468|5200|10616|316|68036|2092|4826|1|0|1|0|0|0|0|0|0|0|1|0|0	GT:AD:DP:GQ:PL	0/1:33,20:53:99:535,0,987	0/0:39,0:39:99:0,99,1485	0/0:40,0:40:99:0,108,1356
+chr1	94051715	.	G	C	526.25	.	AC=1;AF=0.167;AN=6;BaseQRankSum=0;DP=133;ExcessHet=3.01;FS=5.937;MLEAC=1;MLEAF=0.167;MQ=60;MQRankSum=0;QD=9.93;ReadPosRankSum=-2.075;SOR=0.582;CSQ=C|intron_variant|MODIFIER|ABCA4|ENSG00000198691|Transcript|ENST00000536513|protein_coding||1/27|ENST00000536513.5:c.-65+11464C>G|||||||rs61751396||-1||SNV|HGNC|HGNC:34|||1|||ENSP00000439707||F6TT59|UPI0002065063||1||||||0.0004|0|0|0|0.002|0|0|0.003837|0.002188|0.000432|0.0008682|0.008454|0.0001091|0.00222|0.003022|0.0008167|0.0009508|0.008454|gnomAD_ASJ|likely_benign&uncertain_significance&benign||1|28118664&21911583|ClinVar::RCV000408485&RCV000211875&VCV000099148&RCV000085493--PhenCode::RISN_ABCR:c.2588-12C>G|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||1|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||9|-15|47|-15|0.8|0.01|0.00|0.00|ABCA4|99148|105037|Uncertain_significance|criteria_provided&_conflicting_interpretations|Stargardt_disease_1&not_specified&ABCA4-Related_Disorders&not_provided|MONDO:MONDO:0009549&MeSH:C535804&MedGen:C1855465&OMIM:248200&Orphanet:ORPHA364055&MedGen:CN169374&MedGen:CN239167&MedGen:CN517202|rs61751396|269|145|124|10|0|6|24|0|20|0|198|6|5|0.00176748|0.00186260|0.00166788|0.000241243|0.00000|0.000392773|0.00692042|0.00000|0.00188395|0.00000|0.00291022|0.00286807|0.00103605|0.00291022|152194|77848|74346|41452|912|15276|3468|5200|10616|316|68036|2092|4826|1|0|1|0|0|0|0|0|0|0|1|0|0	GT:AD:DP:GQ:PL	0/1:33,20:53:99:535,0,987	0/0:39,0:39:99:0,99,1485	0/0:40,0:40:99:0,108,1356
+chr1	94051718	.	G	C	526.25	.	AC=1;AF=0.167;AN=6;BaseQRankSum=0;DP=133;ExcessHet=3.01;FS=5.937;MLEAC=1;MLEAF=0.167;MQ=60;MQRankSum=0;QD=9.93;ReadPosRankSum=-2.075;SOR=0.582;CSQ=C|intron_variant|MODIFIER|ABCA4|ENSG00000198691|Transcript|ENST00000370225|protein_coding||16/49|ENST00000370225.4:c.2588-12C>G|||||||rs61751396||-1||SNV|HGNC|HGNC:34|YES|NM_000350.3|1|P1|CCDS747.1|ENSP00000359245|P78363||UPI000012511C||1||||||0.0004|0|0|0|0.002|0|0|0.003837|0.002188|0.000432|0.0008682|0.008454|0.0001091|0.00222|0.003022|0.0008167|0.0009508|0.008454|gnomAD_ASJ|likely_benign&uncertain_significance&benign||1|28118664&21911583|ClinVar::RCV000408485&RCV000211875&VCV000099148&RCV000085493--PhenCode::RISN_ABCR:c.2588-12C>G||||||||10.872|0.313|11.185|||||||||||||||P1||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||1|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||9|-15|47|-15|0.00|0.025|0.00|0.92|ABCA4|99148|105037|risk_factor|criteria_provided&_conflicting_interpretations|Stargardt_disease_1&not_specified&ABCA4-Related_Disorders&not_provided|MONDO:MONDO:0009549&MeSH:C535804&MedGen:C1855465&OMIM:248200&Orphanet:ORPHA364055&MedGen:CN169374&MedGen:CN239167&MedGen:CN517202|rs61751396|269|145|124|10|0|6|24|0|20|0|198|6|5|0.00176748|0.00186260|0.00166788|0.000241243|0.00000|0.000392773|0.00692042|0.00000|0.00188395|0.00000|0.00291022|0.00286807|0.00103605|0.00291022|152194|77848|74346|41452|912|15276|3468|5200|10616|316|68036|2092|4826|1|0|1|0|0|0|0|0|0|0|1|0|0	GT:AD:DP:GQ:PL	0/1:33,20:53:99:535,0,987	0/0:39,0:39:99:0,99,1485	0/0:40,0:40:99:0,108,1356
+chr1	94051719	.	G	C	526.25	.	AC=1;AF=0.167;AN=6;BaseQRankSum=0;DP=133;ExcessHet=3.01;FS=5.937;MLEAC=1;MLEAF=0.167;MQ=60;MQRankSum=0;QD=9.93;ReadPosRankSum=-2.075;SOR=0.582	GT:AD:DP:GQ:PL	0/1:33,20:53:99:535,0,987	0/0:39,0:39:99:0,99,1485	0/0:40,0:40:99:0,108,1356
+chr1	94051720	.	G	C	526.25	.	AC=1;AF=0.167;AN=6;BaseQRankSum=0;DP=133;ExcessHet=3.01;FS=5.937;MLEAC=1;MLEAF=0.167;MQ=60;MQRankSum=0;QD=9.93;ReadPosRankSum=-2.075;SOR=0.582	GT:AD:DP:GQ:PL	0/1:33,20:53:99:535,0,987	0/0:39,0:39:99:0,99,1485	0/0:40,0:40:99:0,108,1356
+chr1	94051720	.	G	C	526.25	.	AC=1;AF=0.167;AN=6;BaseQRankSum=0;DP=133;ExcessHet=3.01;FS=5.937;MLEAC=1;MLEAF=0.167;MQ=60;MQRankSum=0;QD=9.93;ReadPosRankSum=-2.075;SOR=0.582	GT:AD:DP:GQ:PL	0/1:33,20:53:99:535,0,987	0/0:39,0:39:99:0,99,1485	0/0:40,0:40:99:0,108,1356
+chr1	94051720	.	G	C	526.25	.	AC=1;AF=0.167;AN=6;BaseQRankSum=0;DP=133;ExcessHet=3.01;FS=5.937;MLEAC=1;MLEAF=0.167;MQ=60;MQRankSum=0;QD=9.93;ReadPosRankSum=-2.075;SOR=0.582;CSQ=C|start_lost&frameshift_variant|MODIFIER|ABCA4|ENSG00000198691|Transcript|ENST00000370225|protein_coding||16/49|ENST00000370225.4:c.2588-12C>G|||||||rs61751396||-1||SNV|HGNC|HGNC:34|YES|NM_000350.3|1|P1|CCDS747.1|ENSP00000359245|P78363||UPI000012511C||1||||||0.0004|0|0|0|0.002|0|0|0.003837|0.002188|0.000432|0.0008682|0.008454|0.0001091|0.00222|0.003022|0.0008167|0.0009508|0.008454|gnomAD_ASJ|likely_benign&uncertain_significance&benign||1|28118664&21911583|ClinVar::RCV000408485&RCV000211875&VCV000099148&RCV000085493--PhenCode::RISN_ABCR:c.2588-12C>G||||||||10.872|0.313|11.185|||||||||||||||P1||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||1|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||9|-15|47|-15|0.00|0.01|0.00|0.00|ABCA4|99148|105037|Benign|criteria_provided&_conflicting_interpretations|Stargardt_disease_1&not_specified&ABCA4-Related_Disorders&not_provided|MONDO:MONDO:0009549&MeSH:C535804&MedGen:C1855465&OMIM:248200&Orphanet:ORPHA364055&MedGen:CN169374&MedGen:CN239167&MedGen:CN517202|rs61751396|269|145|124|10|0|6|24|0|20|0|198|6|5|0.00176748|0.00186260|0.00166788|0.000241243|0.00000|0.000392773|0.00692042|0.00000|0.00188395|0.00000|0.00291022|0.00286807|0.00103605|0.00291022|152194|77848|74346|41452|912|15276|3468|5200|10616|316|68036|2092|4826|1|0|1|0|0|0|0|0|0|0|1|0|0,C|missense_variant|MODIFIER|ABCA4|ENSG00000198691|Transcript|ENST00000536513|protein_coding||1/27|ENST00000536513.5:c.-65+11464C>G|||||||rs61751396||-1||SNV|HGNC|HGNC:34|||1|||ENSP00000439707||F6TT59|UPI0002065063||1||||||0.0004|0|0|0|0.002|0|0|0.003837|0.002188|0.000432|0.0008682|0.008454|0.0001091|0.00222|0.003022|0.0008167|0.0009508|0.008454|gnomAD_ASJ|likely_benign&uncertain_significance&benign||1|28118664&21911583|ClinVar::RCV000408485&RCV000211875&VCV000099148&RCV000085493--PhenCode::RISN_ABCR:c.2588-12C>G|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||1|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||9|-15|47|-15|0.00|0.01|0.00|0.82|ABCA4|99148|105037|Likely_pathogenic|criteria_provided&_conflicting_interpretations|Stargardt_disease_1&not_specified&ABCA4-Related_Disorders&not_provided|MONDO:MONDO:0009549&MeSH:C535804&MedGen:C1855465&OMIM:248200&Orphanet:ORPHA364055&MedGen:CN169374&MedGen:CN239167&MedGen:CN517202|rs61751396|269|145|124|10|0|6|24|0|20|0|198|6|5|0.00176748|0.00186260|0.00166788|0.000241243|0.00000|0.000392773|0.00692042|0.00000|0.00188395|0.00000|0.00291022|0.00286807|0.00103605|0.00291022|152194|77848|74346|41452|912|15276|3468|5200|10616|316|68036|2092|4826|1|0|1|0|0|0|0|0|0|0|1|0|0	GT:AD:DP:GQ:PL	0/1:33,20:53:99:535,0,987	0/0:39,0:39:99:0,99,1485	0/0:40,0:40:99:0,108,1356
+chr1	94051721	.	G	C	526.25	.	AC=1;AF=0.167;AN=6;BaseQRankSum=0;DP=133;ExcessHet=3.01;FS=5.937;MLEAC=1;MLEAF=0.167;MQ=60;MQRankSum=0;QD=9.93;ReadPosRankSum=-2.075;SOR=0.582;CSQ=C|synonymous_variant|MODIFIER|ABCA4|ENSG00000198691|Transcript|ENST00000370225|protein_coding||16/49|ENST00000370225.4:c.2588-12C>G|||||||rs61751396||-1||SNV|HGNC|HGNC:34|YES|NM_000350.3|1|P1|CCDS747.1|ENSP00000359245|P78363||UPI000012511C||1||||||0.0004|0|0|0|0.002|0|0|0.003837|0.002188|0.000432|0.0008682|0.008454|0.0001091|0.00222|0.003022|0.0008167|0.0009508|0.008454|gnomAD_ASJ|likely_benign&uncertain_significance&benign||1|28118664&21911583|ClinVar::RCV000408485&RCV000211875&VCV000099148&RCV000085493--PhenCode::RISN_ABCR:c.2588-12C>G||||||||10.872|0.313|11.185|||||||||||||||P1||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||1|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||9|-15|47|-15|0.00|0.01|0.00|0.00|ABCA4|99148|105037|risk_factor|criteria_provided&_conflicting_interpretations|Stargardt_disease_1&not_specified&ABCA4-Related_Disorders&not_provided|MONDO:MONDO:0009549&MeSH:C535804&MedGen:C1855465&OMIM:248200&Orphanet:ORPHA364055&MedGen:CN169374&MedGen:CN239167&MedGen:CN517202|rs61751396|269|145|124|10|0|6|24|0|20|0|198|6|5|0.00176748|0.00186260|0.00166788|0.000241243|0.00000|0.000392773|0.00692042|0.00000|0.00188395|0.00000|0.00291022|0.00286807|0.00103605|0.00291022|152194|77848|74346|41452|912|15276|3468|5200|10616|316|68036|2092|4826|1|0|1|0|0|0|0|0|0|0|1|0|0,C|stop_gained&protein_altering_variant|MODIFIER|ABCA4|ENSG00000198691|Transcript|ENST00000536513|protein_coding||1/27|ENST00000536513.5:c.-65+11464C>G|||||||rs61751396||-1||SNV|HGNC|HGNC:34|||1|||ENSP00000439707||F6TT59|UPI0002065063||1||||||0.0004|0|0|0|0.002|0|0|0.003837|0.002188|0.000432|0.0008682|0.008454|0.0001091|0.00222|0.003022|0.0008167|0.0009508|0.008454|gnomAD_ASJ|likely_benign&uncertain_significance&benign||1|28118664&21911583|ClinVar::RCV000408485&RCV000211875&VCV000099148&RCV000085493--PhenCode::RISN_ABCR:c.2588-12C>G|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||1|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||9|-15|47|-15|0.00|0.01|0.00|0.00|ABCA4|99148|105037|Likely_benign|criteria_provided&_conflicting_interpretations|Stargardt_disease_1&not_specified&ABCA4-Related_Disorders&not_provided|MONDO:MONDO:0009549&MeSH:C535804&MedGen:C1855465&OMIM:248200&Orphanet:ORPHA364055&MedGen:CN169374&MedGen:CN239167&MedGen:CN517202|rs61751396|269|145|124|10|0|6|24|0|20|0|198|6|5|0.00176748|0.00186260|0.00166788|0.000241243|0.00000|0.000392773|0.00692042|0.00000|0.00188395|0.00000|0.00291022|0.00286807|0.00103605|0.00291022|152194|77848|74346|41452|912|15276|3468|5200|10616|316|68036|2092|4826|1|0|1|0|0|0|0|0|0|0|1|0|0	GT:AD:DP:GQ:PL	0/1:33,20:53:99:535,0,987	0/0:39,0:39:99:0,99,1485	0/0:40,0:40:99:0,108,1356
+chr1	94051725	.	G	C	526.25	.	AC=1;AF=0.167;AN=6;BaseQRankSum=0;DP=133;ExcessHet=3.01;FS=5.937;MLEAC=1;MLEAF=0.167;MQ=60;MQRankSum=0;QD=9.93;ReadPosRankSum=-2.075;SOR=0.582;CSQ=C|intron_variant|MODIFIER|ABCA4|ENSG00000198691|Transcript|ENST00000370225|protein_coding||16/49|ENST00000370225.4:c.2588-12C>G|||||||rs61751396||-1||SNV|HGNC|HGNC:34|YES|NM_000350.3|1|P1|CCDS747.1|ENSP00000359245|P78363||UPI000012511C||1||||||0.0004|0|0|0|0.002|0|0|0.003837|0.002188|0.000432|0.0008682|0.008454|0.0001091|0.00222|0.003022|0.0008167|0.0009508|0.008454|gnomAD_ASJ|likely_benign&uncertain_significance&benign||1|28118664&21911583|ClinVar::RCV000408485&RCV000211875&VCV000099148&RCV000085493--PhenCode::RISN_ABCR:c.2588-12C>G||||||||10.872|0.313|11.185|||||||||||||||P1||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||1|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||9|-15|47|-15|0.81|0.01|0.00|0.00|ABCA4|99148|105037|Likely_benign|criteria_provided&_conflicting_interpretations|Stargardt_disease_1&not_specified&ABCA4-Related_Disorders&not_provided|MONDO:MONDO:0009549&MeSH:C535804&MedGen:C1855465&OMIM:248200&Orphanet:ORPHA364055&MedGen:CN169374&MedGen:CN239167&MedGen:CN517202|rs61751396|269|145|124|10|0|6|24|0|20|0|198|6|5|0.00176748|0.00186260|0.00166788|0.000241243|0.00000|0.000392773|0.00692042|0.00000|0.00188395|0.00000|0.00291022|0.00286807|0.00103605|0.00291022|152194|77848|74346|41452|912|15276|3468|5200|10616|316|68036|2092|4826|1|0|1|0|0|0|0|0|0|0|1|0|0,C|intron_variant|MODIFIER|ABCA4|ENSG00000198691|Transcript|ENST00000536513|protein_coding||1/27|ENST00000536513.5:c.-65+11464C>G|||||||rs61751396||-1||SNV|HGNC|HGNC:34|||1|||ENSP00000439707||F6TT59|UPI0002065063||1||||||0.0004|0|0|0|0.002|0|0|0.003837|0.002188|0.000432|0.0008682|0.008454|0.0001091|0.00222|0.003022|0.0008167|0.0009508|0.008454|gnomAD_ASJ|likely_benign&uncertain_significance&benign||1|28118664&21911583|ClinVar::RCV000408485&RCV000211875&VCV000099148&RCV000085493--PhenCode::RISN_ABCR:c.2588-12C>G|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||1|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||9|-15|47|-15|0.81|0.01|0.00|0.00|ABCA4|99148|105037|Uncertain_significance|criteria_provided&_conflicting_interpretations|Stargardt_disease_1&not_specified&ABCA4-Related_Disorders&not_provided|MONDO:MONDO:0009549&MeSH:C535804&MedGen:C1855465&OMIM:248200&Orphanet:ORPHA364055&MedGen:CN169374&MedGen:CN239167&MedGen:CN517202|rs61751396|269|145|124|10|0|6|24|0|20|0|198|6|5|0.00176748|0.00186260|0.00166788|0.000241243|0.00000|0.000392773|0.00692042|0.00000|0.00188395|0.00000|0.00291022|0.00286807|0.00103605|0.00291022|152194|77848|74346|41452|912|15276|3468|5200|10616|316|68036|2092|4826|1|0|1|0|0|0|0|0|0|0|1|0|0	GT:AD:DP:GQ:PL	0/1:33,20:53:99:535,0,987	0/0:39,0:39:99:0,99,1485	0/0:40,0:40:99:0,108,1356

@@ -78,7 +78,7 @@ def main():
     comHet_parser.add_argument('--sep', help='by default the program uses "&" as separator for subfields in annotating VCF (e.g. ENST00000643759&ENST00000643774), use this parameter to specify a different separator to be used', type=str, required=False)
     comHet_parser.add_argument('--filter_cmpHet', help='by default the program returns all variants in the input VCF file. This flag will produce a shorter output containing only variants that are potential compound heterozygous', action='store_true', required=False)
     comHet_parser.add_argument('--allow_undef', help='by default the program ignores variants with undefined genotype in parents. This flag extends the output to include these cases', action='store_true', required=False)
-    comHet_parser.add_argument('--SpliceAItag', help='by default the program will search for "SpliceAI" TAG (SpliceAI=<float>), use this parameter to specify a different TAG | TAG field to be used (e.g. DS_DG)', type=str, required=False)
+    comHet_parser.add_argument('--SpliceAItag', help='by default the program will search for SpliceAI delta scores (DS_AG, DS_AL, DS_DG, DS_DL) to calculate the max delta score for the variant. If a max value is already defined, use this parameter to specify the TAG | TAG field to be used', type=str, required=False)
     comHet_parser.add_argument('--impact', help='use VEP "IMPACT" or "Consequence" terms to assign an impact to potential compound heterozygous. If available, SpliceAI and CLINVAR "CLNSIG" information is used together with VEP', action='store_true', required=False)
     comHet_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
@@ -110,8 +110,8 @@ def main():
 
     whiteList_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     whiteList_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
-    whiteList_parser.add_argument('--SpliceAI', help='threshold to whitelist variants by SpliceAI value (>=)', type=float, required=False)
-    whiteList_parser.add_argument('--SpliceAItag', help='by default the program will search for "SpliceAI" TAG (SpliceAI=<float>), use this parameter to specify a different TAG | TAG field to be used (e.g. DS_DG)', type=str, required=False)
+    whiteList_parser.add_argument('--SpliceAI', help='threshold to whitelist variants by SpliceAI delta scores value (>=)', type=float, required=False)
+    whiteList_parser.add_argument('--SpliceAItag', help='by default the program will search for SpliceAI delta scores (DS_AG, DS_AL, DS_DG, DS_DL) to calculate the max delta score for the variant. If a max value is already defined, use this parameter to specify the TAG | TAG field to be used', type=str, required=False)
     whiteList_parser.add_argument('--CLINVAR', help='flag to whitelist all variants with a CLINVAR entry [ALLELEID]', action='store_true', required=False)
     whiteList_parser.add_argument('--CLINVARonly', help='CLINVAR "CLNSIG" terms or keywords to be saved. Sets for whitelist only CLINVAR variants with specified terms or keywords', nargs='+', required=False)
     whiteList_parser.add_argument('--CLINVARtag', help='by default the program will search for CLINVAR "ALLELEID" TAG, use this parameter to specify a different TAG to be used', type=str, required=False)
@@ -135,8 +135,8 @@ def main():
     cleanVCF_parser.add_argument('--VEPrescue', help='additional terms to overrule removed flags to rescue annotations', nargs='+', required=False)
     cleanVCF_parser.add_argument('--VEPremove', help='additional terms to be removed from annotations', nargs='+', required=False)
     cleanVCF_parser.add_argument('--VEPsep', help='by default the program expects "&" as separator for subfields in VEP (e.g. intron_variant&splice_region_variant), use this parameter to specify a different separator to be used', type=str, required=False)
-    cleanVCF_parser.add_argument('--SpliceAI', help='threshold to save intronic annotations, from VEP "Consequence", for variants by SpliceAI value (>=)', type=float, required=False)
-    cleanVCF_parser.add_argument('--SpliceAItag', help='by default the program will search for "SpliceAI" TAG (SpliceAI=<float>), use this parameter to specify a different TAG | TAG field to be used (e.g. DS_DG)', type=str, required=False)
+    cleanVCF_parser.add_argument('--SpliceAI', help='threshold to save intronic annotations, from VEP "Consequence", for variants by SpliceAI delta scores value (>=)', type=float, required=False)
+    cleanVCF_parser.add_argument('--SpliceAItag', help='by default the program will search for SpliceAI delta scores (DS_AG, DS_AL, DS_DG, DS_DL) to calculate the max delta score for the variant. If a max value is already defined, use this parameter to specify the TAG | TAG field to be used', type=str, required=False)
     cleanVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add geneList to subparsers

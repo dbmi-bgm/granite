@@ -23,6 +23,7 @@ from granite.lib.shared_functions import *
 from granite.lib import vcf_parser
 # shared_vars
 from granite.lib.shared_vars import VEP_encode
+from granite.lib.shared_vars import DStags
 
 
 #################################################################
@@ -520,6 +521,7 @@ def main(args, test=False):
                       ('Conflicting_interpretations', 'c'), ('Uncertain_significance', 'c'), ('risk_factor', 'c')
                     ]
     # VEP_encode = {...} -> import from shared_vars
+    # DStags = {...} -> import from shared_vars
     IMPCT_encode = {'HIGH': 1, 'MODERATE': 2, 'LOW': 3, 'MODIFIER': 4}
     IMPCT_decode = {1: 'H', 2: 'M', 3: 'L', 4: 'm'}
 
@@ -527,9 +529,9 @@ def main(args, test=False):
     is_impct = True if args['impact'] else False
     is_IMPACT = False # True if IMPACT field is in VEP
     CLNSIGtag, CLNSIG_idx, is_CLNSIG = '', 0, False
-    SpAItag, SpAI_idx, is_SpAI = '', 0, False
+    SpAItag_list, SpAI_idx_list, is_SpAI = [], [], False
     ENSG_idx, ENST_idx, IMPCT_idx = 0, 0, 0
-    SpliceAItag = args['SpliceAItag'] if args['SpliceAItag'] else 'SpliceAI'
+    SpliceAItag = args['SpliceAItag'] # default None
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'CSQ'
     sep = args['sep'] if args['sep'] else '&'
     allow_undef = True if args['allow_undef'] else False
@@ -592,7 +594,17 @@ def main(args, test=False):
             #end try
         #end try
         try:
-            SpAItag, SpAI_idx = vcf_obj.header.check_tag_definition(SpliceAItag)
+            if SpliceAItag: # single tag has been specified
+                tag, idx = vcf_obj.header.check_tag_definition(SpliceAItag)
+                SpAItag_list.append(tag)
+                SpAI_idx_list.append(idx)
+            else: # search for delta scores as default
+                for DStag in DStags:
+                    tag, idx = vcf_obj.header.check_tag_definition(DStag)
+                    SpAItag_list.append(tag)
+                    SpAI_idx_list.append(idx)
+                #end for
+            #end if
             is_SpAI = True
         except Exception: is_SpAI = False
         #end try
@@ -681,13 +693,31 @@ def main(args, test=False):
             #end if
             # SpliceAI
             if is_SpAI:
-                SpAI_val = get_tag_idx(vnt_obj, SpAItag, SpAI_idx)
-                if SpAI_val and float(SpAI_val) >= 0.2:
-                    vntHet_obj.add_SpAI(float(SpAI_val))
+                # if SpliceAI is within VEP
+                # fetching only the first transcript
+                # expected the same scores for all transcripts
+                SpAI_vals = []
+                for i, SpAItag in enumerate(SpAItag_list):
+                    SpAI_val = get_tag_idx(vnt_obj, SpAItag, SpAI_idx_list[i])
+                    # if SpliceAI is with VEP and is at the end of Format
+                    # need to remove , that separate next transcript
+                    try: SpAI_vals.append(float(SpAI_val.split(',')[0]))
+                    except Exception:
+                        break
+                    #end try
+                #end for
+                if SpAI_vals:
+                    max_SpAI_vals = max(SpAI_vals)
+                    if max_SpAI_vals >= 0.2:
+                        vntHet_obj.add_SpAI(max_SpAI_vals)
+                    #end if
                 #end if
             #end if
             # CLINVAR
             if is_CLNSIG:
+                # if CLNSIG is within VEP
+                # fetching only the first transcript
+                # expected the same CLNSIG for all transcripts
                 CLNSIG_val = get_tag_idx(vnt_obj, CLNSIGtag, CLNSIG_idx)
                 if CLNSIG_val:
                     vntHet_obj.add_CLINVAR(CLNSIG_val, CLNSIG_encode)

@@ -22,6 +22,7 @@ from granite.lib.shared_functions import *
 from granite.lib import vcf_parser
 # shared_vars
 from granite.lib.shared_vars import VEPremove
+from granite.lib.shared_vars import DStags
 
 
 #################################################################
@@ -37,10 +38,11 @@ def main(args):
     # Variables
     VEPrescue, consequence_idx = {}, 0
     # VEPremove = {...} -> import from shared_vars
+    # DStags = {...} -> import from shared_vars
     CLINVARonly = {}
     CLNtag = ''
     CLNSIGtag, CLNSIG_idx = '', 0
-    SpAItag, SpAI_idx = '', 0
+    SpAItag_list, SpAI_idx_list = [], []
     BED_bitarrays = {}
     is_VEP = True if args['VEP'] else False
     is_CLINVAR = True if args['CLINVAR'] else False
@@ -48,7 +50,7 @@ def main(args):
     is_BEDfile = True if args['BEDfile'] else False
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'CSQ'
     CLINVARtag = args['CLINVARtag'] if args['CLINVARtag'] else 'ALLELEID'
-    SpliceAItag = args['SpliceAItag'] if args['SpliceAItag'] else 'SpliceAI'
+    SpliceAItag = args['SpliceAItag'] # default None
     VEPsep = args['VEPsep'] if args['VEPsep'] else '&'
     is_verbose = True if args['verbose'] else False
 
@@ -75,7 +77,7 @@ def main(args):
 
     #CLINVAR
     if is_CLINVAR:
-        CLNtag, _ = vcf_obj.header.check_tag_definition(CLINVARtag)
+        CLNtag, CLN_idx = vcf_obj.header.check_tag_definition(CLINVARtag)
         if args['CLINVARonly']:
             CLINVARonly = {term for term in args['CLINVARonly']}
             CLNSIGtag, CLNSIG_idx = vcf_obj.header.check_tag_definition('CLNSIG')
@@ -86,7 +88,17 @@ def main(args):
 
     # SpliceAI
     if SpliceAI_thr:
-        SpAItag, SpAI_idx = vcf_obj.header.check_tag_definition(SpliceAItag)
+        if SpliceAItag: # single tag has been specified
+            tag, idx = vcf_obj.header.check_tag_definition(SpliceAItag)
+            SpAItag_list.append(tag)
+            SpAI_idx_list.append(idx)
+        else: # search for delta scores as default
+            for DStag in DStags:
+                tag, idx = vcf_obj.header.check_tag_definition(DStag)
+                SpAItag_list.append(tag)
+                SpAI_idx_list.append(idx)
+            #end for
+        #end if
     #end if
 
     # BED
@@ -129,7 +141,7 @@ def main(args):
 
         # Check SpliceAI
         if SpliceAI_thr:
-            if check_spliceAI(vnt_obj, SpAI_idx, SpAItag, SpliceAI_thr):
+            if check_spliceAI(vnt_obj, SpAI_idx_list, SpAItag_list, SpliceAI_thr):
                 fo.write(vnt_obj.to_string())
                 continue
             #end if
@@ -137,7 +149,7 @@ def main(args):
 
         # Check CLINVAR
         if is_CLINVAR:
-            if check_CLINVAR(vnt_obj, CLNtag, CLNSIG_idx, CLNSIGtag, CLINVARonly):
+            if check_CLINVAR(vnt_obj, CLN_idx, CLNtag, CLNSIG_idx, CLNSIGtag, CLINVARonly):
                 fo.write(vnt_obj.to_string())
                 continue
             #end if

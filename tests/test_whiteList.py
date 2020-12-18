@@ -95,12 +95,155 @@ def test_run_whiteList_CLINVARonly_bis():
     os.remove('tests/files/main_test.out')
 #end def
 
+def test_run_VEPannotations_SpliceAI_02():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_VEPannotation.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': '0.2', 'CLINVAR': None, 'CLINVARonly': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_VEPannotation_SpAI_02.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_VEPannotations_SpliceAI_08():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_VEPannotation.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': '0.8', 'CLINVAR': None, 'CLINVARonly': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_VEPannotation_SpAI_08.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_VEPannotations_CLINVAR():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_VEPannotation.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': None, 'CLINVAR': True, 'CLINVARonly': ['Pathogenic'], 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_VEPannotation_CLINVAR.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_VEPannotations_CLINVAR_risk():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_VEPannotation.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': None, 'CLINVAR': True, 'CLINVARonly': ['pathogenic', 'risk_factor'], 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_VEPannotation_CLINVAR_risk.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_VEPannotations_Pathogenic_SpAI_08_CLINVAR():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_VEPannotation_Pathogenic.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': '0.8', 'CLINVAR': True, 'CLINVARonly': ['Pathogenic'], 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_VEPannotation_Pathogenic_SpAI_08_CLINVAR.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_VEPannotations_Pathogenic_VEP():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_VEPannotation_Pathogenic.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': None, 'CLINVAR': None, 'CLINVARonly': None, 'VEP': True, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_VEPannotation_Pathogenic_VEP.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_VEPannotations_Pathogenic_VEP_SpAI_08_CLINVAR():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_VEPannotation_Pathogenic.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': '0.8', 'CLINVAR': True, 'CLINVARonly': ['pAthogenic'], 'VEP': True, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_VEPannotation_Pathogenic_VEP_SpAI_08_CLINVAR.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_VEPannotations_Pathogenic_VEP_CLINVAR():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_VEPannotation_Pathogenic.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': None, 'CLINVAR': True, 'CLINVARonly': ['risk_factor', 'pathogenic'], 'VEP': True,
+            'VEPrescue': None, 'VEPremove': ['synonymous_mutation'], 'BEDfile': None,
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_VEPannotation_Pathogenic_VEP_CLINVAR.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_VEPannotations_Pathogenic_VEP_SpAI_08():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_VEPannotation_Pathogenic.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': '0.8', 'CLINVAR': None, 'CLINVARonly': None, 'VEP': True, 'VEPrescue': None,
+            'VEPremove': ['missense_mutation'], 'BEDfile': None,
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_VEPannotation_Pathogenic_VEP_SpAI_08.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_VEPannotations_miss_CLINVAR():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_VEPannotation_miss_CLINVAR.vcf', 'outputfile': 'tests/files/main_test.out',
+            'SpliceAI': None, 'CLINVAR': True, 'CLINVARonly': None, 'VEP': None, 'VEPrescue': None,
+            'VEPremove': None, 'BEDfile': None,
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+    # Run
+    main_whiteList(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_VEPannotation_miss_CLINVAR.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
 def test_run_SpliceAI_001():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': '0.01', 'CLINVAR': None, 'CLINVARonly': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
-            'VEPtag': 'VEP', 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': 'SpliceAI'}
     # Run
     main_whiteList(args)
     # Tests
@@ -114,7 +257,7 @@ def test_run_SpliceAI_002():
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': '0.02', 'CLINVAR': None, 'CLINVARonly': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
-            'VEPtag': 'VEP', 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': 'SpliceAI'}
     # Run
     main_whiteList(args)
     # Tests
@@ -128,7 +271,7 @@ def test_run_SpliceAI_008():
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': '0.08', 'CLINVAR': None, 'CLINVARonly': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
-            'VEPtag': 'VEP', 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': 'SpliceAI'}
     # Run
     main_whiteList(args)
     # Tests
@@ -142,7 +285,7 @@ def test_run_SpliceAI_0081():
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': '0.081', 'CLINVAR': None, 'CLINVARonly': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
-            'VEPtag': 'VEP', 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': 'SpliceAI'}
     # Run
     main_whiteList(args)
     # Tests
@@ -156,7 +299,7 @@ def test_run_SpliceAI_008_CLINVAR():
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': '0.08', 'CLINVAR': True, 'CLINVARonly': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
-            'VEPtag': 'VEP', 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': 'SpliceAI'}
     # Run
     main_whiteList(args)
     # Tests
@@ -170,7 +313,7 @@ def test_run_SpliceAI_0081_CLINVAR():
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': '0.081', 'CLINVAR': True, 'CLINVARonly': None, 'VEP': None, 'VEPrescue': None, 'VEPremove': None, 'BEDfile': None,
-            'VEPtag': 'VEP', 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+            'VEPtag': None, 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': 'SpliceAI'}
     # Run
     main_whiteList(args)
     # Tests
@@ -268,7 +411,7 @@ def test_run_whiteList_microannot_VEP_CLINVAR_SPLICEAI():
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_microannot.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': '0.8', 'CLINVAR': True, 'CLINVARonly': None, 'VEP': True, 'VEPrescue': ['TF_binding_site_variant', 'non_coding_transcript_exon_variant'], 'VEPremove': None, 'BEDfile': None,
-            'VEPtag': 'VEP', 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+            'VEPtag': 'VEP', 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': 'SpliceAI'}
     # Run
     main_whiteList(args)
     # Tests
@@ -296,7 +439,7 @@ def test_run_whiteList_microannot_VEP_SPLICEAI():
     # Variables
     args = {'inputfile': 'tests/files/input_whiteList_microannot.vcf', 'outputfile': 'tests/files/main_test.out',
             'SpliceAI': '0.8', 'CLINVAR': None, 'CLINVARonly': None, 'VEP': True, 'VEPrescue': ['TF_binding_site_variant', 'non_coding_transcript_exon_variant'], 'VEPremove': None, 'BEDfile': None,
-            'VEPtag': 'VEP', 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': None}
+            'VEPtag': 'VEP', 'CLINVARtag': None, 'verbose': None, 'VEPsep': None, 'SpliceAItag': 'SpliceAI'}
     # Run
     main_whiteList(args)
     # Tests
