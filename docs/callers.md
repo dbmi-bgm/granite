@@ -120,12 +120,14 @@ comHet is a calling algorithm for compound heterozygous mutations. The model use
                             genotype in parents. This flag extends the output to
                             include these cases
       --SpliceAItag SPLICEAITAG
-                            by default the program will search for "SpliceAI" TAG
-                            (SpliceAI=<float>), use this parameter to specify a
-                            different TAG | TAG field to be used (e.g. DS_DG)
+                            by default the program will search for SpliceAI delta
+                            scores (DS_AG, DS_AL, DS_DG, DS_DL) to calculate the
+                            max delta score for the variant. If a max value is
+                            already defined, use this parameter to specify the TAG
+                            | TAG field to be used
       --impact              use VEP "IMPACT" or "Consequence" terms to assign an
                             impact to potential compound heterozygous. If
-                            available, SpliceAI and CLINVAR "CLNSIG" information
+                            available, SpliceAI and ClinVar "CLNSIG" information
                             is used together with VEP
 ```
 
@@ -160,7 +162,7 @@ Calls compound heterozygous variants.
 
     granite comHet -i file.vcf -o file.out.vcf --trio PROBAND_ID [PARENT_ID] [PARENT_ID]
 
-It is possible to add impact information for gene (`impact_gene`) and for shared transcripts (`impact_transcript`). `impact_gene` is the worst impact calculated at gene level while considering all its associated transcripts. `impact_transcript` is the worst impact calculated considering only transcripts that are shared between the two mates, if any. VEP annotations for "IMPACT" or "Consequence" must be provided in INFO column in order to assign an impact. If available, SpliceAI and CLINVAR "CLNSIG" information is used together with VEP to refine the assignment.
+It is possible to add impact information for gene (`impact_gene`) and for shared transcripts (`impact_transcript`). `impact_gene` is the worst impact calculated at gene level while considering all its associated transcripts. `impact_transcript` is the worst impact calculated considering only transcripts that are shared between the two mates, if any. VEP annotations for "IMPACT" or "Consequence" must be provided in INFO column in order to assign an impact. If available, SpliceAI and ClinVar "CLNSIG" information is used together with VEP to refine the assignment.
 
     granite comHet -i file.vcf -o file.out.vcf --trio PROBAND_ID [PARENT_ID] [PARENT_ID] --impact
 
@@ -169,4 +171,4 @@ It is possible to reduce the output to only variants that are potential compound
     granite comHet -i file.vcf -o file.out.vcf --trio PROBAND_ID [PARENT_ID] [PARENT_ID] --filter_cmpHet
 
 #### Impact
-A variant is considered to have a potential STRONG impact if VEP impact is HIGH or MODERATE, spliceAI score is >= 0.8, or CLINVAR assignment is Pathogenic | Likely Pathogenic. If both variants are STRONG, the pair is assigned as a STRONG_PAIR. If only one of the two variants is STRONG, the pair is assigned as a MEDIUM_PAIR. If none of the variants is STRONG, the pair is assigned as a WEAK_PAIR.
+A variant is considered to have a potential STRONG impact if VEP impact is HIGH or MODERATE, spliceAI score is >= 0.8, or ClinVar assignment is Pathogenic | Likely Pathogenic. If both variants are STRONG, the pair is assigned as a STRONG_PAIR. If only one of the two variants is STRONG, the pair is assigned as a MEDIUM_PAIR. If none of the variants is STRONG, the pair is assigned as a WEAK_PAIR.

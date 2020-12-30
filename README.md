@@ -9,7 +9,7 @@ For more details, see granite [*documentation*](https://granite-suite.readthedoc
 ## Availability and requirements
 A ready-to-use docker image is available to download.
 
-    docker pull b3rse/granite:v0.1.2
+    docker pull b3rse/granite:v0.1.3
 
 To run locally, install the following libraries:
 
@@ -108,12 +108,14 @@ where `individual` is the unique identifier for member inside the pedigree, `sam
         whiteList    utility to whitelist and select a subset of variants from
                      input VCF file based on specified annotations and positions
         cleanVCF     utility to clean INFO field of input VCF file
+        geneList     utility to clean VEP annotations of input VCF file using a
+                     list of genes
         toBig        utility that converts counts from bgzip and tabix indexed RCK
                      format into BIG format. Positions are "called" by reads
                      counts or allelic balance for single or multiple files (joint
                      calls) in specified regions
         rckTar       utility to create a tar archive from bgzip and tabix indexed
-                     RCK files. Create an index file for the archive
+                     RCK files. Creates an index file for the archive
         qcVCF        utility to create a report of different metrics calculated
                      for input VCF file
         validateVCF  utility to calculate error models for input VCF file using
@@ -130,10 +132,13 @@ comHet is a calling algorithm for *compound heterozygous* mutations. The model u
 blackList allows to filter-out variants from input VCF file based on positions set in BIG format file and/or provided population allele frequency.
 
 ### whiteList
-whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, CLINVAR or SpliceAI annotations. Positions can be also specfied as a BED format file.
+whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, ClinVar or SpliceAI annotations. Positions can be also specfied as a BED format file.
 
 ### cleanVCF
 cleanVCF allows to clean INFO field of input VCF file. The software can remove a list of TAG from INFO field, or can be used to clean VEP annotations.
+
+### geneList
+geneList allows to clean VEP annotations by applyng a list of genes. The software removes all the transcripts that do not map to a gene on the list.
 
 ### qcVCF
 qcVCF produces a report in JSON format with different quality metrics calculated for input VCF file. Both single sample and family-based metrics are available.

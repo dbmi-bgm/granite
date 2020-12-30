@@ -2,7 +2,7 @@
 
 A ready-to-use docker image is available to download.
 
-    docker pull b3rse/granite:v0.1.2
+    docker pull b3rse/granite:v0.1.3
 
 To run locally, Python 3.6+ is required together with the following libraries:
 

@@ -1,7 +1,7 @@
 ## Variant Filtering
 
 ### whiteList
-whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, CLINVAR or SpliceAI annotations. Positions can be also specfied as a BED format file.
+whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, ClinVar or SpliceAI annotations. Positions can be also specfied as a BED format file.
 
 #### Arguments
 ```text
@@ -19,19 +19,22 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
       -o OUTPUTFILE, --outputfile OUTPUTFILE
                             output file to write results as VCF, use .vcf as
                             extension
-      --SpliceAI SPLICEAI   threshold to whitelist variants by SpliceAI value (>=)
+      --SpliceAI SPLICEAI   threshold to whitelist variants by SpliceAI delta
+                            scores value (>=)
       --SpliceAItag SPLICEAITAG
-                            by default the program will search for "SpliceAI" TAG
-                            (SpliceAI=<float>), use this parameter to specify a
-                            different TAG | TAG field to be used (e.g. DS_DG)
-      --CLINVAR             flag to whitelist all variants with a CLINVAR entry
+                            by default the program will search for SpliceAI delta
+                            scores (DS_AG, DS_AL, DS_DG, DS_DL) to calculate the
+                            max delta score for the variant. If a max value is
+                            already defined, use this parameter to specify the TAG
+                            | TAG field to be used
+      --CLINVAR             flag to whitelist all variants with a ClinVar entry
                             [ALLELEID]
       --CLINVARonly CLINVARONLY [CLINVARONLY ...]
-                            CLINVAR "CLNSIG" terms or keywords to be saved. Sets
-                            for whitelist only CLINVAR variants with specified
+                            ClinVar "CLNSIG" terms or keywords to be saved. Sets
+                            for whitelist only ClinVar variants with specified
                             terms or keywords
       --CLINVARtag CLINVARTAG
-                            by default the program will search for CLINVAR
+                            by default the program will search for ClinVar
                             "ALLELEID" TAG, use this parameter to specify a
                             different TAG to be used
       --VEP                 use VEP "Consequence" annotations to whitelist exonic
@@ -53,11 +56,11 @@ whiteList allows to select and filter-in a subset of variants from input VCF fil
 ```
 
 #### Examples
-Whitelists variants with CLINVAR entry. If available, CLINVAR annotation must be provided in INFO column.
+Whitelists variants with ClinVar entry. If available, ClinVar annotation must be provided in INFO column.
 
     granite whiteList -i file.vcf -o file.out.vcf --CLINVAR
 
-Whitelists only "Pathogenic" and "Likely_pathogenic" variants with CLINVAR entry. CLINVAR "CLNSIG" annotation must be provided in INFO column.
+Whitelists only "Pathogenic" and "Likely_pathogenic" variants with ClinVar entry. ClinVar "CLNSIG" annotation must be provided in INFO column.
 
     granite whiteList -i file.vcf -o file.out.vcf --CLINVAR --CLINVARonly Pathogenic
 
@@ -151,11 +154,14 @@ cleanVCF allows to clean INFO field of input VCF file. The software can remove a
                             intron_variant&splice_region_variant), use this
                             parameter to specify a different separator to be used
       --SpliceAI SPLICEAI   threshold to save intronic annotations, from VEP
-                            "Consequence", for variants by SpliceAI value (>=)
+                            "Consequence", for variants by SpliceAI delta scores
+                            value (>=)
       --SpliceAItag SPLICEAITAG
-                            by default the program will search for "SpliceAI" TAG
-                            (SpliceAI=<float>), use this parameter to specify a
-                            different TAG | TAG field to be used (e.g. DS_DG)
+                            by default the program will search for SpliceAI delta
+                            scores (DS_AG, DS_AL, DS_DG, DS_DL) to calculate the
+                            max delta score for the variant. If a max value is
+                            already defined, use this parameter to specify the TAG
+                            | TAG field to be used
 ```
 
 #### Examples
@@ -177,3 +183,26 @@ The program also accepts a SpliceAI threshold that will rescue annotations for "
 Combine the above filters.
 
     granite cleanVCF -i file.vcf -o file.out.vcf -t tag --VEP --VEPrescue <str> <str> --SpliceAI <float>
+
+### geneList
+geneList allows to filter VEP annotations from input VCF file using a list of genes. If a transcript is not mapping to any of the genes in the list, the transcript is removed from VEP annotation in INFO field. If all transcripts are removed, the VEP tag is removed from INFO field for the variant.
+
+#### Arguments
+```text
+    usage: granite geneList [-h] -i INPUTFILE -o OUTPUTFILE -g GENESLIST
+                            [--VEPtag VEPTAG]
+
+    optional arguments:
+      -i INPUTFILE, --inputfile INPUTFILE
+                            input VCF file
+      -o OUTPUTFILE, --outputfile OUTPUTFILE
+                            output file to write results as VCF, use .vcf as
+                            extension
+      -g GENESLIST, --geneslist GENESLIST
+                            text file listing ensembl gene (ENSG) IDs for all
+                            genes to save annotations for, IDs must be listed as a
+                            column
+      --VEPtag VEPTAG       by default the program will search for "CSQ" TAG
+                            (CSQ=<values>), use this parameter to specify a
+                            different TAG to be used (e.g. VEP)
+```
