@@ -252,7 +252,7 @@ class Vcf(object):
             for tag in self.INFO.split(sep):
                 if tag.startswith(tag_to_get + '='):
                     try:
-                        return tag.split('=')[1]
+                        return tag.split(tag_to_get + '=')[1]
                     except Exception: # tag field is in a wrong format
                         raise ValueError('\nERROR in variant INFO field, {0} tag is in the wrong format\n'
                                     .format(tag_to_get))
