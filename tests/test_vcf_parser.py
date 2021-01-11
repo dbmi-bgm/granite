@@ -69,3 +69,51 @@ def test_Header__add_tag_definition():
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
+
+def test_read_vcf():
+    ''' '''
+    vcflines = vcf_parser.Vcf.read_vcf('tests/files/input_vcf_parser.vcf')
+    assert next(vcflines) == '##fileformat=VCFv4.1\n'
+    assert next(vcflines) == '##ALT=<ID=NON_REF,Description="Represents any possible alternative allele at this location">\n'
+
+def test_read_vcf_gz():
+    ''' '''
+    vcflines = vcf_parser.Vcf.read_vcf('tests/files/input_vcf_parser.vcf')
+    vcflines_gz = vcf_parser.Vcf.read_vcf('tests/files/input_vcf_parser.vcf.gz')
+    assert next(vcflines) == next(vcflines_gz)
+    assert next(vcflines) == next(vcflines_gz)
+    assert next(vcflines) == next(vcflines_gz)
+    assert next(vcflines) == next(vcflines_gz)
+
+def test_write_header():
+    ''' '''
+    # Creating Vcf object
+    vcf_obj = vcf_parser.Vcf('tests/files/input_vcf_parser.vcf')
+    # write
+    with open('tests/files/test_write_header.out', 'w') as fo:
+        vcf_obj.write_header(fo)
+    # test
+    with open('tests/files/test_write_header.out', 'r') as f:
+        output_headers = f.read()
+    input_headers = vcf_obj.header.definitions
+    assert output_headers == input_headers
+    # clean up
+    os.remove('tests/files/test_write_header.out')
+
+def test_write_variant():
+    ''' '''
+    # Creating Vcf object
+    vcf_obj = vcf_parser.Vcf('tests/files/input_vcf_parser.vcf')
+    # write
+    with open('tests/files/test_write_variants.out', 'w') as fo:
+        for rec in vcf_obj.parse_variants():
+            vcf_obj.write_variant(fo, rec)
+    # test
+    recs = vcf_obj.parse_variants()
+    with open('tests/files/test_write_variants.out', 'r') as f:
+        for line in f:
+            assert line == next(recs).to_string()
+    # clean up
+    os.remove('tests/files/test_write_variants.out')
+
+
