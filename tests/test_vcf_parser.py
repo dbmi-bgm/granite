@@ -59,7 +59,7 @@ def test_Header__add_tag_definition():
     # Write to buffer
     fo.write(vcf_obj.header.definitions)
     fo.write(vcf_obj.header.columns)
-    for vnt_obj in vcf_obj.parse_variants('tests/files/input_vcf_parser.vcf'):
+    for vnt_obj in vcf_obj.parse_variants():
         fo.write(vnt_obj.to_string())
     #end for
     # Close buffer
@@ -91,7 +91,7 @@ def test_write_header():
     vcf_obj = vcf_parser.Vcf('tests/files/input_vcf_parser.vcf')
     # write
     with open('tests/files/test_write_header.out', 'w') as fo:
-        vcf_obj.write_header(fo)
+        vcf_obj.write_definitions(fo)
     # test
     with open('tests/files/test_write_header.out', 'r') as f:
         output_headers = f.read()
@@ -115,5 +115,3 @@ def test_write_variant():
             assert line == next(recs).to_string()
     # clean up
     os.remove('tests/files/test_write_variants.out')
-
-

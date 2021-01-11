@@ -555,8 +555,7 @@ def main(args, test=False):
     #end if
 
     # Writing header
-    fo.write(vcf_obj.header.definitions)
-    fo.write(vcf_obj.header.columns)
+    vcf_obj.write_header(fo)
 
     # Data structures
     stat_dict = {'genes': {},
@@ -623,7 +622,7 @@ def main(args, test=False):
 
     # Reading variants
     analyzed = 0
-    for c, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
+    for c, vnt_obj in enumerate(vcf_obj.parse_variants()):
         if is_verbose:
             sys.stderr.write('\rAnalyzing variant... ' + str(c + 1))
             sys.stderr.flush()

@@ -64,8 +64,7 @@ def main(args):
     #end if
 
     # Writing header
-    fo.write(vcf_obj.header.definitions)
-    fo.write(vcf_obj.header.columns)
+    vcf_obj.write_header(fo)
 
     # VEP
     if is_VEP:
@@ -95,7 +94,7 @@ def main(args):
 
     # Reading variants and writing passed
     analyzed = 0
-    for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
+    for i, vnt_obj in enumerate(vcf_obj.parse_variants()):
         if is_verbose:
             sys.stderr.write('\rAnalyzing variant... ' + str(i + 1))
             sys.stderr.flush()
@@ -141,7 +140,7 @@ def main(args):
         #end if
 
         # Write variant
-        fo.write(vnt_obj.to_string())
+        vcf_obj.write_variant(fo, vnt_obj)
     #end for
     sys.stderr.write('\n\n...Wrote results for ' + str(analyzed) + ' analyzed variants out of ' + str(i + 1) + ' total variants\n')
     sys.stderr.flush()

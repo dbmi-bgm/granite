@@ -358,7 +358,7 @@ def main(args):
 
     # Reading variants
     analyzed = 0
-    for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
+    for i, vnt_obj in enumerate(vcf_obj.parse_variants()):
         if is_verbose:
             sys.stderr.write('\rAnalyzing variant... ' + str(i + 1))
             sys.stderr.flush()

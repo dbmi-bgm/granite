@@ -863,7 +863,7 @@ def main(args, test=False):
 
     # Reading variants
     analyzed = 0
-    for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
+    for i, vnt_obj in enumerate(vcf_obj.parse_variants()):
         if is_verbose:
             sys.stderr.write('\rAnalyzing variant... ' + str(i + 1))
             sys.stderr.flush()
@@ -915,7 +915,7 @@ def main(args, test=False):
     if not is_novoCaller:
         vcf_obj.header.add_tag_definition(novoCaller_def, 'INFO')
     #end if
-    fo.write(vcf_obj.header.definitions)
+    vcf_obj.write_definitions(fo)
 
     # Adding to header columns unrelated samples missing IDs
     fo.write(vcf_obj.header.columns.rstrip())
@@ -970,7 +970,7 @@ def main(args, test=False):
         if unrelated_genotypes:
             fo.write(vnt_obj.to_string().rstrip() + '\t' + '\t'.join(unrelated_genotypes) + '\n')
         else:
-            fo.write(vnt_obj.to_string())
+            vcf_obj.write_variant(fo, vnt_obj)
         #end if
     #end for
 

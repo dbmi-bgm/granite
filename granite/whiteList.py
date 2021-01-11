@@ -61,8 +61,7 @@ def main(args):
     vcf_obj = vcf_parser.Vcf(args['inputfile'])
 
     # Writing header
-    fo.write(vcf_obj.header.definitions)
-    fo.write(vcf_obj.header.columns)
+    vcf_obj.write_header(fo)
 
     # VEP
     if is_VEP:
@@ -108,7 +107,7 @@ def main(args):
 
     # Reading variants and writing passed
     analyzed = 0
-    for i, vnt_obj in enumerate(vcf_obj.parse_variants(args['inputfile'])):
+    for i, vnt_obj in enumerate(vcf_obj.parse_variants()):
         if is_verbose:
             sys.stderr.write('\rAnalyzing variant... ' + str(i + 1))
             sys.stderr.flush()
@@ -124,7 +123,7 @@ def main(args):
         if is_BEDfile:
             try: # CHROM and POS can miss in the BED file, if that just pass to next checks
                 if BED_bitarrays[vnt_obj.CHROM][vnt_obj.POS]:
-                    fo.write(vnt_obj.to_string())
+                    vcf_obj.write_variant(fo, vnt_obj)
                     continue
                 #end if
             except Exception: pass
@@ -134,7 +133,7 @@ def main(args):
         # Check VEP
         if is_VEP:
             if check_VEP(vnt_obj, consequence_idx, VEPremove, VEPrescue, VEPtag, VEPsep):
-                fo.write(vnt_obj.to_string())
+                vcf_obj.write_variant(fo, vnt_obj)
                 continue
             #end if
         #end if
@@ -142,7 +141,7 @@ def main(args):
         # Check SpliceAI
         if SpliceAI_thr:
             if check_spliceAI(vnt_obj, SpAI_idx_list, SpAItag_list, SpliceAI_thr):
-                fo.write(vnt_obj.to_string())
+                vcf_obj.write_variant(fo, vnt_obj)
                 continue
             #end if
         #end if
@@ -150,7 +149,7 @@ def main(args):
         # Check CLINVAR
         if is_CLINVAR:
             if check_CLINVAR(vnt_obj, CLN_idx, CLNtag, CLNSIG_idx, CLNSIGtag, CLINVARonly):
-                fo.write(vnt_obj.to_string())
+                vcf_obj.write_variant(fo, vnt_obj)
                 continue
             #end if
         #end if
