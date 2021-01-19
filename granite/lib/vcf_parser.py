@@ -89,8 +89,14 @@ class Vcf(object):
                         raise ValueError('\nERROR in VCF header structure, {0} tag definition has no format specification\n'
                                             .format(tag))
                     #end try
+                    # Search exact match
+                    # if not exact match, search for partial match (included in field name)
                     for i, field_i in enumerate(format.split(sep)):
-                        if field in field_i.strip(): return i
+                        if field == field_i.strip(): return i # exact match
+                        #end if
+                    #end for
+                    for i, field_i in enumerate(format.split(sep)):
+                        if field in field_i.strip(): return i # partial match
                         #end if
                     #end for
                 #end if
