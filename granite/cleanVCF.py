@@ -43,6 +43,7 @@ def main(args):
     # DStags = {...} -> import from shared_vars
     SpAItag_list, SpAI_idx_list = [], []
     is_VEP = True if args['VEP'] else False
+    is_filter_VEP = True if args['filter_VEP'] else False
     VEPtag = args['VEPtag'] if args['VEPtag'] else 'CSQ'
     VEPsep = args['VEPsep'] if args['VEPsep'] else '&'
     SpliceAI_thr = float(args['SpliceAI']) if args['SpliceAI'] else 0.
@@ -136,6 +137,10 @@ def main(args):
             # Add cleaned VEP if any
             if VEP_clean:
                 vnt_obj.add_tag_info('{0}={1}'.format(VEPtag, VEP_clean))
+            else: # check if is filter_VEP
+                if is_filter_VEP:
+                    continue
+                #end if
             #end if
         #end if
 

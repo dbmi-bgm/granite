@@ -137,6 +137,7 @@ def main():
     cleanVCF_parser.add_argument('--VEPsep', help='by default the program expects "&" as separator for subfields in VEP (e.g. intron_variant&splice_region_variant), use this parameter to specify a different separator to be used', type=str, required=False)
     cleanVCF_parser.add_argument('--SpliceAI', help='threshold to save intronic annotations, from VEP "Consequence", for variants by SpliceAI delta scores value (>=)', type=float, required=False)
     cleanVCF_parser.add_argument('--SpliceAItag', help='by default the program will search for SpliceAI delta scores (DS_AG, DS_AL, DS_DG, DS_DL) to calculate the max delta score for the variant. If a max value is already defined, use this parameter to specify the TAG | TAG field to be used', type=str, required=False)
+    cleanVCF_parser.add_argument('--filter_VEP', help='by default the program returns all variants in the input VCF file. This flag will drop the variants with no VEP annotations after the cleaning', action='store_true', required=False)
     cleanVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add geneList to subparsers
