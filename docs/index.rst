@@ -26,3 +26,4 @@ Contents:
    filters
    quality
    utilities
+   API
