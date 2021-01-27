@@ -80,7 +80,7 @@ The method *get_tag_field_idx(tag, field, tag_type='INFO', sep='|')* allows to g
     # from CSQ definition (VEP) in the header INFO block
     # ##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Gene|Feature|Consequence|IMPACT|...">
     tag, field = 'CSQ', 'Consequence'
-    idx <int> = get_tag_field_idx(tag, field) # idx -> 3
+    idx <int> = vcf_obj.header.get_tag_field_idx(tag, field) # idx -> 3
 
 The method *check_tag_definition(tag, tag_type='INFO', sep='|')* allows to check if a tag is in the header and if is standalone or field of another leading tag. Returns the leading tag and the field corresponding index, if any, to acces the tag. sep is the fields separator used in the tag definition.
 
@@ -88,8 +88,8 @@ The method *check_tag_definition(tag, tag_type='INFO', sep='|')* allows to check
     # from CSQ definition (VEP) in the header INFO block
     # ##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Gene|Feature|Consequence|IMPACT|...">
     tag = 'Consequence'
-    lead_tag <str>, idx <int> = check_tag_definition(tag) # lead_tag -> CSQ
-                                                          # idx -> 3
+    lead_tag <str>, idx <int> = vcf_obj.header.check_tag_definition(tag) # lead_tag -> CSQ
+                                                                         # idx -> 3
 
 *note: tag and field are case sensitive.*
 
