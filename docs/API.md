@@ -204,6 +204,6 @@ The method *add_tag_info(tag_value, sep=';')* allows to add a tag and its value 
 
 The method *get_tag_value(tag, sep=';')* returns the value from tag in INFO. sep is the tags separator used in INFO.
 
-    tag_val <str> = get_tag_value(tag)
+    tag_val <str> = vnt_obj.get_tag_value(tag)
 
 *note: tag and ID are case sensitive.*
