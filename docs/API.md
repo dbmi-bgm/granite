@@ -6,7 +6,7 @@ granite library can be used directly to access and manipulate information in VCF
     from granite.lib import vcf_parser
 
 ### Usage
-The library implements the objects *Vcf*, *Header* and *Variant*.
+The library implements the objects [*Vcf*](#vcf), [*Header*](#header) and [*Variant*](#variant).
 
 #### Vcf
 This is the main object and has methods to read and write VCF format.
@@ -183,7 +183,7 @@ The method *add_tag_format(tag, sep=':')* allows to add a tag at the end of FORM
     tag = 'RSTR'
     vnt_obj.add_tag_format(tag)
 
-The method *add_values_genotype(ID_genotype, values, sep=':')* allows to add values add the end of the genotype specified by corresponding ID. sep is the tags separator used in format definition and genotype(s).
+The method *add_values_genotype(ID_genotype, values, sep=':')* allows to add values at the end of the genotype specified by corresponding ID. sep is the tags separator used in format definition and genotype(s).
 
     vnt_obj.add_values_genotype(ID_genotype, values)
 
