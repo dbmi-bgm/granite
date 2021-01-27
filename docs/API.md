@@ -1,4 +1,4 @@
-## API
+## VCF Parser
 granite library can be used directly to access and manipulate information in VCF format.
 
 ### Import the library
