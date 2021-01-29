@@ -238,9 +238,9 @@ def variant_type(REF, ALT):
     ''' return variant type as snv, ins, del '''
     if len(ALT.split(',')) > 1:
         return 'snv' # TO DECIDE WHAT TO DO, as snv for now
-    elif len(REF) > len(ALT) or ALT == '*':
+    elif len(REF) > len(ALT) or ALT in ['*', '-']:
         return 'del'
-    elif len(REF) < len(ALT) or REF == '*':
+    elif len(REF) < len(ALT) or REF in ['*', '-']:
         return 'ins'
     #end if
     return 'snv'
@@ -254,9 +254,9 @@ def variant_type_ext(REF, ALT):
         return 'mav'
     #end if
     # normal variant
-    if len(REF) < len(ALT) or REF == '*':
+    if len(REF) < len(ALT) or REF in ['*', '-']:
         return 'ins'
-    elif len(REF) > len(ALT) or ALT == '*':
+    elif len(REF) > len(ALT) or ALT in ['*', '-']:
         return 'del'
     elif len(REF) == len(ALT) and len(REF) != 1:
         return 'mnv'
