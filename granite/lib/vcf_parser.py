@@ -154,13 +154,13 @@ class Vcf(object):
             ''' variant as string rapresentation '''
             genotypes_as_list = []
             variant_as_string = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t'.format(self.CHROM,
-                                                                                        self.POS,
-                                                                                        self.ID,
-                                                                                        self.REF,
-                                                                                        self.ALT,
-                                                                                        self.QUAL,
-                                                                                        self.FILTER,
-                                                                                        self.INFO)
+                                                                                  self.POS,
+                                                                                  self.ID,
+                                                                                  self.REF,
+                                                                                  self.ALT,
+                                                                                  self.QUAL,
+                                                                                  self.FILTER,
+                                                                                  self.INFO)
             if self.FORMAT: # check if there is a FORMAT column
                 variant_as_string += '{0}\t'.format(self.FORMAT)
             #end if
