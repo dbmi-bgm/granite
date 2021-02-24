@@ -141,7 +141,11 @@ class Vcf(object):
             self.QUAL = line_split[5]
             self.FILTER = line_split[6]
             self.INFO = line_split[7]
-            self.FORMAT = line_split[8]
+            # check if there are samples and therefore FORMAT column
+            if IDs_genotypes:
+                self.FORMAT = line_split[8]
+            else: self.FORMAT = ''
+            #end if
             self.IDs_genotypes = IDs_genotypes
             self.GENOTYPES = {k: v for k, v in zip(IDs_genotypes, line_split[9:])}
         #end def
@@ -149,15 +153,17 @@ class Vcf(object):
         def to_string(self):
             ''' variant as string rapresentation '''
             genotypes_as_list = []
-            variant_as_string = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t'.format(self.CHROM,
+            variant_as_string = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t'.format(self.CHROM,
                                                                                         self.POS,
                                                                                         self.ID,
                                                                                         self.REF,
                                                                                         self.ALT,
                                                                                         self.QUAL,
                                                                                         self.FILTER,
-                                                                                        self.INFO,
-                                                                                        self.FORMAT)
+                                                                                        self.INFO)
+            if self.FORMAT: # check if there is a FORMAT column
+                variant_as_string += '{0}\t'.format(self.FORMAT)
+            #end if
             for IDs_genotype in self.IDs_genotypes:
                 genotypes_as_list.append(self.GENOTYPES[IDs_genotype])
             #end for
@@ -242,7 +248,12 @@ class Vcf(object):
 
         def add_values_genotype(self, ID_genotype, values, sep=':'):
             ''' add values field to genotype specified by corresponding ID '''
-            self.GENOTYPES[ID_genotype] += sep + values
+            try:
+                self.GENOTYPES[ID_genotype] += sep + values
+            except Exception:
+                raise ValueError('\nERROR in GENOTYPES identifiers, {0} identifier is missing in VCF\n'
+                            .format(ID_genotype))
+            #end try
         #end def
 
         def add_tag_info(self, tag_to_add, sep=';'):
@@ -319,7 +330,7 @@ class Vcf(object):
 
     def parse_header(self):
         ''' read header and save information as Header object '''
-        definitions, columns, IDs_genotypes = '', '', ''
+        definitions, columns, IDs_genotypes = '', '', []
         for line in self.read_vcf(self.inputfile):
             if line.startswith('#'): # reading a header line
                 line_strip = line.rstrip()
@@ -335,7 +346,7 @@ class Vcf(object):
         #end for
 
         # Checking header is correct
-        if definitions and columns and IDs_genotypes:
+        if definitions and columns:
             return self.Header(definitions, columns, IDs_genotypes)
         else:
             raise ValueError('\nERROR in VCF header structure, missing essential lines\n')
