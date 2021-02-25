@@ -109,7 +109,7 @@ def test_write_variant():
     ''' '''
     # Creating Vcf object
     vcf_obj = vcf_parser.Vcf('tests/files/input_vcf_parser.vcf')
-    # write
+    # Write
     with open('tests/files/test_write_variants.out', 'w') as fo:
         for rec in vcf_obj.parse_variants():
             vcf_obj.write_variant(fo, rec)
@@ -130,14 +130,19 @@ def test_minimal_vcf():
     ''' '''
     # Creating Vcf object
     vcf_obj = vcf_parser.Vcf('tests/files/input_vcf_parser_minimal.vcf')
+    # Writing test file
+    with open('tests/files/test_write_variants.out', 'w') as fo:
+        vcf_obj.write_header(fo)
+        for rec in vcf_obj.parse_variants():
+            assert rec.FORMAT == ''
+            assert rec.GENOTYPES == {}
+            vcf_obj.write_variant(fo, rec)
+        #end for
+    #end with
     # Tests
-    assert vcf_obj.header.columns == '#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n'
+    assert vcf_obj.header.columns.rstrip().split('\t') == ['#CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO']
     assert vcf_obj.header.IDs_genotypes == []
-    for i, rec in enumerate(vcf_obj.parse_variants()):
-        assert rec.FORMAT == ''
-        assert rec.GENOTYPES == {}
-        if i == 0:
-            rec.to_string() == 'chr1\t1019833\t.\tT\tC\t5647.90\tPASS\tAC=6;AF=1.00;AN=6;DP=148;ExcessHet=3.0103;FS=0.000;MLEAC=6;MLEAF=1.00;MQ=70.00;QD=30.09;SOR=0.930;VQSLOD=15.56;culprit=MQ;VEP=ENSG00000188157|ENST00000379370|Transcript|upstream_gene_variant|AGRN,ENSG00000188157|ENST00000620552|Transcript|upstream_gene_variant|AGRN;gnomADgenome=1.0;CLINVAR=656836|Benign\n'
-        #end if
-    #end for
+    assert [row for row in open('tests/files/test_write_variants.out')] == [row for row in open('tests/files/input_vcf_parser_minimal.vcf')]
+    # Clean up
+    os.remove('tests/files/test_write_variants.out')
 #end def

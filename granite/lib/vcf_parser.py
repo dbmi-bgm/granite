@@ -141,9 +141,8 @@ class Vcf(object):
             self.QUAL = line_split[5]
             self.FILTER = line_split[6]
             self.INFO = line_split[7]
-            # check if there are samples and therefore FORMAT column
-            if IDs_genotypes:
-                self.FORMAT = line_split[8]
+            if IDs_genotypes: # if samples
+                self.FORMAT = line_split[8] # get FORMAT column
             else: self.FORMAT = ''
             #end if
             self.IDs_genotypes = IDs_genotypes
@@ -152,23 +151,22 @@ class Vcf(object):
 
         def to_string(self):
             ''' variant as string rapresentation '''
-            genotypes_as_list = []
-            variant_as_string = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t'.format(self.CHROM,
-                                                                                  self.POS,
-                                                                                  self.ID,
-                                                                                  self.REF,
-                                                                                  self.ALT,
-                                                                                  self.QUAL,
-                                                                                  self.FILTER,
-                                                                                  self.INFO)
-            if self.FORMAT: # check if there is a FORMAT column
-                variant_as_string += '{0}\t'.format(self.FORMAT)
+            variant_as_list = [ self.CHROM,
+                                str(self.POS),
+                                self.ID,
+                                self.REF,
+                                self.ALT,
+                                self.QUAL,
+                                self.FILTER,
+                                self.INFO ]
+            if self.IDs_genotypes: # if samples
+                variant_as_list.append(self.FORMAT) # add FORMAT column
+                for IDs_genotype in self.IDs_genotypes: # add sample columns
+                    variant_as_list.append(self.GENOTYPES[IDs_genotype])
+                #end for
             #end if
-            for IDs_genotype in self.IDs_genotypes:
-                genotypes_as_list.append(self.GENOTYPES[IDs_genotype])
-            #end for
 
-            return variant_as_string + '\t'.join(genotypes_as_list) + '\n'
+            return '\t'.join(variant_as_list) + '\n'
         #end def
 
         def repr(self):
