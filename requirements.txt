@@ -3,4 +3,4 @@ bitarray>=1.2.0
 pytabix>=0.0.2
 h5py>=2.10.0
 numpy>=1.18.0
-matplotlib
+matplotlib==3.3.4
