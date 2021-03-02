@@ -39,14 +39,14 @@ from granite.lib.shared_vars import real_NA_chroms
 #################################################################
 #    Heterozygosity stats
 #################################################################
-def get_stats_het(vnt_obj, stat_dict, family, NA_chroms):
+def get_stats_het(vnt_obj, stat_dict, family, NA_chroms, var_types):
     ''' extract heterozygosity information from variant using family '''
     var_type = variant_type_ext(vnt_obj.REF, vnt_obj.ALT)
     if vnt_obj.CHROM.replace('chr', '') in NA_chroms:
         return # skip unbalanced chromosomes
     #end if
     is_ID = True if vnt_obj.ID != '.' else False
-    if var_type == 'snv':
+    if var_type in var_types:
         _error_het(vnt_obj, stat_dict, family, is_ID)
         _error_het_family(vnt_obj, stat_dict, family)
     #end if
@@ -171,13 +171,13 @@ def _error_het(vnt_obj, stat_dict, family, is_ID):
 #################################################################
 #    De novo stats
 #################################################################
-def get_stats_novo(vnt_obj, stat_dict, family, NA_chroms, sample_novo, novotag):
+def get_stats_novo(vnt_obj, stat_dict, family, NA_chroms, var_types, sample_novo, novotag):
     ''' extract de novo information from variant using family '''
     var_type = variant_type_ext(vnt_obj.REF, vnt_obj.ALT)
     if vnt_obj.CHROM.replace('chr', '') in NA_chroms:
         return # skip unbalanced chromosomes
     #end if
-    if var_type == 'snv':
+    if var_type in var_types:
         try:
             novoPP = float(vnt_obj.get_tag_value(novotag))
         except Exception: return
@@ -701,6 +701,7 @@ def main(args):
     sample_novo = args['novo'] if args['novo'] else ''
     sample_het_list = args['het'] if args['het'] else []
     anchor_list = args['anchor']
+    var_types = [s.lower() for s in args['type']] if args['type'] else ['snv']
 
     # Check pedigree and anchor args
     if len(anchor_list) != len(args['pedigree']) and \
@@ -794,12 +795,12 @@ def main(args):
         for l, family in enumerate(family_list):
             if sample_novo:
                 if anchor_list[l] == sample_novo:
-                    get_stats_novo(vnt_obj, stat_dict_list[l], family, NA_chroms, sample_novo, novotag)
+                    get_stats_novo(vnt_obj, stat_dict_list[l], family, NA_chroms, var_types, sample_novo, novotag)
                 #end if
             #end if
             if sample_het_list:
                 if anchor_list[l] in sample_het_list:
-                    get_stats_het(vnt_obj, stat_dict_list[l], family, NA_chroms)
+                    get_stats_het(vnt_obj, stat_dict_list[l], family, NA_chroms, var_types)
                 #end if
             #end if
         #end for

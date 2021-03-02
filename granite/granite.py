@@ -193,6 +193,7 @@ def main():
     validateVCF_parser.add_argument('--anchor', help='sample ID to be used as anchor in pedigree to build family. It is possible to specify multiple sample IDs as list. If multiple pedigrees are specified in "--pedigree", anchors are positionally matched to corresponding pedigree', nargs='+', required=True)
     validateVCF_parser.add_argument('--het', help='sample ID to be used to calculate error model for heterozygous mutations. It is possible to specify multiple sample IDs as list. Each sample ID must correspond to anchor specified in "--anchor"', nargs='+', required=False)
     validateVCF_parser.add_argument('--novo', help='sample ID to be used to calculate error model for de novo mutations. Must correspond to anchor specified in "--anchor". Requires posterior probability from novoCaller', type=str, required=False)
+    validateVCF_parser.add_argument('--type', help='by default error models are calculated only for SNV. It is possible to specify different types of variant to use (SNV, INS, DEL, MNV, MAV) as list (e.g. --type SNV INS DEL)', nargs='+', required=False)
     validateVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add toPED to subparsers
