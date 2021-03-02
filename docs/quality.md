@@ -63,4 +63,9 @@ validateVCF produces a report in JSON format with error models for different inh
                             novo mutations. Must correspond to anchor specified in
                             "--anchor". Requires posterior probability from
                             novoCaller
+      --type TYPE [TYPE ...]
+                            by default error models are calculated only for SNV.
+                            It is possible to specify different types of variant
+                            to use (SNV, INS, DEL, MNV, MAV) as list (e.g. --type
+                            SNV INS DEL)
 ```
