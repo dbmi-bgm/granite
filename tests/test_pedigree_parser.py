@@ -43,12 +43,8 @@ def test_pedigree_parser():
                      'sample': 'NA12881_smpl', 'gender': 'U',
                      'siblings': ['NA12879', 'NA12880']}
     }
-    # Loading pedigree
-    with open('tests/files/pedigree.json') as fi:
-        pedigree = json.load(fi)
-    #end with
     # Creating Pedigree object
-    pedigree_obj = pedigree_parser.Pedigree(pedigree)
+    pedigree_obj = pedigree_parser.Pedigree('tests/files/pedigree.json')
     # Test
     for name, member_obj in pedigree_obj.members.items():
         assert name == member_obj.name
@@ -73,12 +69,8 @@ def test_pedigree_parser_spouses():
         'NA12896': {'NA12883', 'NA12884'},
         'NA12895': {'NA12879'}
     }
-    # Loading pedigree
-    with open('tests/files/pedigree_spouses.json') as fi:
-        pedigree = json.load(fi)
-    #end with
     # Creating Pedigree object
-    pedigree_obj = pedigree_parser.Pedigree(pedigree)
+    pedigree_obj = pedigree_parser.Pedigree('tests/files/pedigree_spouses.json')
     # Test
     sample_obj = pedigree_obj.get_member_by_sample(sample)
     NA12878_obj = pedigree_obj.get_member_by_sample('NA12878_sample')
@@ -95,12 +87,8 @@ def test_pedigree_parser_spouses():
 #################################################################
 def test_pedigree_parser_missing_sample():
     ''' '''
-    # Loading pedigree
-    with open('tests/files/pedigree.json') as fi:
-        pedigree = json.load(fi)
-    #end with
     # Creating Pedigree object
-    pedigree_obj = pedigree_parser.Pedigree(pedigree)
+    pedigree_obj = pedigree_parser.Pedigree('tests/files/pedigree.json')
     # Test
     with pytest.raises(ValueError) as e:
         sample_obj = pedigree_obj.get_member_by_sample('NA12880_sample')
@@ -114,12 +102,8 @@ def test_pedigree_parser_missing_member_info():
         "gender": "F",
         "parents": ["NA12873", "NA12874"]
     }
-    # Loading pedigree
-    with open('tests/files/pedigree.json') as fi:
-        pedigree = json.load(fi)
-    #end with
     # Creating Pedigree object
-    pedigree_obj = pedigree_parser.Pedigree(pedigree)
+    pedigree_obj = pedigree_parser.Pedigree('tests/files/pedigree.json')
     # Test
     with pytest.raises(ValueError) as e:
         pedigree_obj.add_member(member)

@@ -715,23 +715,6 @@ def main(args):
     # Creating Vcf object
     vcf_obj = vcf_parser.Vcf(args['inputfile'])
 
-    # Get pedigree / pedigrees information
-    pedigree_list = []
-    for pedigree in args['pedigree']:
-        # Loading pedigree
-        if os.path.isfile(pedigree):
-            with open(pedigree) as fi:
-                pedigree_list.append(json.load(fi))
-            #end with
-        else:
-            try: pedigree_list.append(json.loads(pedigree))
-            except Exception:
-                sys.exit('\nERROR in parsing arguments: {0} must be either a json file or a string representing a json\n'
-                        .format(pedigree))
-            #end try
-        #end if
-    #end for
-
     # Check novoPP
     if sample_novo:
         try: novotag, _ = vcf_obj.header.check_tag_definition('novoPP')
@@ -742,7 +725,7 @@ def main(args):
 
     # Creating Pedigree object / objects
     pedigree_obj_list = []
-    for pedigree in pedigree_list:
+    for pedigree in args['pedigree']:
         pedigree_obj_list.append(pedigree_parser.Pedigree(pedigree))
     #end for
 

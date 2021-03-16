@@ -16,7 +16,7 @@
 #
 #################################################################
 import sys, os
-
+import json
 
 #################################################################
 #
@@ -118,12 +118,12 @@ class Pedigree(object):
 
     #end class Member
 
-    def __init__(self, pedigree):
+    def __init__(self, pedigree, format='json'):
         ''' initialize Pedigree object,
         pedigree information must be provided as json '''
         self.members = {} # dictionary of Member objects by name
         self.samples = {} # dictionary to map sample to name
-        self.parse_pedigree(pedigree)
+        self.parse_pedigree(pedigree, format)
     #end def __init__
 
     def add_member(self, member):
@@ -217,15 +217,36 @@ class Pedigree(object):
         return family
     #end def get_family
 
-    def parse_pedigree(self, pedigree):
-        ''' read pedigree information to build Pedigree object,
-        pedigree information must be provided as json '''
+    def read_json(self, pedigree):
+        ''' read pedigree as json '''
+        # Reading pedigree
+        if os.path.isfile(pedigree):
+            with open(pedigree) as fi:
+                pedigree_json = json.load(fi)
+            #end with
+        else:
+            try: pedigree_json = json.loads(pedigree)
+            except Exception:
+                raise ValueError('\nERROR in parsing arguments, pedigree must be either a json file or a string representing a json\n')
+            #end try
+        #end if
+        return pedigree_json
+    #end def read_json
+
+    def parse_pedigree(self, pedigree, format):
+        ''' use pedigree information to build Pedigree object,
+        pedigree information must be provided in specified format '''
+        if format == 'json':
+            pedigree_json = self.read_json(pedigree)
+        else:
+            raise ValueError('\nERROR in parsing pedigree, specified pedigree format is not supported\n')
+        #end if
         # Creating Member objects
-        for member in pedigree:
+        for member in pedigree_json:
             self.add_member(member)
         #end for
         # Adding relations
-        for member in pedigree:
+        for member in pedigree_json:
             name = member['individual']
             if len(member['parents']) > 2:
                 raise ValueError('\nERROR in pedigree structure, {0} has more than two parents\n'

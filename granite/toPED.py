@@ -35,20 +35,8 @@ def main(args):
     encode_gender = {'M': 1, 'F': 2}
     familyID = args['family'] if args['family'] else 'FAM'
 
-    # Loading pedigree
-    if os.path.isfile(args['pedigree']):
-        with open(args['pedigree']) as fi:
-            pedigree = json.load(fi)
-        #end with
-    else:
-        try: pedigree = json.loads(args['pedigree'])
-        except Exception:
-            sys.exit('\nERROR in parsing arguments: pedigree must be either a json file or a string representing a json\n')
-        #end try
-    #end if
-
     # Creating Pedigree object
-    pedigree_obj = pedigree_parser.Pedigree(pedigree)
+    pedigree_obj = pedigree_parser.Pedigree(args['pedigree'])
 
     # Buffers
     fo = open(args['outputfile'], 'w')

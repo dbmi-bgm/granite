@@ -1,0 +1,1 @@
+[{"gender": "M", "individual": "GAPIDERSF9QH", "parents": [], "sample_name": "NA12877_sample"}, {"gender": "F", "individual": "GAPIDGE5KLIH", "parents": [], "sample_name": "NA12878_sample"}, {"gender": "F", "individual": "GAPID832VXDG", "parents": ["GAPIDGE5KLIH", "GAPIDERSF9QH"], "sample_name": "NA12879_sample"}]
