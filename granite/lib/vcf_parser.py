@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 #################################################################
 #
@@ -311,14 +312,15 @@ class Vcf(object):
     def read_vcf(inputfile):
         ''' read vcf file, gzipped or ungzipped,
         return a generator '''
-        if inputfile.endswith('.gz'):
+        if inputfile.endswith('.gz') or \
+           inputfile.endswith('.bgz'):
             with gzip.open(inputfile, 'rb') as fz:
                 for byteline in fz:
-                    yield byteline.decode()
+                    yield byteline.decode('utf-8')
                 #end for
             #end with
         else:
-            with open(inputfile) as fi:
+            with open(inputfile, encoding='utf-8') as fi:
                 for line in fi:
                     yield line
                 #end for

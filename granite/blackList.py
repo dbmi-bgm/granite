@@ -57,7 +57,7 @@ def main(args):
     #end if
 
     # Buffers
-    fo = open(args['outputfile'], 'w')
+    fo = open(args['outputfile'], 'w', encoding='utf-8')
 
     # Loading big if specified
     if is_bigfile: big_dict = load_big(args['bigfile'])

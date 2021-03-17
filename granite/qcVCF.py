@@ -298,20 +298,8 @@ def main(args):
     # Get list of sample IDs to use
     ID_list = args['samples'] # list of sample IDs
 
-    # Loading pedigree
-    if os.path.isfile(args['pedigree']):
-        with open(args['pedigree']) as fi:
-            pedigree = json.load(fi)
-        #end with
-    else:
-        try: pedigree = json.loads(args['pedigree'])
-        except Exception:
-            sys.exit('\nERROR in parsing arguments: pedigree must be either a json file or a string representing a json\n')
-        #end try
-    #end if
-
     # Creating Pedigree object
-    pedigree_obj = pedigree_parser.Pedigree(pedigree)
+    pedigree_obj = pedigree_parser.Pedigree(args['pedigree'])
 
     # Initializing stat_dict
     for ID in ID_list:

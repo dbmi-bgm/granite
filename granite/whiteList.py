@@ -55,7 +55,7 @@ def main(args):
     is_verbose = True if args['verbose'] else False
 
     # Buffers
-    fo = open(args['outputfile'], 'w')
+    fo = open(args['outputfile'], 'w', encoding='utf-8')
 
     # Creating Vcf object
     vcf_obj = vcf_parser.Vcf(args['inputfile'])

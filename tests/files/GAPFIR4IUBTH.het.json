@@ -1,0 +1,864 @@
+{
+  "autosomal heterozygous calls error, MODEL": [
+    {
+      "children": 0,
+      "UGRP1_ind_5_GAPFIR4IUBTH": {
+        "undercall ratio": 0.0,
+        "overcall ratio": 0.001,
+        "correct ratio": 0.003,
+        "missing ratio": 0.997,
+        "counts": {
+          "total": 1938,
+          "undercall": 0,
+          "overcall": 1,
+          "correct": 5,
+          "missing": 1932
+        }
+      },
+      "UGRP1_ind_6_GAPFIR4IUBTH": {
+        "undercall ratio": 0.0,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.005,
+        "missing ratio": 0.995,
+        "counts": {
+          "total": 1917,
+          "undercall": 0,
+          "overcall": 0,
+          "correct": 9,
+          "missing": 1908
+        }
+      }
+    },
+    {
+      "children": 1,
+      "UGRP1_ind_5_GAPFIR4IUBTH": {
+        "undercall ratio": 0.024,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.321,
+        "missing ratio": 0.655,
+        "counts": {
+          "total": 84,
+          "undercall": 2,
+          "overcall": 0,
+          "correct": 27,
+          "missing": 55
+        }
+      },
+      "UGRP1_ind_6_GAPFIR4IUBTH": {
+        "undercall ratio": 0.115,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.115,
+        "missing ratio": 0.769,
+        "counts": {
+          "total": 78,
+          "undercall": 9,
+          "overcall": 0,
+          "correct": 9,
+          "missing": 60
+        }
+      }
+    },
+    {
+      "children": 2,
+      "UGRP1_ind_5_GAPFIR4IUBTH": {
+        "undercall ratio": 0.008,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.72,
+        "missing ratio": 0.273,
+        "counts": {
+          "total": 132,
+          "undercall": 1,
+          "overcall": 0,
+          "correct": 95,
+          "missing": 36
+        }
+      },
+      "UGRP1_ind_6_GAPFIR4IUBTH": {
+        "undercall ratio": 0.079,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.579,
+        "missing ratio": 0.342,
+        "counts": {
+          "total": 76,
+          "undercall": 6,
+          "overcall": 0,
+          "correct": 44,
+          "missing": 26
+        }
+      }
+    },
+    {
+      "children": 3,
+      "UGRP1_ind_5_GAPFIR4IUBTH": {
+        "undercall ratio": 0.007,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.915,
+        "missing ratio": 0.078,
+        "counts": {
+          "total": 141,
+          "undercall": 1,
+          "overcall": 0,
+          "correct": 129,
+          "missing": 11
+        }
+      },
+      "UGRP1_ind_6_GAPFIR4IUBTH": {
+        "undercall ratio": 0.025,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.891,
+        "missing ratio": 0.084,
+        "counts": {
+          "total": 119,
+          "undercall": 3,
+          "overcall": 0,
+          "correct": 106,
+          "missing": 10
+        }
+      }
+    },
+    {
+      "children": 4,
+      "UGRP1_ind_5_GAPFIR4IUBTH": {
+        "undercall ratio": 0.006,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.986,
+        "missing ratio": 0.008,
+        "counts": {
+          "total": 354,
+          "undercall": 2,
+          "overcall": 0,
+          "correct": 349,
+          "missing": 3
+        }
+      },
+      "UGRP1_ind_6_GAPFIR4IUBTH": {
+        "undercall ratio": 0.0,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.995,
+        "missing ratio": 0.005,
+        "counts": {
+          "total": 380,
+          "undercall": 0,
+          "overcall": 0,
+          "correct": 378,
+          "missing": 2
+        }
+      }
+    },
+    {
+      "children": 5,
+      "UGRP1_ind_5_GAPFIR4IUBTH": {
+        "undercall ratio": 0.0,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.99,
+        "missing ratio": 0.01,
+        "counts": {
+          "total": 307,
+          "undercall": 0,
+          "overcall": 0,
+          "correct": 304,
+          "missing": 3
+        }
+      },
+      "UGRP1_ind_6_GAPFIR4IUBTH": {
+        "undercall ratio": 0.003,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.994,
+        "missing ratio": 0.003,
+        "counts": {
+          "total": 328,
+          "undercall": 1,
+          "overcall": 0,
+          "correct": 326,
+          "missing": 1
+        }
+      }
+    },
+    {
+      "children": 6,
+      "UGRP1_ind_5_GAPFIR4IUBTH": {
+        "undercall ratio": 0.0,
+        "overcall ratio": 0.007,
+        "correct ratio": 0.99,
+        "missing ratio": 0.003,
+        "counts": {
+          "total": 288,
+          "undercall": 0,
+          "overcall": 2,
+          "correct": 285,
+          "missing": 1
+        }
+      },
+      "UGRP1_ind_6_GAPFIR4IUBTH": {
+        "undercall ratio": 0.0,
+        "overcall ratio": 0.0,
+        "correct ratio": 1.0,
+        "missing ratio": 0.0,
+        "counts": {
+          "total": 392,
+          "undercall": 0,
+          "overcall": 0,
+          "correct": 392,
+          "missing": 0
+        }
+      }
+    },
+    {
+      "children": 7,
+      "UGRP1_ind_5_GAPFIR4IUBTH": {
+        "undercall ratio": 0.008,
+        "overcall ratio": 0.003,
+        "correct ratio": 0.989,
+        "missing ratio": 0.0,
+        "counts": {
+          "total": 354,
+          "undercall": 3,
+          "overcall": 1,
+          "correct": 350,
+          "missing": 0
+        }
+      },
+      "UGRP1_ind_6_GAPFIR4IUBTH": {
+        "undercall ratio": 0.005,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.995,
+        "missing ratio": 0.0,
+        "counts": {
+          "total": 377,
+          "undercall": 2,
+          "overcall": 0,
+          "correct": 375,
+          "missing": 0
+        }
+      }
+    },
+    {
+      "children": 8,
+      "UGRP1_ind_5_GAPFIR4IUBTH": {
+        "undercall ratio": 0.0,
+        "overcall ratio": 0.0,
+        "correct ratio": 1.0,
+        "missing ratio": 0.0,
+        "counts": {
+          "total": 165,
+          "undercall": 0,
+          "overcall": 0,
+          "correct": 165,
+          "missing": 0
+        }
+      },
+      "UGRP1_ind_6_GAPFIR4IUBTH": {
+        "undercall ratio": 0.0,
+        "overcall ratio": 0.0,
+        "correct ratio": 1.0,
+        "missing ratio": 0.0,
+        "counts": {
+          "total": 92,
+          "undercall": 0,
+          "overcall": 0,
+          "correct": 92,
+          "missing": 0
+        }
+      }
+    },
+    {
+      "children": 9,
+      "UGRP1_ind_5_GAPFIR4IUBTH": {
+        "undercall ratio": 0.0,
+        "overcall ratio": 0.0,
+        "correct ratio": 1.0,
+        "missing ratio": 0.0,
+        "counts": {
+          "total": 68,
+          "undercall": 0,
+          "overcall": 0,
+          "correct": 68,
+          "missing": 0
+        }
+      },
+      "UGRP1_ind_6_GAPFIR4IUBTH": {
+        "undercall ratio": 0.0,
+        "overcall ratio": 0.0,
+        "correct ratio": 0.98,
+        "missing ratio": 0.02,
+        "counts": {
+          "total": 49,
+          "undercall": 0,
+          "overcall": 0,
+          "correct": 48,
+          "missing": 1
+        }
+      }
+    },
+    {
+      "children": 10,
+      "UGRP1_ind_5_GAPFIR4IUBTH": {
+        "undercall ratio": 0.0,
+        "overcall ratio": 0.0,
+        "correct ratio": 1.0,
+        "missing ratio": 0.0,
+        "counts": {
+          "total": 28,
+          "undercall": 0,
+          "overcall": 0,
+          "correct": 28,
+          "missing": 0
+        }
+      },
+      "UGRP1_ind_6_GAPFIR4IUBTH": {
+        "undercall ratio": 0.0,
+        "overcall ratio": 0.0,
+        "correct ratio": 1.0,
+        "missing ratio": 0.0,
+        "counts": {
+          "total": 7,
+          "undercall": 0,
+          "overcall": 0,
+          "correct": 7,
+          "missing": 0
+        }
+      }
+    },
+    {
+      "children": 11,
+      "UGRP1_ind_5_GAPFIR4IUBTH": {
+        "counts": {
+          "total": 0,
+          "undercall": 0,
+          "overcall": 0,
+          "correct": 0,
+          "missing": 0
+        }
+      },
+      "UGRP1_ind_6_GAPFIR4IUBTH": {
+        "counts": {
+          "total": 0,
+          "undercall": 0,
+          "overcall": 0,
+          "correct": 0,
+          "missing": 0
+        }
+      }
+    },
+    {
+      "children": "[4,8]",
+      "counts": {
+        "undercall": 8,
+        "overcall": 3,
+        "correct": 3016,
+        "missing": 10,
+        "total": 3037
+      },
+      "undercall ratio": 0.003,
+      "overcall ratio": 0.001,
+      "correct ratio": 0.993,
+      "missing ratio": 0.003
+    },
+    {
+      "children": "[6,11]",
+      "counts": {
+        "undercall": 5,
+        "overcall": 3,
+        "correct": 1810,
+        "missing": 2,
+        "total": 1820
+      },
+      "undercall ratio": 0.003,
+      "overcall ratio": 0.002,
+      "correct ratio": 0.995,
+      "missing ratio": 0.001
+    }
+  ],
+  "autosomal heterozygous calls error, GENERAL": [
+    {
+      "sample": "UGRP1_ind_5_GAPFIR4IUBTH",
+      "by_siblings": {
+        "0": {
+          "in_gparents": 8,
+          "no_gparents": 98,
+          "total": 106,
+          "is_ID": {
+            "in_gparents": 0,
+            "no_gparents": 0,
+            "total": 0
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 0,
+              "no_gparents": 0,
+              "total": 0
+            },
+            "in_gparents": 5,
+            "no_gparents": 87,
+            "total": 92
+          }
+        },
+        "1": {
+          "in_gparents": 31,
+          "no_gparents": 29,
+          "total": 60,
+          "is_ID": {
+            "in_gparents": 14,
+            "no_gparents": 1,
+            "total": 15
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 13,
+              "no_gparents": 1,
+              "total": 14
+            },
+            "in_gparents": 28,
+            "no_gparents": 26,
+            "total": 54
+          }
+        },
+        "2": {
+          "in_gparents": 99,
+          "no_gparents": 11,
+          "total": 110,
+          "is_ID": {
+            "in_gparents": 45,
+            "no_gparents": 0,
+            "total": 45
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 42,
+              "no_gparents": 0,
+              "total": 42
+            },
+            "in_gparents": 96,
+            "no_gparents": 9,
+            "total": 105
+          }
+        },
+        "3": {
+          "in_gparents": 137,
+          "no_gparents": 9,
+          "total": 146,
+          "is_ID": {
+            "in_gparents": 75,
+            "no_gparents": 0,
+            "total": 75
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 72,
+              "no_gparents": 0,
+              "total": 72
+            },
+            "in_gparents": 132,
+            "no_gparents": 6,
+            "total": 138
+          }
+        },
+        "4": {
+          "in_gparents": 367,
+          "no_gparents": 13,
+          "total": 380,
+          "is_ID": {
+            "in_gparents": 180,
+            "no_gparents": 1,
+            "total": 181
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 174,
+              "no_gparents": 1,
+              "total": 175
+            },
+            "in_gparents": 358,
+            "no_gparents": 10,
+            "total": 368
+          }
+        },
+        "5": {
+          "in_gparents": 317,
+          "no_gparents": 4,
+          "total": 321,
+          "is_ID": {
+            "in_gparents": 177,
+            "no_gparents": 1,
+            "total": 178
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 175,
+              "no_gparents": 0,
+              "total": 175
+            },
+            "in_gparents": 311,
+            "no_gparents": 2,
+            "total": 313
+          }
+        },
+        "6": {
+          "in_gparents": 303,
+          "no_gparents": 4,
+          "total": 307,
+          "is_ID": {
+            "in_gparents": 185,
+            "no_gparents": 0,
+            "total": 185
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 175,
+              "no_gparents": 0,
+              "total": 175
+            },
+            "in_gparents": 291,
+            "no_gparents": 4,
+            "total": 295
+          }
+        },
+        "7": {
+          "in_gparents": 367,
+          "no_gparents": 1,
+          "total": 368,
+          "is_ID": {
+            "in_gparents": 187,
+            "no_gparents": 1,
+            "total": 188
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 175,
+              "no_gparents": 1,
+              "total": 176
+            },
+            "in_gparents": 355,
+            "no_gparents": 1,
+            "total": 356
+          }
+        },
+        "8": {
+          "in_gparents": 181,
+          "no_gparents": 0,
+          "total": 181,
+          "is_ID": {
+            "in_gparents": 116,
+            "no_gparents": 0,
+            "total": 116
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 103,
+              "no_gparents": 0,
+              "total": 103
+            },
+            "in_gparents": 167,
+            "no_gparents": 0,
+            "total": 167
+          }
+        },
+        "9": {
+          "in_gparents": 73,
+          "no_gparents": 0,
+          "total": 73,
+          "is_ID": {
+            "in_gparents": 43,
+            "no_gparents": 0,
+            "total": 43
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 39,
+              "no_gparents": 0,
+              "total": 39
+            },
+            "in_gparents": 68,
+            "no_gparents": 0,
+            "total": 68
+          }
+        },
+        "10": {
+          "in_gparents": 38,
+          "no_gparents": 0,
+          "total": 38,
+          "is_ID": {
+            "in_gparents": 18,
+            "no_gparents": 0,
+            "total": 18
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 9,
+              "no_gparents": 0,
+              "total": 9
+            },
+            "in_gparents": 28,
+            "no_gparents": 0,
+            "total": 28
+          }
+        },
+        "11": {
+          "in_gparents": 13,
+          "no_gparents": 0,
+          "total": 13,
+          "is_ID": {
+            "in_gparents": 13,
+            "no_gparents": 0,
+            "total": 13
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 0,
+              "no_gparents": 0,
+              "total": 0
+            },
+            "in_gparents": 0,
+            "no_gparents": 0,
+            "total": 0
+          }
+        }
+      }
+    },
+    {
+      "sample": "UGRP1_ind_6_GAPFIR4IUBTH",
+      "by_siblings": {
+        "0": {
+          "in_gparents": 10,
+          "no_gparents": 76,
+          "total": 86,
+          "is_ID": {
+            "in_gparents": 0,
+            "no_gparents": 1,
+            "total": 1
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 0,
+              "no_gparents": 1,
+              "total": 1
+            },
+            "in_gparents": 10,
+            "no_gparents": 65,
+            "total": 75
+          }
+        },
+        "1": {
+          "in_gparents": 11,
+          "no_gparents": 23,
+          "total": 34,
+          "is_ID": {
+            "in_gparents": 2,
+            "no_gparents": 1,
+            "total": 3
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 2,
+              "no_gparents": 1,
+              "total": 3
+            },
+            "in_gparents": 9,
+            "no_gparents": 22,
+            "total": 31
+          }
+        },
+        "2": {
+          "in_gparents": 44,
+          "no_gparents": 14,
+          "total": 58,
+          "is_ID": {
+            "in_gparents": 22,
+            "no_gparents": 1,
+            "total": 23
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 22,
+              "no_gparents": 1,
+              "total": 23
+            },
+            "in_gparents": 44,
+            "no_gparents": 12,
+            "total": 56
+          }
+        },
+        "3": {
+          "in_gparents": 109,
+          "no_gparents": 4,
+          "total": 113,
+          "is_ID": {
+            "in_gparents": 69,
+            "no_gparents": 0,
+            "total": 69
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 69,
+              "no_gparents": 0,
+              "total": 69
+            },
+            "in_gparents": 109,
+            "no_gparents": 3,
+            "total": 112
+          }
+        },
+        "4": {
+          "in_gparents": 398,
+          "no_gparents": 6,
+          "total": 404,
+          "is_ID": {
+            "in_gparents": 211,
+            "no_gparents": 0,
+            "total": 211
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 204,
+              "no_gparents": 0,
+              "total": 204
+            },
+            "in_gparents": 386,
+            "no_gparents": 4,
+            "total": 390
+          }
+        },
+        "5": {
+          "in_gparents": 346,
+          "no_gparents": 1,
+          "total": 347,
+          "is_ID": {
+            "in_gparents": 189,
+            "no_gparents": 0,
+            "total": 189
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 181,
+              "no_gparents": 0,
+              "total": 181
+            },
+            "in_gparents": 335,
+            "no_gparents": 0,
+            "total": 335
+          }
+        },
+        "6": {
+          "in_gparents": 410,
+          "no_gparents": 2,
+          "total": 412,
+          "is_ID": {
+            "in_gparents": 234,
+            "no_gparents": 1,
+            "total": 235
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 224,
+              "no_gparents": 1,
+              "total": 225
+            },
+            "in_gparents": 398,
+            "no_gparents": 2,
+            "total": 400
+          }
+        },
+        "7": {
+          "in_gparents": 395,
+          "no_gparents": 1,
+          "total": 396,
+          "is_ID": {
+            "in_gparents": 230,
+            "no_gparents": 0,
+            "total": 230
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 214,
+              "no_gparents": 0,
+              "total": 214
+            },
+            "in_gparents": 379,
+            "no_gparents": 1,
+            "total": 380
+          }
+        },
+        "8": {
+          "in_gparents": 104,
+          "no_gparents": 0,
+          "total": 104,
+          "is_ID": {
+            "in_gparents": 56,
+            "no_gparents": 0,
+            "total": 56
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 45,
+              "no_gparents": 0,
+              "total": 45
+            },
+            "in_gparents": 93,
+            "no_gparents": 0,
+            "total": 93
+          }
+        },
+        "9": {
+          "in_gparents": 54,
+          "no_gparents": 0,
+          "total": 54,
+          "is_ID": {
+            "in_gparents": 34,
+            "no_gparents": 0,
+            "total": 34
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 30,
+              "no_gparents": 0,
+              "total": 30
+            },
+            "in_gparents": 49,
+            "no_gparents": 0,
+            "total": 49
+          }
+        },
+        "10": {
+          "in_gparents": 15,
+          "no_gparents": 1,
+          "total": 16,
+          "is_ID": {
+            "in_gparents": 12,
+            "no_gparents": 0,
+            "total": 12
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 4,
+              "no_gparents": 0,
+              "total": 4
+            },
+            "in_gparents": 7,
+            "no_gparents": 0,
+            "total": 7
+          }
+        },
+        "11": {
+          "in_gparents": 8,
+          "no_gparents": 0,
+          "total": 8,
+          "is_ID": {
+            "in_gparents": 8,
+            "no_gparents": 0,
+            "total": 8
+          },
+          "no_spouse": {
+            "is_ID": {
+              "in_gparents": 0,
+              "no_gparents": 0,
+              "total": 0
+            },
+            "in_gparents": 0,
+            "no_gparents": 0,
+            "total": 0
+          }
+        }
+      }
+    }
+  ]
+}

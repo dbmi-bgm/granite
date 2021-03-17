@@ -1,0 +1,147 @@
+[
+    {
+        "individual": "1",
+        "gender": "M",
+        "sample_name": "UGRP1_ind_1",
+        "parents": [
+        ]
+    },
+    {
+        "individual": "2",
+        "gender": "F",
+        "sample_name": "UGRP1_ind_2",
+        "parents": [
+        ]
+    },
+    {
+        "individual": "3",
+        "gender": "M",
+        "sample_name": "UGRP1_ind_3",
+        "parents": [
+        ]
+    },
+    {
+        "individual": "4",
+        "gender": "F",
+        "sample_name": "UGRP1_ind_4",
+        "parents": [
+        ]
+    },
+    {
+        "individual": "5",
+        "gender": "M",
+        "sample_name": "UGRP1_ind_5_GAPFIR4IUBTH",
+        "parents": [
+             "1",
+             "2"
+        ]
+    },
+    {
+        "individual": "6",
+        "gender": "F",
+        "sample_name": "UGRP1_ind_6",
+        "parents": [
+             "3",
+             "4"
+        ]
+    },
+    {
+        "individual": "7",
+        "gender": "U",
+        "sample_name": "UGRP1_ind_7",
+        "parents": [
+             "5",
+             "6"
+        ]
+    },
+    {
+        "individual": "8",
+        "gender": "U",
+        "sample_name": "UGRP1_ind_8",
+        "parents": [
+             "5",
+             "6"
+        ]
+    },
+    {
+        "individual": "9",
+        "gender": "U",
+        "sample_name": "UGRP1_ind_9",
+        "parents": [
+             "5",
+             "6"
+        ]
+    },
+    {
+        "individual": "10",
+        "gender": "U",
+        "sample_name": "UGRP1_ind_10",
+        "parents": [
+             "5",
+             "6"
+        ]
+    },
+    {
+        "individual": "11",
+        "gender": "U",
+        "sample_name": "UGRP1_ind_11",
+        "parents": [
+             "5",
+             "6"
+        ]
+    },
+    {
+        "individual": "12",
+        "gender": "U",
+        "sample_name": "UGRP1_ind_12",
+        "parents": [
+             "5",
+             "6"
+        ]
+    },
+    {
+        "individual": "13",
+        "gender": "U",
+        "sample_name": "UGRP1_ind_13",
+        "parents": [
+             "5",
+             "6"
+        ]
+    },
+    {
+        "individual": "14",
+        "gender": "U",
+        "sample_name": "UGRP1_ind_14",
+        "parents": [
+             "5",
+             "6"
+        ]
+    },
+    {
+        "individual": "15",
+        "gender": "U",
+        "sample_name": "UGRP1_ind_15",
+        "parents": [
+             "5",
+             "6"
+        ]
+    },
+    {
+        "individual": "16",
+        "gender": "U",
+        "sample_name": "UGRP1_ind_16",
+        "parents": [
+             "5",
+             "6"
+        ]
+    },
+    {
+        "individual": "17",
+        "gender": "U",
+        "sample_name": "UGRP1_ind_17",
+        "parents": [
+             "5",
+             "6"
+        ]
+    }
+]
