@@ -242,7 +242,9 @@ def _error_novo_child(vnt_obj, stat_dict, family, bin, cnt_children, sample_novo
             stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_vnt'].append(vnt_obj)
             # Get AD-DP ratio
             AD = sum(map(int, vnt_obj.get_genotype_value(sample_novo, 'AD').split(',')[1:]))
-            DP = int(vnt_obj.get_genotype_value(sample_novo, 'DP'))
+            try: DP = int(vnt_obj.get_genotype_value(sample_novo, 'DP'))
+            except Exception: DP = 0
+            #end try
             try:
                 stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_AD-DP'].append(AD / DP)
             except Exception:
@@ -271,8 +273,14 @@ def _error_novo_parent(vnt_obj, stat_dict, family, bin, cnt_children, sample_nov
             stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_vnt'].append(vnt_obj)
             # Get AD-DP ratio
             AD = sum(map(int, vnt_obj.get_genotype_value(sample_novo, 'AD').split(',')[1:]))
-            DP = int(vnt_obj.get_genotype_value(sample_novo, 'DP'))
-            stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_AD-DP'].append(AD / DP)
+            try: DP = int(vnt_obj.get_genotype_value(sample_novo, 'DP'))
+            except Exception: DP = 0
+            #end try
+            try:
+                stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_AD-DP'].append(AD / DP)
+            except Exception:
+                stat_dict['error_novo_family'][bin][cnt_children]['no_gparents_AD-DP'].append(0)
+            #end try
         #end if
     #end if
 #end def
