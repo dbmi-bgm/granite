@@ -528,6 +528,7 @@ def main(args, test=False):
     # Variables
     is_impct = True if args['impact'] else False
     is_IMPACT = False # True if IMPACT field is in VEP
+    is_family = False
     CLNSIGtag, CLNSIG_idx, is_CLNSIG = '', 0, False
     SpAItag_list, SpAI_idx_list, is_SpAI = [], [], False
     ENSG_idx, ENST_idx, IMPCT_idx = 0, 0, 0
@@ -617,6 +618,8 @@ def main(args, test=False):
     # Get trio IDs
     if len(args['trio']) > 3:
         sys.exit('\nERROR in parsing arguments: too many sample IDs provided for trio\n')
+    elif len(args['trio']) == 3:
+        is_family = True
     #end if
     ID_list = args['trio'] # [proband_ID, parent_ID, parent_ID]
 
@@ -649,6 +652,15 @@ def main(args, test=False):
         # Check proband_ID genotype
         if vnt_obj.get_genotype_value(ID_list[0], 'GT').replace('|', '/') not in ['0/1', '1/0']:
             continue # go next if is not 0/1
+        #end if
+        # Check parent_ID genotypes
+        if is_family:
+            # go next if shared by both parents
+            GT_1 = vnt_obj.get_genotype_value(ID_list[1], 'GT').replace('|', '/')
+            GT_2 = vnt_obj.get_genotype_value(ID_list[2], 'GT').replace('|', '/')
+            if GT_1 in ['0/1', '1/0'] and GT_2 in ['0/1', '1/0']:
+                continue
+            #end if
         #end if
 
         # Get transcripts and genes information from VEP

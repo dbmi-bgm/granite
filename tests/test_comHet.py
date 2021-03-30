@@ -243,6 +243,22 @@ def test_run_comHet_VEPannotations():
     os.remove('tests/files/main_test.out.json')
 #end def
 
+def test_run_comHet_het_parents():
+    ''' '''
+    # Variables
+    args = {'inputfile': 'tests/files/input_comHet_het_parents.vcf', 'outputfile': 'tests/files/main_test.out',
+            'trio': ['0339-UDN452807-S1', '0339-UDN191434-S1', '0339-UDN287108-S1'], 'VEPtag': None, 'allow_undef': None, 'filter_cmpHet': None, 'verbose': None, 'sep': None,
+            'impact': True, 'SpliceAItag': None}
+    # Run
+    main_comHet(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_comHet_het_parents.out')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+    os.remove('tests/files/main_test.out.summary')
+    os.remove('tests/files/main_test.out.json')
+#end def
+
 #################################################################
 #   Errors
 #################################################################

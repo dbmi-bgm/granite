@@ -11,7 +11,7 @@ For more details, see granite [*documentation*](https://granite-suite.readthedoc
 ## Availability and requirements
 A ready-to-use docker image is available to download.
 
-    docker pull b3rse/granite:v0.1.10
+    docker pull b3rse/granite:v0.1.11
 
 To run locally, install the following libraries:
 
