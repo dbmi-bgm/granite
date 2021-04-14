@@ -679,8 +679,8 @@ def _plot_hist_2(bins, data_0, data_1, label_0, label_1, filename, xlabel, ylabe
     index = numpy.arange(len(bins))
     bar_width = 0.35
     # Plot data
-    rects1 = pyplot.bar(index, data_0, bar_width, color='#ef8a62', label=label_0, zorder=3)
-    rects2 = pyplot.bar(index + bar_width + 0.02, data_1, bar_width, color='#67a9cf', label=label_1, zorder=3)
+    rects1 = pyplot.bar(index, data_0[:len(bins)], bar_width, color='#ef8a62', label=label_0, zorder=3)
+    rects2 = pyplot.bar(index + bar_width + 0.02, data_1[:len(bins)], bar_width, color='#67a9cf', label=label_1, zorder=3)
     # Grid and axis
     pyplot.grid(axis='y', alpha=0.8, zorder=0, linestyle='--')
     pyplot.xticks(index + bar_width / 2 + 0.01, bins)
