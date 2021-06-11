@@ -56,7 +56,7 @@ def main():
     novoCaller_parser.add_argument('-i', '--inputfile', help='input VCF file', type=str, required=True)
     novoCaller_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
     novoCaller_parser.add_argument('-u', '--unrelatedfiles', help='TSV index file containing SampleID<TAB>Path/to/file for unrelated files used to train the model (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
-    novoCaller_parser.add_argument('-t', '--triofiles', help='TSV index file containing SampleID<TAB>Path/to/file for family files, the PROBAND must be listed as LAST (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
+    novoCaller_parser.add_argument('-t', '--triofiles', help='TSV index file containing SampleID<TAB>Path/to/file for family files, the PROBAND must be listed as FIRST (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
     novoCaller_parser.add_argument('--ppthr', help='threshold to filter by posterior probabilty for de novo calls (>=) [0]', type=float, required=False)
     novoCaller_parser.add_argument('--afthr', help='threshold to filter by population allele frequency (<=) [1]', type=float, required=False)
     novoCaller_parser.add_argument('--afthr_unrelated', help='threshold to filter by allele frequency calculated among unrelated (<=) [1]', type=float, required=False)

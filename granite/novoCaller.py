@@ -843,11 +843,23 @@ def main(args, test=False):
 
     if is_bam: # if bam files
         unrelated_files, IDs_unrelated = buffering_bams(args['unrelatedfiles'])
-        trio_files, IDs_trio = buffering_bams(args['triofiles']) # [parent, parent, child]
+        trio_files, IDs_trio = buffering_bams(args['triofiles'])
     else:
         unrelated_files, IDs_unrelated = buffering_rcks(args['unrelatedfiles'])
-        trio_files, IDs_trio = buffering_rcks(args['triofiles']) # [parent, parent, child]
+        trio_files, IDs_trio = buffering_rcks(args['triofiles'])
     #end if
+
+    # !!!
+    # Subset trio_files and IDs_trio to exclude additional family members
+    trio_files = trio_files[:3]
+    IDs_trio = IDs_trio[:3]
+    # Sorting trio_files and IDs_trio to have proband last
+    #   [child, parent, parent] this is as it is expected in the input file
+    #   the code expect instead [parent, parent, child]
+    #   we need to put child at the end
+    trio_files.append(trio_files.pop(0))
+    IDs_trio.append(IDs_trio.pop(0))
+    # !!!
 
     # Checking info files for trio is complete
     if len(trio_files) != 3:

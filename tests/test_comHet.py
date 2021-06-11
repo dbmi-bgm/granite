@@ -63,7 +63,7 @@ def test_run_comHet_proband_plus_NA12877_NA12878():
     ''' '''
     # Variables
     args = {'inputfile': 'tests/files/input_comHet.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12877_sample', 'NA12878_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+            'trio': ['NA12879_sample', 'NA12877_sample', 'NA12878_sample', 'NA12880_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
             'impact': None, 'SpliceAItag': None}
     # Run
     main_comHet(args)
@@ -262,16 +262,16 @@ def test_run_comHet_het_parents():
 #################################################################
 #   Errors
 #################################################################
-def test_run_trio_error(): # NA12879
-    ''' '''
-    # Variables
-    args = {'inputfile': 'tests/files/input_comHet.vcf', 'outputfile': 'tests/files/main_test.out',
-            'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample', 'extra_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
-            'impact': None, 'SpliceAItag': None}
-    # Run and Tests
-    with pytest.raises(SystemExit) as e:
-        assert main_comHet(args)
-    assert str(e.value) == '\nERROR in parsing arguments: too many sample IDs provided for trio\n'
-    # Clean
-    os.remove('tests/files/main_test.out')
-#end def
+# def test_run_trio_error(): # NA12879
+#     ''' '''
+#     # Variables
+#     args = {'inputfile': 'tests/files/input_comHet.vcf', 'outputfile': 'tests/files/main_test.out',
+#             'trio': ['NA12879_sample', 'NA12878_sample', 'NA12877_sample', 'extra_sample'], 'VEPtag': 'VEP', 'allow_undef': None, 'filter_cmpHet': True, 'verbose': None, 'sep': None,
+#             'impact': None, 'SpliceAItag': None}
+#     # Run and Tests
+#     with pytest.raises(SystemExit) as e:
+#         assert main_comHet(args)
+#     assert str(e.value) == '\nERROR in parsing arguments: too many sample IDs provided for trio\n'
+#     # Clean
+#     os.remove('tests/files/main_test.out')
+# #end def

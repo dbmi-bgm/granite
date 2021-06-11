@@ -11,7 +11,7 @@ For more details, see granite [*documentation*](https://granite-suite.readthedoc
 ## Availability and requirements
 A ready-to-use docker image is available to download.
 
-    docker pull b3rse/granite:v0.1.11
+    docker pull b3rse/granite:v0.1.12
 
 To run locally, install the following libraries:
 
@@ -156,3 +156,7 @@ rckTar creates a tar archive from bgzip and tabix indexed RCK files. Creates an 
 
 ### validateVCF
 validateVCF allows to calculate error models for different inheritance modes for input VCF file using pedigree information.
+
+## WARNINGS
+
+!! starting from 0.1.12, novoCaller `--triofiles` expected order changed. Now PROBAND must be listed as first.

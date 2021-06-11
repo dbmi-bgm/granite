@@ -616,12 +616,12 @@ def main(args, test=False):
     #end if
 
     # Get trio IDs
-    if len(args['trio']) > 3:
-        sys.exit('\nERROR in parsing arguments: too many sample IDs provided for trio\n')
-    elif len(args['trio']) == 3:
+    # if len(args['trio']) > 3:
+    #     sys.exit('\nERROR in parsing arguments: too many sample IDs provided for trio\n')
+    if len(args['trio']) == 3:
         is_family = True
     #end if
-    ID_list = args['trio'] # [proband_ID, parent_ID, parent_ID]
+    ID_list = args['trio'][:3] # [proband_ID, parent_ID, parent_ID]
 
     # Reading variants
     analyzed = 0

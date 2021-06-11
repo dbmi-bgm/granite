@@ -22,7 +22,7 @@ novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model us
                             bgzip and tabix indexed RCK)
       -t TRIOFILES, --triofiles TRIOFILES
                             TSV index file containing SampleID<TAB>Path/to/file
-                            for family files, the PROBAND must be listed as LAST
+                            for family files, the PROBAND must be listed as FIRST
                             (BAM or bgzip and tabix indexed RCK)
       --ppthr PPTHR         threshold to filter by posterior probabilty for de
                             novo calls (>=) [0]
