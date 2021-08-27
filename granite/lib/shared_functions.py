@@ -264,6 +264,30 @@ def variant_type_ext(REF, ALT):
     return 'snv'
 #end def
 
+def variant_type_sv(vnt_obj):
+    ''' return variant type as ins, del,
+    dup, inv, bnd (translocation), cvn (copy number variation) '''
+    try:
+        SVTYPE = vnt_obj.get_tag_value("SVTYPE")
+    except Exception:
+        raise ValueError('\nERROR in parsing vcf, variant at position {0} does not contain SVTYPE in INFO\n'
+                .format(vnt_obj.CHROM+":"+str(vnt_obj.POS)))
+    if SVTYPE == 'DEL':
+        return 'del'
+    elif SVTYPE == 'DUP':
+        return 'dup'
+    elif SVTYPE == 'INS':
+        return 'ins'
+    elif SVTYPE == 'INV':
+        return 'inv'
+    elif SVTYPE == 'BND':
+        return 'bnd'
+    elif SVTYPE == 'CNV':
+        return 'cnv'
+    else:
+        raise ValueError('\nERROR in parsing vcf, variant at position {0} contains unexpected SVTYPE "{1}" in INFO\n'
+                .format(vnt_obj.CHROM+":"+str(vnt_obj.POS),SVTYPE))
+
 def allele_frequency(vnt_obj, aftag, idx=0):
     ''' return allele frequency for variant from aftag in INFO,
     return 0. if tag is missing or value is not a float '''

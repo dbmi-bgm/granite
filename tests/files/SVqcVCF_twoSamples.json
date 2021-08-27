@@ -1,0 +1,16 @@
+{
+  "total variants": [
+    {
+      "name": "TESTSAMPLE",
+      "total": 2,
+      "DEL": 1,
+      "DUP": 1
+    },
+    {
+      "name": "TESTSAMPLE2",
+      "total": 4,
+      "DEL": 2,
+      "DUP": 2
+    }
+  ]
+}

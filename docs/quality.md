@@ -69,3 +69,22 @@ validateVCF produces a report in JSON format with error models for different inh
                             to use (SNV, INS, DEL, MNV, MAV) as list (e.g. --type
                             SNV INS DEL)
 ```
+
+### SVqcVCF
+SVqcVCF produces a report in JSON format with different quality metrics calculated for input SV VCF file. Currently, this function can count DEL and DUP SVs in single- and multi-sample SV VCF files.  It reports the number of DEL, DUP, and total (the sum of only DEL and DUP) SVs for each sample provided in samples. Other SVTYPEs (INS, INV, CNV, BND) are currently ignored.
+
+#### Arguments
+```text
+    usage: granite SVqcVCF [-h] -i INPUTFILE -o OUTPUTFILE
+                         --samples SAMPLES [SAMPLES ...] [--verbose]
+
+    optional arguments:
+      -i INPUTFILE, --inputfile INPUTFILE
+                            input SV VCF file
+      -o OUTPUTFILE, --outputfile OUTPUTFILE
+                            output file to write results as JSON, use .json as
+                            extension
+      --samples SAMPLES [SAMPLES ...]
+                            list of sample IDs to get stats for (e.g. --samples
+                            SampleID_1 [SampleID_2] ...)
+```

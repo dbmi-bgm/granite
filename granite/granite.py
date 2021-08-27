@@ -30,6 +30,7 @@ from granite import toBig
 from granite import rckTar
 from granite import cleanVCF
 from granite import qcVCF
+from granite import SVqcVCF
 from granite import validateVCF
 from granite import toPED
 from granite import geneList
@@ -183,6 +184,15 @@ def main():
     qcVCF_parser.add_argument('--het_hom', help='add heterozygosity ratio and statistics on zygosity to report', action='store_true', required=False)
     qcVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
+    # Add SVqcVCF to subparsers
+    SVqcVCF_parser = subparsers.add_parser('SVqcVCF', description='utility to create a report of different metrics calculated for input SV VCF file',
+                                                help='utility to create a report of different metrics calculated for input SV VCF file')
+
+    SVqcVCF_parser.add_argument('-i', '--inputfile', help='input SV VCF file', type=str, required=True)
+    SVqcVCF_parser.add_argument('-o', '--outputfile', help='output file to write results as JSON, use .json as extension', type=str, required=True)
+    SVqcVCF_parser.add_argument('--samples', help='list of sample IDs to get stats for (e.g. --samples SampleID_1 [SampleID_2] ...)', nargs='+', required=True)
+    SVqcVCF_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
+
     # Add validateVCF to subparsers
     validateVCF_parser = subparsers.add_parser('validateVCF', description='utility to calculate error models for input VCF file using pedigree information',
                                                     help='utility to calculate error models for input VCF file using pedigree information')
@@ -222,6 +232,7 @@ def main():
                     'toBig': toBig_parser,
                     'rckTar': rckTar_parser,
                     'qcVCF': qcVCF_parser,
+                    'SVqcVCF': SVqcVCF_parser,
                     'validateVCF': validateVCF_parser,
                     'toPED': toPED_parser
                     }
@@ -262,6 +273,8 @@ def main():
         geneList.main(args)
     elif args['func'] == 'qcVCF':
         qcVCF.main(args)
+    elif args['func'] == 'SVqcVCF':
+        SVqcVCF.main(args)
     elif args['func'] == 'validateVCF':
         validateVCF.main(args)
     elif args['func'] == 'toPED':
