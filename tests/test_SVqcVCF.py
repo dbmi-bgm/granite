@@ -3,6 +3,7 @@
 #################################################################
 import sys, os
 import pytest
+import json
 from granite.SVqcVCF import (
                             main as main_SVqcVCF
                             )
@@ -33,7 +34,11 @@ def test_success_SVqcVCF_twoSamples():
     # Run
     main_SVqcVCF(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/SVqcVCF_twoSamples.json')]
+    with open('tests/files/main_test.out') as fi:
+        d1 = json.load(fi)
+    with open('tests/files/SVqcVCF_twoSamples.json') as fi:
+        d2 = json.load(fi)
+    assert d1 == d2
     # Clean
     os.remove('tests/files/main_test.out')
 
@@ -43,6 +48,10 @@ def test_success_SVqcVCF_oneSample():
     # Run
     main_SVqcVCF(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/SVqcVCF_oneSample.json')]
+    with open('tests/files/main_test.out') as fi:
+        d1 = json.load(fi)
+    with open('tests/files/SVqcVCF_oneSample.json') as fi:
+        d2 = json.load(fi)
+    assert d1 == d2
     # Clean
     os.remove('tests/files/main_test.out')
