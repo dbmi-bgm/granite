@@ -271,7 +271,8 @@ def variant_type_sv(vnt_obj):
         SVTYPE = vnt_obj.get_tag_value("SVTYPE")
     except Exception:
         raise ValueError('\nERROR in parsing vcf, variant at position {0} does not contain SVTYPE in INFO\n'
-                .format(vnt_obj.CHROM+":"+str(vnt_obj.POS)))
+                .format(vnt_obj.CHROM + ":" + str(vnt_obj.POS)))
+    #end try
     if SVTYPE == 'DEL':
         return 'del'
     elif SVTYPE == 'DUP':
@@ -286,7 +287,9 @@ def variant_type_sv(vnt_obj):
         return 'cnv'
     else:
         raise ValueError('\nERROR in parsing vcf, variant at position {0} contains unexpected SVTYPE "{1}" in INFO\n'
-                .format(vnt_obj.CHROM+":"+str(vnt_obj.POS),SVTYPE))
+                .format(vnt_obj.CHROM + ":" + str(vnt_obj.POS), SVTYPE))
+    #end if
+#end def
 
 def allele_frequency(vnt_obj, aftag, idx=0):
     ''' return allele frequency for variant from aftag in INFO,
