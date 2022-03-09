@@ -2,7 +2,7 @@
 
 A ready-to-use docker image is available to download.
 
-    docker pull b3rse/granite:v0.1.13
+    docker pull b3rse/granite:<version>
 
 To run locally, Python 3.6+ is required together with the following libraries:
 
@@ -28,7 +28,7 @@ To install the program from source:
 
     git clone https://github.com/dbmi-bgm/granite
     cd granite
-    python setup.py install
+    make configure && make build
 
 To install the program with pip:
 

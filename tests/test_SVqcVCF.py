@@ -20,7 +20,6 @@ def test_fail_SVqcVCF_no_SVTYPE():
     with pytest.raises(Exception, match = "ERROR in parsing vcf, variant at position 1:46000 does not contain SVTYPE in INFO"):
         main_SVqcVCF(args)
 
-
 def test_fail_SVqcVCF_wrong_SVTYPE():
     #Variables
     args = {'inputfile': 'tests/files/SVqcVCF_wrong_SVTYPE.vcf.gz','outputfile':'tests/files/main_test.out','samples':["TESTSAMPLE", "TESTSAMPLE2"], 'verbose': None}
