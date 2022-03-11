@@ -2,7 +2,7 @@
 name = "granite-suite"
 version = "0.1.14"
 description = "granite is a collection of software to call, filter and work with genomic variants."
-authors = ["Michele Berselli", "Phil Grayson"]
+authors = ["Michele Berselli <berselli.michele@gmail.com>", "Phil Grayson"]
 readme = "README.md"
 license = "MIT"
 repository = "https://github.com/dbmi-bgm/granite"
