@@ -1,7 +1,7 @@
 configure:
 	pip install poetry
 
-.PHONY: build
+.PHONY: build  # Protects against confusion if there is also a file named build
 build:
 	poetry install
 
