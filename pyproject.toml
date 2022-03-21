@@ -27,6 +27,7 @@ h5py = ">=2.10.0"
 numpy = ">=1.18.0"
 matplotlib = "==3.3.4"
 
+
 [tool.poetry.dev-dependencies]
 pytest = "*"
 
