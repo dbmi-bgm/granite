@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "granite-suite"
-version = "0.1.14"
+version = "0.2.0"
 description = "granite is a collection of software to call, filter and work with genomic variants."
 authors = ["Michele Berselli <berselli.michele@gmail.com>", "Phil Grayson"]
 readme = "README.md"
