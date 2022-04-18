@@ -1,6 +1,6 @@
 # granite
 
-[![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-360/)
+[![Python 3.6+](https://img.shields.io/badge/Python-3.6+-blue.svg)](https://www.python.org) ![License MIT](https://img.shields.io/badge/License-MIT-green)
 
 granite is a collection of software to work with genomic variants. The suite provides inheritance mode callers and utilities to filter and refine variants called by other methods in VCF format.
 
@@ -11,7 +11,7 @@ For more details, see granite [*documentation*](https://granite-suite.readthedoc
 ## Availability and requirements
 A ready-to-use docker image is available to download.
 
-    docker pull b3rse/granite:v0.1.13
+    docker pull b3rse/granite:<version>
 
 To run locally, install the following libraries:
 
@@ -28,7 +28,7 @@ To install the program from source, run the following commands:
 
     git clone https://github.com/dbmi-bgm/granite
     cd granite
-    python setup.py install
+    make configure && make build
 
 To install the program with pip:
 

@@ -16,13 +16,10 @@
 #
 #################################################################
 import sys, os
-import ctypes
 import h5py
-import numpy
 import multiprocessing
-from multiprocessing import Process, Pool
-from multiprocessing.sharedctypes import Array
-from functools import partial
+import bitarray
+from multiprocessing import Pool
 # shared_functions as *
 from granite.lib.shared_functions import *
 
@@ -70,17 +67,14 @@ def __routine_reads(rdthr, alt_fw, alt_rv):
 def bitarrays_toHDF5(filename):
     ''' write bitarrays to file in HDF5 format '''
     fo = h5py.File(filename, 'w')
-    # shared_arrays is in global scope
-    for chr in shared_arrays:
+    # bitarrays is in global scope
+    for chr in bitarrays:
         # Packing and writing snv
-        tmp_arr = numpy.array(shared_arrays[chr]['snv'][:], dtype=bool)
-        fo[chr + '_snv'] = numpy.packbits(tmp_arr.view(numpy.uint8))
+        fo[chr + '_snv'] = bitarrays[chr]['snv']
         # Packing and writing ins
-        tmp_arr = numpy.array(shared_arrays[chr]['ins'][:], dtype=bool)
-        fo[chr + '_ins'] = numpy.packbits(tmp_arr.view(numpy.uint8))
+        fo[chr + '_ins'] = bitarrays[chr]['ins']
         # Packing and writing del
-        tmp_arr = numpy.array(shared_arrays[chr]['del'][:], dtype=bool)
-        fo[chr + '_del'] = numpy.packbits(tmp_arr.view(numpy.uint8))
+        fo[chr + '_del'] = bitarrays[chr]['del']
     #end for
     fo.close()
 #end def
@@ -127,35 +121,38 @@ def run_region(files, fithr, rdthr, abthr, region):
         #end for
         # Check thresholds
         if bams_snv >= fithr:
-            snv.append(tmp_pos)
+            snv.append((tmp_chr, tmp_pos))
         #end if
         if bams_ins >= fithr:
-            ins.append(tmp_pos)
+            ins.append((tmp_chr, tmp_pos))
         #end if
         if bams_del >= fithr:
-            dele.append(tmp_pos)
+            dele.append((tmp_chr, tmp_pos))
         #end if
     #end while
-    # Setting bits in shared bitarrays
-    # shared_arrays is in global scope
-    for idx in snv:
-        shared_arrays[tmp_chr]['snv'][idx] = 1
-    #end for
-    for idx in ins:
-        shared_arrays[tmp_chr]['ins'][idx] = 1
-    #end for
-    for idx in dele:
-        shared_arrays[tmp_chr]['del'][idx] = 1
-    #end for
+    return [snv, ins, dele]
 #end def
+
+def update_bitarrays(snv_ins_dele):
+    ''' '''
+    # bitarrays is in global scope
+    for tmp_chr, tmp_pos in snv_ins_dele[0]:
+        bitarrays[tmp_chr]['snv'][tmp_pos] = True
+    #end for
+    for tmp_chr, tmp_pos in snv_ins_dele[1]:
+        bitarrays[tmp_chr]['ins'][tmp_pos] = True
+    #end for
+    for tmp_chr, tmp_pos in snv_ins_dele[2]:
+        bitarrays[tmp_chr]['del'][tmp_pos] = True
+    #end for
 
 #################################################################
 #    runner
 #################################################################
 def main(args):
     ''' '''
-    # Global variables
-    global shared_arrays
+
+    global bitarrays
 
     # Variables
     fithr = int(args['fithr'])
@@ -165,8 +162,9 @@ def main(args):
     files = args['file']
 
     # Data structures
-    chr_length, shared_arrays = {}, {}
+    chr_length = {}
     regions = []
+    bitarrays = {}
 
     # Reading chrom.sizes file
     with open(args['chromfile']) as fi:
@@ -192,16 +190,21 @@ def main(args):
 
     # Initializing bitarrays data structure
     for chr, length in chr_length.items(): # +1 to index positions in bitarrays by 1
-        shared_arrays.setdefault(chr, {'snv': Array(ctypes.c_bool, length + 1),
-                                       'ins': Array(ctypes.c_bool, length + 1),
-                                       'del': Array(ctypes.c_bool, length + 1)})
+        bitarrays.setdefault(chr, {'snv': bitarray.bitarray(length + 1),
+                                   'ins': bitarray.bitarray(length + 1),
+                                   'del': bitarray.bitarray(length + 1)})
+        bitarrays[chr]['snv'].setall(False)
+        bitarrays[chr]['ins'].setall(False)
+        bitarrays[chr]['del'].setall(False)
     #end for
 
     # Multiprocessing
-    # -> TODO, sometimes when a process die the master hang in wait, to check
-    with Pool(ncores) as pool:
-        results = pool.map(partial(run_region, files, fithr, rdthr, abthr), regions)
-    #end with
+    pool = Pool(ncores)
+    for region in regions:
+        p = pool.apply_async(run_region, (files, fithr, rdthr, abthr, region, ), callback=update_bitarrays)
+        p.get()
+    pool.close()
+    pool.join()
 
     # Writing bitarrays to files
     bitarrays_toHDF5(args['outputfile'])

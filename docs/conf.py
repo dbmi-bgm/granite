@@ -19,10 +19,10 @@
 
 project = 'granite-suite'
 copyright = '2020, Harvard Medical School'
-author = 'Michele Berselli'
+author = 'Michele Berselli, Phil Grayson'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.13'
+release = '0.2.0'
 
 
 # -- General configuration ---------------------------------------------------

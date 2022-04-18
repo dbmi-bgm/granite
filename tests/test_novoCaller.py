@@ -3,6 +3,7 @@
 #################################################################
 import sys, os
 import pytest
+from granite.lib import vcf_parser
 from granite.novoCaller import (
                             main as main_novoCaller
                             )
@@ -14,6 +15,66 @@ from granite.novoCaller import (
 # this tests may fail because of differences in float handling
 # e.g. novoCaller=1.4030838153054451e-05 Vs novoCaller=1.403083815305445e-05
 # depending on the machine
+
+def assert_(tfile, ofile, test=False):
+    ''' '''
+    # Creating Vcf object
+    vcf_obj_t = vcf_parser.Vcf(tfile)
+    vcf_obj_o = vcf_parser.Vcf(ofile)
+    # Check headers
+    assert vcf_obj_t.header.definitions == vcf_obj_o.header.definitions
+    # Get variants
+    vnt_obj_t_list, vnt_obj_o_list = [], []
+    for vnt_obj in vcf_obj_t.parse_variants(): vnt_obj_t_list.append(vnt_obj)
+    for vnt_obj in vcf_obj_o.parse_variants(): vnt_obj_o_list.append(vnt_obj)
+    # Check variants number is consistent
+    assert len(vnt_obj_t_list) == len(vnt_obj_o_list)
+    # Check variants
+    for i, vnt_obj_t in enumerate(vnt_obj_t_list):
+        vnt_obj_o = vnt_obj_o_list[i]
+        # Check basic fields are matching
+        assert vnt_obj_t.CHROM == vnt_obj_o.CHROM
+        assert vnt_obj_t.POS == vnt_obj_o.POS
+        assert vnt_obj_t.ID == vnt_obj_o.ID
+        assert vnt_obj_t.REF == vnt_obj_o.REF
+        assert vnt_obj_t.ALT == vnt_obj_o.ALT
+        assert vnt_obj_t.QUAL == vnt_obj_o.QUAL
+        assert vnt_obj_t.FILTER == vnt_obj_o.FILTER
+        assert vnt_obj_t.INFO.split(';')[:-2] == vnt_obj_o.INFO.split(';')[:-2]
+        assert vnt_obj_t.FORMAT == vnt_obj_o.FORMAT
+        # novoAF
+        #   since there may be minor differences in rounding
+        #   we check that the results are close enough to the expected
+        try:
+            af_t = float(vnt_obj_t.get_tag_value('novoAF'))
+            af_o = float(vnt_obj_o.get_tag_value('novoAF'))
+        except ValueError:
+            af_t = float(vnt_obj_t.get_tag_value('AlleleFreq'))
+            af_o = float(vnt_obj_o.get_tag_value('AlleleFreq'))
+        assert abs(af_t - af_o) < 0.0000000001
+        # novoPP
+        #   since there may be minor differences in rounding
+        #   we check that the results are close enough to the expected
+        try:
+            pp_t = float(vnt_obj_t.get_tag_value('novoPP'))
+            pp_o = float(vnt_obj_o.get_tag_value('novoPP'))
+            if pp_t > 0.1: assert abs(pp_t - pp_o) < 0.0000000001
+            else: assert abs(pp_t - pp_o) < 0.0001
+        except ValueError as e:
+            assert str(e) == '\nERROR in variant INFO field, novoPP tag is missing\n'
+        # genotypes
+        for id in vnt_obj_t.IDs_genotypes:
+            try:
+                GT_t, RSTR_t = vnt_obj_t.get_genotype_value(id, 'GT'), list(map(int, vnt_obj_t.get_genotype_value(id, 'RSTR').split(',')))
+                GT_o, RSTR_o = vnt_obj_o.get_genotype_value(id, 'GT'), list(map(int, vnt_obj_o.get_genotype_value(id, 'RSTR').split(',')))
+                ref_t, alt_t = RSTR_t[0] + RSTR_t[2], RSTR_t[1] + RSTR_t[3]
+                ref_o, alt_o = RSTR_o[0] + RSTR_o[2], RSTR_o[1] + RSTR_o[3]
+                assert GT_t == GT_o
+                assert ref_t == ref_o
+                assert alt_t == alt_o
+            except ValueError as e:
+                assert str(e) == '\nERROR in GENOTYPES identifiers, PSC-01-003 identifier is missing in VCF\n'
+
 def test_run_novoCaller_rck_all():
     ''' '''
     # Variables
@@ -39,7 +100,9 @@ def test_run_novoCaller_bam_noUNR():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_noUNR.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_noUNR.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -54,7 +117,9 @@ def test_run_novoCaller_bam_noUNR_NA():
     # Run
     main_novoCaller(args, test=True)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_noUNR_NA.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_noUNR_NA.out'
+    assert_(testfile, outfile, test=True)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -69,7 +134,9 @@ def test_run_novoCaller_bam_noUNR_noafthr():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_noUNR_noafthr.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_noUNR_noafthr.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -84,7 +151,9 @@ def test_run_novoCaller_bam_withUNR():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_withUNR.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_withUNR.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -99,7 +168,9 @@ def test_run_novoCaller_bam_withUNR_asSibling_ALLBAMS():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_withUNR_asSibling_ALLBAMS.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_withUNR_asSibling_ALLBAMS.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -114,7 +185,9 @@ def test_run_novoCaller_bam_withUNR_asSibling_missingSibling():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_withUNR_asSibling_missingSibling.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_withUNR_asSibling_missingSibling.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -129,7 +202,9 @@ def test_run_novoCaller_bam_withUNR_asSibling_SWAP_SON_missingSibling():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_withUNR_asSibling_SWAP_SON_missingSibling.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_withUNR_asSibling_SWAP_SON_missingSibling.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -144,7 +219,9 @@ def test_run_novoCaller_bam_rerun_noUNR():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_noUNR.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_noUNR.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -159,7 +236,9 @@ def test_run_novoCaller_bam_rerun_withUNR_asSibling_missingSibling():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_withUNR_asSibling_missingSibling.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_withUNR_asSibling_missingSibling.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -174,7 +253,9 @@ def test_run_novoCaller_bam_different_tag():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_noUNR_AlleleFreq.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_noUNR_AlleleFreq.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -189,7 +270,9 @@ def test_run_novoCaller_bam_jc50_wgenome_plus_indels():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -204,7 +287,9 @@ def test_run_novoCaller_bam_jc50_wgenome_plus_indels_11():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_11.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_11.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -219,7 +304,9 @@ def test_run_novoCaller_bam_jc50_wgenome_plus_indels_9():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_9.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_9.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -234,7 +321,9 @@ def test_run_novoCaller_bam_jc50_wgenome_plus_indels_9_NA():
     # Run
     main_novoCaller(args, test=True)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_9_NA.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_9_NA.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -249,7 +338,9 @@ def test_run_novoCaller_bam_jc50_wgenome_plus_indels_8():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_8.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_8.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -264,7 +355,9 @@ def test_run_novoCaller_bam_jc50_wgenome_plus_indels_7():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_7.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_7.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -279,7 +372,9 @@ def test_run_novoCaller_bam_jc50_wgenome_plus_indels_4():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_4.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_4.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
@@ -294,7 +389,9 @@ def test_run_novoCaller_bam_jc50_wgenome_plus_indels_2():
     # Run
     main_novoCaller(args)
     # Tests
-    assert [row for row in open('tests/files/main_test.out')] == [row for row in open('tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_2.out')]
+    testfile = 'tests/files/main_test.out'
+    outfile = 'tests/files/input_novoCaller_BAM_jc50_wgenome_plus_indels_2.out'
+    assert_(testfile, outfile)
     # Clean
     os.remove('tests/files/main_test.out')
 #end def
