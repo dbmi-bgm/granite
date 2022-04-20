@@ -13,11 +13,6 @@ To run locally, Python 3.6+ is required together with the following libraries:
   - [*h5py*](https://www.h5py.org/ "h5py documentation")
   - [*matplotlib*](https://matplotlib.org/ "matplotlib documentation")
 
-To install libraries with pip:
-
-    pip install numpy pysam bitarray h5py matplotlib
-    pip install --user pytabix
-
 Additional software needs to be available in the environment:
 
   - [*samtools*](http://www.htslib.org/ "samtools documentation")
