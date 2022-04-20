@@ -13,11 +13,6 @@ A ready-to-use docker image is available to download.
 
     docker pull b3rse/granite:<version>
 
-To run locally, install the following libraries:
-
-    pip install numpy pysam bitarray h5py matplotlib
-    pip install --user pytabix
-
 Additional software needs to be available in the environment:
 
   - [*samtools*](http://www.htslib.org/ "samtools documentation")

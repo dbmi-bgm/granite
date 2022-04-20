@@ -8,14 +8,7 @@ from granite.novoCaller import (
                             main as main_novoCaller
                             )
 
-
-#################################################################
-#   Tests
-#################################################################
-# this tests may fail because of differences in float handling
-# e.g. novoCaller=1.4030838153054451e-05 Vs novoCaller=1.403083815305445e-05
-# depending on the machine
-
+# define flexible assert function to compare vcf files
 def assert_(tfile, ofile, test=False):
     ''' '''
     # Creating Vcf object
@@ -75,6 +68,12 @@ def assert_(tfile, ofile, test=False):
             except ValueError as e:
                 assert str(e) == '\nERROR in GENOTYPES identifiers, PSC-01-003 identifier is missing in VCF\n'
 
+#################################################################
+#   Tests
+#################################################################
+# this tests may fail because of differences in float handling
+# e.g. novoCaller=1.4030838153054451e-05 Vs novoCaller=1.403083815305445e-05
+# depending on the machine
 def test_run_novoCaller_rck_all():
     ''' '''
     # Variables
