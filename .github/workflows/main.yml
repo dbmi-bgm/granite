@@ -36,5 +36,6 @@ jobs:
       - name: Test granite
         run: |
           make configure
+          make update
           make build
           make test

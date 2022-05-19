@@ -23,7 +23,9 @@ To install the program from source, run the following commands:
 
     git clone https://github.com/dbmi-bgm/granite
     cd granite
-    make configure && make build
+    make configure
+    make update
+    make build
 
 To install the program with pip:
 

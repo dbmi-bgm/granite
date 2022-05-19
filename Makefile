@@ -3,11 +3,11 @@
 configure:
 	pip install poetry
 
-build:
-	poetry install
-
 update:
 	poetry update
+
+build:
+	poetry install
 
 test:
 	poetry run pytest -vv
@@ -21,6 +21,6 @@ clean:
 info:
 	@: $(info Here are some 'make' options:)
 	   $(info - Use 'make configure' to configure the repo by installing poetry.)
+	   $(info - Use 'make update' to update dependencies and the lock file.)
 	   $(info - Use 'make build' to install entry point commands.)
-	   $(info - Use 'make update' to update dependencies (and the lock file).)
 	   $(info - Use 'make test' to run tests.)
