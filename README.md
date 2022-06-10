@@ -124,6 +124,8 @@ where `individual` is the unique identifier for member inside the pedigree, `sam
 ### novoCaller
 novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model uses read-level information both in pedigree (trio) and unrelated samples to rank and assign a probabilty to each call. The software represents an updated and improved implementation of the original algorithm described in [Mohanty et al. 2019](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
 
+*warning: starting from version 0.1.12, novoCaller `--triofiles` expected order changed. Now PROBAND must be listed as first.*
+
 ### comHet
 comHet is a calling algorithm for *compound heterozygous* mutations. The model uses genotype-level information in pedigree (trio) and VEP-based annotations to call possible compound heterozygous pairs. VEP annotations are used to assign variants to genes and transcripts, genotype information allows to refine calls based on inheritance mode. Calls are further flagged as "Phased" or "Unphased", where "Phased" means that genotype information supports in-trans inheritance for alternate alleles from parents.
 
@@ -153,7 +155,3 @@ rckTar creates a tar archive from bgzip and tabix indexed RCK files. Creates an 
 
 ### validateVCF
 validateVCF allows to calculate error models for different inheritance modes for input VCF file using pedigree information.
-
-## WARNINGS
-
-*Starting from 0.1.12, novoCaller `--triofiles` expected order changed. Now PROBAND must be listed as first.*
