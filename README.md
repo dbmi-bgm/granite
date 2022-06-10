@@ -156,4 +156,4 @@ validateVCF allows to calculate error models for different inheritance modes for
 
 ## WARNINGS
 
-!! starting from 0.1.12, novoCaller `--triofiles` expected order changed. Now PROBAND must be listed as first.
+*Starting from 0.1.12, novoCaller `--triofiles` expected order changed. Now PROBAND must be listed as first.*
