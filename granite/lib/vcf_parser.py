@@ -23,6 +23,60 @@ import gzip
 
 #################################################################
 #
+#    Custom errors
+#      -> MissingTag
+#      -> MissingTagDefinition
+#      -> TagDefinitionError
+#      -> TagFormatError
+#      -> MissingIdentifier
+#      -> VcfFormatError
+#
+#################################################################
+class MissingTag(Exception):
+    ''' custom error class,
+    describe a missing tag '''
+
+    def __init__(self, message):
+        self.message = message
+
+class MissingTagDefinition(Exception):
+    ''' custom error class,
+    describe a missing tag definition '''
+
+    def __init__(self, message):
+        self.message = message
+
+class TagDefinitionError(Exception):
+    ''' custom error class,
+    describe a format error for a tag definition '''
+
+    def __init__(self, message):
+        self.message = message
+
+class TagFormatError(Exception):
+    ''' custom error class,
+    describe a format error for a tag '''
+
+    def __init__(self, message):
+        self.message = message
+
+class MissingIdentifier(Exception):
+    ''' custom error class,
+    describe a missing genotype identifier in the VCF'''
+
+    def __init__(self, message):
+        self.message = message
+
+class VcfFormatError(Exception):
+    ''' custom error class,
+    describe a format error in the VCF '''
+
+    def __init__(self, message):
+        self.message = message
+
+
+#################################################################
+#
 #    Vcf
 #      -> Header
 #      -> Variant
@@ -87,7 +141,7 @@ class Vcf(object):
                         format = format.replace('\"', '')
                         format = format.replace('>', '')
                     except Exception:
-                        raise ValueError('\nERROR in VCF header structure, {0} tag definition has no format specification\n'
+                        raise TagDefinitionError('\nERROR in VCF header structure, {0} tag definition has no format specification\n'
                                             .format(tag))
                     #end try
                     # Search exact match
@@ -102,7 +156,7 @@ class Vcf(object):
                     #end for
                 #end if
             #end for
-            raise ValueError('\nERROR in VCF header structure, {0} tag definition is missing\n'
+            raise MissingTagDefinition('\nERROR in VCF header structure, {0} tag definition is missing\n'
                                 .format(tag))
         #end def
 
@@ -122,7 +176,7 @@ class Vcf(object):
                     #end if
                 #end if
             #end for
-            raise ValueError('\nERROR in VCF header structure, {0} tag definition is missing\n'
+            raise MissingTagDefinition('\nERROR in VCF header structure, {0} tag definition is missing\n'
                                 .format(tag))
         #end def
 
@@ -191,7 +245,7 @@ class Vcf(object):
             #end for
             # Error if tag_to_remove not found in FORMAT
             if idx_tag_to_remove == -1:
-                raise ValueError('\nERROR in variant FORMAT field, {0} tag is missing\n'
+                raise MissingTag('\nERROR in variant FORMAT field, {0} tag is missing\n'
                             .format(tag_to_remove))
             #end if
             # Updating FORMAT
@@ -250,7 +304,7 @@ class Vcf(object):
             try:
                 self.GENOTYPES[ID_genotype] += sep + values
             except Exception:
-                raise ValueError('\nERROR in GENOTYPES identifiers, {0} identifier is missing in VCF\n'
+                raise MissingIdentifier('\nERROR in GENOTYPES identifiers, {0} identifier is missing in VCF\n'
                             .format(ID_genotype))
             #end try
         #end def
@@ -272,18 +326,20 @@ class Vcf(object):
                     try:
                         return tag.split(tag_to_get + '=')[1]
                     except Exception: # tag field is in a wrong format
-                        raise ValueError('\nERROR in variant INFO field, {0} tag is in the wrong format\n'
+                        raise TagFormatError('\nERROR in variant INFO field, {0} tag is in the wrong format\n'
                                     .format(tag_to_get))
                     #end try
                 #end if
             #end for
 
             # tag_to_get not found
-            raise ValueError('\nERROR in variant INFO field, {0} tag is missing\n'.format(tag_to_get))
+            raise MissingTag('\nERROR in variant INFO field, {0} tag is missing\n'.format(tag_to_get))
         #end def
 
-        def get_genotype_value(self, ID_genotype, tag_to_get, sep=':'):
-            ''' get value from tag (tag_to_get) in genotype specified by corresponding ID '''
+        def get_genotype_value(self, ID_genotype, tag_to_get, complete_genotype=False, sep=':'):
+            ''' get value from tag (tag_to_get) in genotype specified by corresponding ID
+            if complete_genotype, return '.' if tag is missing
+            if not complete_genotype, raise Exception for the missing tag '''
             # Get index from FORMAT
             idx_tag_to_get = -1
             for i, tag in enumerate(self.FORMAT.split(sep)):
@@ -294,16 +350,24 @@ class Vcf(object):
             #end for
             # Error if tag_to_get not found in FORMAT
             if idx_tag_to_get == -1:
-                raise ValueError('\nERROR in variant FORMAT field, {0} tag is missing\n'
+                raise MissingTag('\nERROR in variant FORMAT field, {0} tag is missing\n'
                             .format(tag_to_get))
             #end if
             # Get value from index in genotype by ID
-            try:
-                return self.GENOTYPES[ID_genotype].split(sep)[idx_tag_to_get]
-            except Exception:
-                raise ValueError('\nERROR in GENOTYPES identifiers, {0} identifier is missing in VCF\n'
+            if self.GENOTYPES.get(ID_genotype):
+                try:
+                    return self.GENOTYPES[ID_genotype].split(sep)[idx_tag_to_get]
+                except Exception:
+                    if complete_genotype: # expect dropped tags in genotype, return default '.'
+                        return '.'
+                    else: # expect full genotype, raise error if tag is missing
+                        raise MissingTag('\nERROR in variant GENOTYPE field, {0} tag is missing for {1} identifier\n'
+                                    .format(tag_to_get, ID_genotype))
+                #end try
+            else: # if genotype identifier is missing
+                raise MissingIdentifier('\nERROR in GENOTYPES identifiers, {0} identifier is missing in VCF\n'
                             .format(ID_genotype))
-            #end try
+            #end if
         #end def
 
     #end class Variant
@@ -349,7 +413,7 @@ class Vcf(object):
         if definitions and columns:
             return self.Header(definitions, columns, IDs_genotypes)
         else:
-            raise ValueError('\nERROR in VCF header structure, missing essential lines\n')
+            raise VcfFormatError('\nERROR in VCF header structure, missing essential lines\n')
         #end if
     #end def
 
@@ -362,7 +426,7 @@ class Vcf(object):
                     try:
                         yield self.Variant(line_strip, self.header.IDs_genotypes)
                     except Exception:
-                        raise ValueError('\nERROR in variant VCF structure, missing essential columns\n')
+                        raise VcfFormatError('\nERROR in variant VCF structure, missing essential columns\n')
                     #end try
                 #end if
             #end if

@@ -41,7 +41,7 @@ def assert_(tfile, ofile, test=False):
         try:
             af_t = float(vnt_obj_t.get_tag_value('novoAF'))
             af_o = float(vnt_obj_o.get_tag_value('novoAF'))
-        except ValueError:
+        except vcf_parser.MissingTag:
             af_t = float(vnt_obj_t.get_tag_value('AlleleFreq'))
             af_o = float(vnt_obj_o.get_tag_value('AlleleFreq'))
         assert abs(af_t - af_o) < 0.0000000001
@@ -53,7 +53,7 @@ def assert_(tfile, ofile, test=False):
             pp_o = float(vnt_obj_o.get_tag_value('novoPP'))
             if pp_t > 0.1: assert abs(pp_t - pp_o) < 0.0000000001
             else: assert abs(pp_t - pp_o) < 0.0001
-        except ValueError as e:
+        except vcf_parser.MissingTag as e:
             assert str(e) == '\nERROR in variant INFO field, novoPP tag is missing\n'
         # genotypes
         for id in vnt_obj_t.IDs_genotypes:
@@ -65,8 +65,8 @@ def assert_(tfile, ofile, test=False):
                 assert GT_t == GT_o
                 assert ref_t == ref_o
                 assert alt_t == alt_o
-            except ValueError as e:
-                assert str(e) == '\nERROR in GENOTYPES identifiers, PSC-01-003 identifier is missing in VCF\n'
+            except vcf_parser.MissingTag as e:
+                assert str(e) == '\nERROR in variant GENOTYPE field, RSTR tag is missing for PSC-01-003 identifier\n'
 
 #################################################################
 #   Tests
@@ -470,7 +470,7 @@ def test_run_novoCaller_bam_rerun_noUNR_NORSTR():
             'ppthr': None, 'afthr': '0.01', 'aftag': 'novoAF', 'bam': True,
             'MQthr': None, 'BQthr': None, 'afthr_unrelated': 0.01, 'ADthr': 3, 'verbose': None}
     # Run and Tests
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(vcf_parser.MissingTag) as e:
         assert main_novoCaller(args)
     assert '\nERROR in variant FORMAT field, RSTR tag is missing\n' == str(e.value)
     # Clean

@@ -378,7 +378,7 @@ def test_run_toBig_rdthr_2_all_miss_pos():
             'regionfile': 'tests/files/input_toBig.regions',
             'chromfile': 'tests/files/input_toBig.chrom.size'}
     # Run and Tests
-    with pytest.raises(Exception) as e:
+    with pytest.raises(IndexError) as e:
         assert main_toBig(args)
     assert str(e.value) == '\nERROR in file: position 13:11006 in file tests/files/input_toBig_miss_pos.rck.gz is not consistent with other files\n'
 #end def
