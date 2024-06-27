@@ -1,6 +1,6 @@
 # PyPi publish for granite-suite
 
-name: publish
+name: PUBLISH
 
 # Controls when the action will run.
 on:
