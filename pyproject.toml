@@ -21,17 +21,18 @@ packages = [
 [tool.poetry.dependencies]
 # python = "^3.6"
 python = "^3.9"
-# pysam = ">=0.15.0"
-pysam = "^0.22.1"
 # bitarray = ">=1.2.0"
 bitarray = "^2.9.2"
-# pytabix = ">=0.0.2"
-pytabix = "^0.1"
-h5py = ">=2.10.0"
+# h5py = ">=2.10.0"
+h5py = "^3.11.0"
 # numpy = ">=1.18.0"
 numpy = "^2.0.0"
 # matplotlib = "==3.3.4"
 matplotlib = "^3.9.0"
+# pysam = ">=0.15.0"
+pysam = "^0.22.1"
+# pytabix = ">=0.0.2"
+pytabix = "^0.1"
 
 
 [tool.poetry.dev-dependencies]
