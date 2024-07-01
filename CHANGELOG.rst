@@ -16,6 +16,8 @@ Change Log
   - udpated numpy: ">=1.18.0" -> "^1.26.4"
   - updated pysam ">=0.15.0" -> "^0.22.1"
   - updated pytabix: ">=0.0.2" -> "^0.1"
+* Supported Python versions now are: 3.9, 3.10, 3.11, 3.12
+* Note specifically that Python 3.8 is no longer supported (end of life: October 2024).
 
 0.2.0
 =====
