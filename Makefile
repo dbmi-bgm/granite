@@ -24,3 +24,11 @@ info:
 	   $(info - Use 'make update' to update dependencies and the lock file.)
 	   $(info - Use 'make build' to install entry point commands.)
 	   $(info - Use 'make test' to run tests.)
+
+publish:
+	pip install dcicutils
+	poetry run publish-to-pypi
+
+publish-for-ga:
+	pip install dcicutils
+	python -m dcicutils.scripts.publish_to_pypi --noconfirm
