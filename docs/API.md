@@ -21,7 +21,7 @@ This will automatically read the file header into a *Header* object.
 The method *parse_variants()* will read the file and return a generator to *Variant* objects that store variants information.
 
     for vnt_obj in vcf_obj.parse_variants():
-        # do something with vnt_obj
+        ...
 
 ##### Write to file
 The method *write_header(fo)* allows to write header definitions and columns to specified buffer (fo).
@@ -52,8 +52,9 @@ Stores the full header information minus the last line where columns are defined
 ###### columns *\<str\>*
 Stores the last header line where columns are defined.
 
-    # columns example
+    # Columns example
     # #CHROM    POS    ID    REF    ALT    ...
+
     vcf_obj.header.columns
 
 ###### IDs_genotypes *\<list\>*
@@ -65,33 +66,36 @@ Stores sample ID(s) available in the VCF as list. If multiple samples, the order
 The method *add_tag_definition(tag_definition, tag_type='INFO')* allows to add tag_definition to the header on top of the block specified by tag_type (e.g. FORMAT, INFO).
 
     tag_definition = '##INFO=<ID=tag,Number=.,Type=.,Description="INFO tag definition example">'
+
     vcf_obj.header.add_tag_definition(tag_definition)
 
 The method *remove_tag_definition(tag, tag_type='INFO')* allows to remove tag definition from the header block specified by tag_type (e.g. FORMAT, INFO).
 
-    # remove CSQ definition (VEP) from the header INFO block
+    # Remove CSQ definition (VEP) from the header INFO block
+
     tag = 'CSQ'
     vcf_obj.header.remove_tag_definition(tag)
 
 ##### Extract information
-The method *get_tag_field_idx(tag, field, tag_type='INFO', sep='|')* allows to get the index corresponding to value field in tag from definition, block specified by tag_type (e.g. FORMAT, INFO). sep is the fields separator used in the tag definition.
+The method *get_tag_field_idx(tag, field, tag_type='INFO', sep='|')* allows to get the index corresponding to value field in tag from definition, block specified by tag_type (e.g. FORMAT, INFO). *sep* is the fields separator used in the tag definition.
 
-    # return the index corresponding to 'Consequence' field
+    # Return the index corresponding to 'Consequence' field
     # from CSQ definition (VEP) in the header INFO block
     # ##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Gene|Feature|Consequence|IMPACT|...">
+
     tag, field = 'CSQ', 'Consequence'
-    idx <int> = vcf_obj.header.get_tag_field_idx(tag, field) # idx -> 3
+    idx <int> -> 3 = vcf_obj.header.get_tag_field_idx(tag, field)
 
-The method *check_tag_definition(tag, tag_type='INFO', sep='|')* allows to check if a tag is in the header and if is standalone or field of another leading tag. Returns the leading tag and the field corresponding index, if any, to acces the tag. sep is the fields separator used in the tag definition.
+The method *check_tag_definition(tag, tag_type='INFO', sep='|')* allows to check if a tag is in the header and if is standalone or field of another leading tag. Returns the leading tag and the field corresponding index, if any, to acces the tag. *sep* is the fields separator used in the tag definition.
 
-    # return the leading tag and index corresponding to 'Consequence' field
+    # Return the leading tag and index corresponding to 'Consequence' field
     # from CSQ definition (VEP) in the header INFO block
     # ##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Gene|Feature|Consequence|IMPACT|...">
-    tag = 'Consequence'
-    lead_tag <str>, idx <int> = vcf_obj.header.check_tag_definition(tag) # lead_tag -> CSQ
-                                                                         # idx -> 3
 
-*note: tag and field are case sensitive.*
+    tag = 'Consequence'
+    lead_tag <str> -> CSQ, idx <int> idx -> 3 = vcf_obj.header.check_tag_definition(tag)
+
+*Note: tag and field are case sensitive.*
 
 #### Variant
 This is the object used to store information for variants in VCF format.
@@ -163,60 +167,65 @@ The method *repr()* returns the variant representation as *CHROM:POSREF>ALT*.
     vnt_repr <str> = vnt_obj.repr()
 
 ##### Manipulate genotype(s)
-The method *remove_tag_genotype(tag, sep=':')* allows to remove a tag from FORMAT and GENOTYPES. sep is the tags separator used in format definition and genotype(s).
+The method *remove_tag_genotype(tag, sep=':')* allows to remove a tag from FORMAT and GENOTYPES. *sep* is the tags separator used in format definition and genotype(s).
 
-    # remove AD tag from format definition and genotype(s)
+    # Remove AD tag from format definition and genotype(s)
+
     tag = 'AD'
     vnt_obj.remove_tag_genotype(tag)
 
-The method *complete_genotype(sep=':')* fills in the trailing fields that are missing and by default dropped in GENOTYPES. sep is the tags separator used in format definition and genotype(s).
+The method *complete_genotype(sep=':')* fills in the trailing fields that are missing and by default dropped in GENOTYPES. *sep* is the tags separator used in format definition and genotype(s).
 
     vnt_obj.complete_genotype()
 
-The method *empty_genotype(sep=':')* returns a empty genotype based on FORMAT structure. sep is the tags separator used in format definition and genotype(s).
+The method *empty_genotype(sep=':')* returns a empty genotype based on FORMAT structure. *sep* is the tags separator used in format definition and genotype(s).
 
     empty <str> = vnt_obj.empty_genotype()
 
-The method *add_tag_format(tag, sep=':')* allows to add a tag at the end of FORMAT structure. sep is the tags separator used in format definition and genotype(s).
+The method *add_tag_format(tag, sep=':')* allows to add a tag at the end of FORMAT structure. *sep* is the tags separator used in format definition and genotype(s).
 
-    # add RSTR tag to format
+    # Add RSTR tag to format
+
     tag = 'RSTR'
     vnt_obj.add_tag_format(tag)
 
-The method *add_values_genotype(ID_genotype, values, sep=':')* allows to add values at the end of the genotype specified by corresponding ID. sep is the tags separator used in format definition and genotype(s).
+The method *add_values_genotype(ID_genotype, values, sep=':')* allows to add values at the end of the genotype specified by corresponding ID. *sep* is the tags separator used in format definition and genotype(s).
 
     vnt_obj.add_values_genotype(ID_genotype, values)
 
-The method *get_genotype_value(ID_genotype, tag, complete_genotype=False, sep=':')* returns value for tag from the genotype specified by corresponding ID. sep is the tags separator used in format definition and genotype(s).
-If complete_genotype=True, return '.' if tag is missing. If complete_genotype=False (default) raise exception for the missing tag.
+The method *get_genotype_value(ID_genotype, tag, complete_genotype=False, sep=':')* returns value for tag from the genotype specified by corresponding ID. *sep* is the tags separator used in format definition and genotype(s).
+
+If *complete_genotype=True*, return '.' if tag is missing. If complete_genotype=False (default) raise exception for the missing tag.
 
     tag_val <str> = vnt_obj.get_genotype_value(ID_genotype, tag)
 
 ##### Manipulate INFO
-The method *remove_tag_info(tag, sep=';')* allows to remove a tag or a flag from INFO. sep is the tags separator used in INFO.
+The method *remove_tag_info(tag, sep=';')* allows to remove a tag or a flag from INFO. *sep* is the tags separator used in INFO.
 
     vnt_obj.remove_tag_info(tag)
 
-The method *add_tag_info(tag_value, sep=';')* allows to add a tag and its value or a flag at the end of INFO. sep is the tags separator used in INFO.
+The method *add_tag_info(tag_value, sep=';')* allows to add a tag and its value or a flag at the end of INFO. *sep* is the tags separator used in INFO.
 
-    # add tag and value to INFO
+    # Add tag and value to INFO
     tag_value = 'tag=value'
     vnt_obj.add_tag_info(tag_value)
 
-    # add flag to INFO
+    # Add flag to INFO
     tag_value = 'flag'
     vnt_obj.add_tag_info(tag_value)
 
 
-The method *get_tag_value(tag, is_flag=False, sep=';')* returns the value from tag in INFO. If the tag is a flag set is_flag=True, the function will now return True or False instead. sep is the tags separator used in INFO.
+The method *get_tag_value(tag, is_flag=False, sep=';')* returns the value from tag in INFO. *sep* is the tags separator used in INFO.
 
-    # get tag value from INFO
+If the tag is a flag set *is_flag=True*, the function will now return True or False instead.
+
+    # Get tag value from INFO
     tag_val <str> = vnt_obj.get_tag_value(tag)
 
-    # check flag in INFO
+    # Check flag in INFO
     tag_val <bool> = vnt_obj.get_tag_value(tag, is_flag=True)
 
-*note: tag and ID are case sensitive.*
+*Note: tag and ID are case sensitive.*
 
 ### Custom error classes
 
