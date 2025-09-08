@@ -38,6 +38,7 @@ class MissingTag(Exception):
 
     def __init__(self, message):
         self.message = message
+        super().__init__(message)
 
 class MissingTagDefinition(Exception):
     ''' custom error class,
@@ -45,6 +46,7 @@ class MissingTagDefinition(Exception):
 
     def __init__(self, message):
         self.message = message
+        super().__init__(message)
 
 class TagDefinitionError(Exception):
     ''' custom error class,
@@ -52,6 +54,7 @@ class TagDefinitionError(Exception):
 
     def __init__(self, message):
         self.message = message
+        super().__init__(message)
 
 class TagFormatError(Exception):
     ''' custom error class,
@@ -59,6 +62,7 @@ class TagFormatError(Exception):
 
     def __init__(self, message):
         self.message = message
+        super().__init__(message)
 
 class MissingIdentifier(Exception):
     ''' custom error class,
@@ -66,6 +70,7 @@ class MissingIdentifier(Exception):
 
     def __init__(self, message):
         self.message = message
+        super().__init__(message)
 
 class VcfFormatError(Exception):
     ''' custom error class,
@@ -73,6 +78,7 @@ class VcfFormatError(Exception):
 
     def __init__(self, message):
         self.message = message
+        super().__init__(message)
 
 
 #################################################################
@@ -162,7 +168,7 @@ class Vcf(object):
 
         def check_tag_definition(self, tag, tag_type='INFO', sep='|'):
             ''' check if tag is standalone or field of another leading tag,
-            return leading tag and field index, if any, to acces requested tag '''
+            return leading tag and field index, if any, to access requested tag '''
             for line in self.definitions.split('\n')[:-1]:
                 if line.startswith('##' + tag_type):
                     if ('=<ID=' + tag + ',') in line: ##<tag_type>=<ID=<tag>,..
@@ -205,7 +211,7 @@ class Vcf(object):
         #end def
 
         def to_string(self):
-            ''' variant as string rapresentation '''
+            ''' variant as string representation '''
             variant_as_list = [ self.CHROM,
                                 str(self.POS),
                                 self.ID,
@@ -277,7 +283,7 @@ class Vcf(object):
         #end def
 
         def empty_genotype(self, sep=':'):
-            ''' return a empty genotype based on FORMAT structure '''
+            ''' return an empty genotype based on FORMAT structure '''
             len_FORMAT = len(self.FORMAT.split(sep))
             return './.' + (sep + '.') * (len_FORMAT - 1)
         #end def
@@ -285,13 +291,14 @@ class Vcf(object):
         def remove_tag_info(self, tag_to_remove, sep=';'):
             ''' remove tag field from INFO '''
             new_INFO = []
-            for tag in self.INFO.split(sep):
-                if tag.startswith(tag_to_remove + '='):
+            # handle empty / '.' INFO gracefully
+            items = [t for t in self.INFO.split(sep) if t] if self.INFO and self.INFO != '.' else []
+            for tag in items:
+                # remove key=value and flag-style tags
+                if tag.startswith(tag_to_remove + '=') or tag == tag_to_remove:
                     continue
-                #end if
                 new_INFO.append(tag)
-            #end for
-            self.INFO = sep.join(new_INFO)
+            self.INFO = sep.join(new_INFO) if new_INFO else '.'
         #end def
 
         def add_tag_format(self, tag_to_add, sep=':'):
@@ -311,8 +318,10 @@ class Vcf(object):
 
         def add_tag_info(self, tag_to_add, sep=';'):
             ''' add tag field and value (tag_to_add) to INFO '''
-            # tag_to_add -> tag=<value>
-            if self.INFO.endswith(sep): # if INFO ending is wrongly formatted
+            # tag_to_add -> tag=<value> or FLAG
+            if not self.INFO or self.INFO == '.':
+                self.INFO = tag_to_add
+            elif self.INFO.endswith(sep): # if INFO ending is wrongly formatted
                 self.INFO += tag_to_add
             else:
                 self.INFO += sep + tag_to_add
@@ -321,7 +330,8 @@ class Vcf(object):
 
         def get_tag_value(self, tag_to_get, sep=';'):
             ''' get value from tag (tag_to_get) in INFO '''
-            for tag in self.INFO.split(sep):
+            items = [t for t in self.INFO.split(sep) if t] if self.INFO and self.INFO != '.' else []
+            for tag in items:
                 if tag.startswith(tag_to_get + '='):
                     try:
                         return tag.split(tag_to_get + '=')[1]
@@ -329,7 +339,9 @@ class Vcf(object):
                         raise TagFormatError('\nERROR in variant INFO field, {0} tag is in the wrong format\n'
                                     .format(tag_to_get))
                     #end try
-                #end if
+                # flag present
+                if tag == tag_to_get:
+                    return True
             #end for
 
             # tag_to_get not found
