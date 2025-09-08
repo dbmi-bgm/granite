@@ -203,9 +203,18 @@ The method *add_tag_info(tag_value, sep=';')* allows to add a tag and its value 
     tag_value = 'tag=value'
     vnt_obj.add_tag_info(tag_value)
 
+    # add flag to INFO
+    tag_value = 'flag'
+    vnt_obj.add_tag_info(tag_value)
+
+
 The method *get_tag_value(tag, is_flag=False, sep=';')* returns the value from tag in INFO. If the tag is a flag set *is_flag=True*, the function will now return True or False instead. sep is the tags separator used in INFO.
 
+    # get tag value from INFO
     tag_val <str> = vnt_obj.get_tag_value(tag)
+
+    # check flag in INFO
+    tag_val <bool> = vnt_obj.get_tag_value(tag, is_flag=True)
 
 *note: tag and ID are case sensitive.*
 
