@@ -22,7 +22,7 @@ copyright = '2020, Harvard Medical School'
 author = 'Michele Berselli, Phil Grayson'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.1'
+release = '0.4.0'
 
 
 # -- General configuration ---------------------------------------------------
