@@ -103,6 +103,7 @@ blackList allows to filter-out variants from input VCF file based on positions s
                             population allele frequency
       --afthr AFTHR         threshold to filter by population allele frequency
                             (<=) [1]
+      --BEDfile BEDFILE     BED format file with positions to blacklist
 ```
 
 #### Examples

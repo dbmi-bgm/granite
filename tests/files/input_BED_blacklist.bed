@@ -1,0 +1,5 @@
+track name=pairedReads description="Clone Paired Reads" useScore=1
+1	24152100	24152321
+1	35849464	35849466
+1	20951585	20953585
+3	258099	259199

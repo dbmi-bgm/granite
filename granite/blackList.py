@@ -35,8 +35,10 @@ def main(args):
     # Variables
     afthr, aftag = 0., ''
     big_dict = {}
+    BED_bitarrays = {}
     is_afthr = True if args['afthr'] else False
     is_bigfile = True if args['bigfile'] else False
+    is_BEDfile = True if args['BEDfile'] else False
     is_verbose = True if args['verbose'] else False
 
     # Creating Vcf object
@@ -50,9 +52,11 @@ def main(args):
         else:
             sys.exit('\nERROR in parsing arguments: to filter by population allele frequency please specify the TAG to use\n')
         #end if
+    elif is_BEDfile:
+        pass
     else:
         if not is_bigfile:
-            sys.exit('\nERROR in parsing arguments: to blacklist specify a BIG file and/or a threshold for population allele frequency and the TAG to use\n')
+            sys.exit('\nERROR in parsing arguments: to blacklist specify at least a BIG file, a BED file, and/or a threshold for population allele frequency and the TAG to use\n')
         #end if
     #end if
 
@@ -61,6 +65,11 @@ def main(args):
 
     # Loading big if specified
     if is_bigfile: big_dict = load_big(args['bigfile'])
+    #end if
+
+    # BED
+    if is_BEDfile:
+        BED_bitarrays = bed_to_bitarray(args['BEDfile'])
     #end if
 
     # Writing header
@@ -100,6 +109,15 @@ def main(args):
             if is_blacklist:
                 continue
             #end if
+        #end if
+
+        if is_BEDfile:
+            try: # CHROM and POS can miss in the BED file, if that just pass
+                if BED_bitarrays[vnt_obj.CHROM][vnt_obj.POS]:
+                    continue
+                #end if
+            except Exception: pass
+            #end try
         #end if
 
         # All good, pass and write variant

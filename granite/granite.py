@@ -103,6 +103,7 @@ def main():
     blackList_parser.add_argument('-b', '--bigfile', help='BIG format file with positions set for blacklist', type=str, required=False)
     blackList_parser.add_argument('--aftag', help='TAG (TAG=<float>) or TAG field to be used to filter by population allele frequency', type=str, required=False)
     blackList_parser.add_argument('--afthr', help='threshold to filter by population allele frequency (<=) [1]', type=float, required=False)
+    blackList_parser.add_argument('--BEDfile', help='BED format file with positions to blacklist', type=str, required=False)
     blackList_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add whiteList to subparsers

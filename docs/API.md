@@ -187,23 +187,47 @@ The method *add_values_genotype(ID_genotype, values, sep=':')* allows to add val
 
     vnt_obj.add_values_genotype(ID_genotype, values)
 
-The method *get_genotype_value(ID_genotype, tag, sep=':')* returns value for tag from the genotype specified by corresponding ID. sep is the tags separator used in format definition and genotype(s).
+The method *get_genotype_value(ID_genotype, tag, complete_genotype=False, sep=':')* returns value for tag from the genotype specified by corresponding ID. sep is the tags separator used in format definition and genotype(s).
+If complete_genotype=True, return '.' if tag is missing. If complete_genotype=False (default) raise exception for the missing tag.
 
     tag_val <str> = vnt_obj.get_genotype_value(ID_genotype, tag)
 
 ##### Manipulate INFO
-The method *remove_tag_info(tag, sep=';')* allows to remove a tag from INFO. sep is the tags separator used in INFO.
+The method *remove_tag_info(tag, sep=';')* allows to remove a tag or a flag from INFO. sep is the tags separator used in INFO.
 
     vnt_obj.remove_tag_info(tag)
 
-The method *add_tag_info(tag_value, sep=';')* allows to add a tag and its value at the end of INFO. sep is the tags separator used in INFO.
+The method *add_tag_info(tag_value, sep=';')* allows to add a tag and its value or a flag at the end of INFO. sep is the tags separator used in INFO.
 
     # add tag and value to INFO
     tag_value = 'tag=value'
     vnt_obj.add_tag_info(tag_value)
 
-The method *get_tag_value(tag, sep=';')* returns the value from tag in INFO. sep is the tags separator used in INFO.
+    # add flag to INFO
+    tag_value = 'flag'
+    vnt_obj.add_tag_info(tag_value)
 
+
+The method *get_tag_value(tag, is_flag=False, sep=';')* returns the value from tag in INFO. If the tag is a flag set is_flag=True, the function will now return True or False instead. sep is the tags separator used in INFO.
+
+    # get tag value from INFO
     tag_val <str> = vnt_obj.get_tag_value(tag)
 
+    # check flag in INFO
+    tag_val <bool> = vnt_obj.get_tag_value(tag, is_flag=True)
+
 *note: tag and ID are case sensitive.*
+
+### Custom error classes
+
+*MissingTag* describes a missing tag or tag value.
+
+*MissingTagDefinition* describes a missing tag definition.
+
+*TagDefinitionError* describes a format error for a tag definition.
+
+*TagFormatError* describes a format error for a tag.
+
+*MissingIdentifier* describes a missing genotype identifier in the VCF file.
+
+*VcfFormatError* describes an error in the VCF format.
