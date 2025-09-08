@@ -171,6 +171,8 @@ def test_minimal_flag_emptyINFO():
             with pytest.raises(vcf_parser.MissingTag) as e:
                 assert rec.get_tag_value('AC')
             assert '\nERROR in variant INFO field, AC tag is missing\n' == str(e.value)
+            rec.add_tag_info('AC')
+            assert rec.get_tag_value('AC', is_flag=True) == True
         #end if
     #end for
 #end def
