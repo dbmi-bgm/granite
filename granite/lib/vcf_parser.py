@@ -289,10 +289,10 @@ class Vcf(object):
         #end def
 
         def remove_tag_info(self, tag_to_remove, sep=';'):
-            ''' remove tag field from INFO '''
+            ''' remove tag field or flag from INFO '''
             new_INFO = []
             # handle empty / '.' INFO gracefully
-            items = [t for t in self.INFO.split(sep) if t] if self.INFO and self.INFO != '.' else []
+            items = [t for t in self.INFO.split(sep) if t] if self.INFO != '.' else []
             for tag in items:
                 # remove key=value and flag-style tags
                 if tag.startswith(tag_to_remove + '=') or tag == tag_to_remove:
@@ -317,9 +317,9 @@ class Vcf(object):
         #end def
 
         def add_tag_info(self, tag_to_add, sep=';'):
-            ''' add tag field and value (tag_to_add) to INFO '''
+            ''' add tag field and value or flag (tag_to_add) to INFO '''
             # tag_to_add -> tag=<value> or FLAG
-            if not self.INFO or self.INFO == '.':
+            if self.INFO == '.':
                 self.INFO = tag_to_add
             elif self.INFO.endswith(sep): # if INFO ending is wrongly formatted
                 self.INFO += tag_to_add
@@ -328,24 +328,29 @@ class Vcf(object):
             #end if
         #end def
 
-        def get_tag_value(self, tag_to_get, sep=';'):
+        def get_tag_value(self, tag_to_get, is_flag=False, sep=';'):
             ''' get value from tag (tag_to_get) in INFO '''
-            items = [t for t in self.INFO.split(sep) if t] if self.INFO and self.INFO != '.' else []
+            items = [t for t in self.INFO.split(sep) if t] if self.INFO != '.' else []
             for tag in items:
                 if tag.startswith(tag_to_get + '='):
                     try:
+                        if is_flag:
+                            return True
                         return tag.split(tag_to_get + '=')[1]
                     except Exception: # tag field is in a wrong format
                         raise TagFormatError('\nERROR in variant INFO field, {0} tag is in the wrong format\n'
                                     .format(tag_to_get))
                     #end try
                 # flag present
-                if tag == tag_to_get:
+                if tag == tag_to_get and is_flag:
                     return True
             #end for
 
             # tag_to_get not found
-            raise MissingTag('\nERROR in variant INFO field, {0} tag is missing\n'.format(tag_to_get))
+            if is_flag:
+                return False
+            else:
+                raise MissingTag('\nERROR in variant INFO field, {0} tag is missing\n'.format(tag_to_get))
         #end def
 
         def get_genotype_value(self, ID_genotype, tag_to_get, complete_genotype=False, sep=':'):

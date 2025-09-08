@@ -146,3 +146,31 @@ def test_minimal_vcf():
     # Clean up
     os.remove('tests/files/test_write_variants.out')
 #end def
+
+def test_minimal_flag_emptyINFO():
+    ''' '''
+    # Creating Vcf object
+    vcf_obj = vcf_parser.Vcf('tests/files/input_vcf_parser_flag.vcf')
+    # Parsing variants
+    for i, rec in enumerate(vcf_obj.parse_variants()):
+        if i == 0:
+            rec.add_tag_info('TAG1=VALUE1')
+            assert rec.INFO == 'TAG1=VALUE1'
+        elif i == 1:
+            assert rec.get_tag_value('FLAG1', is_flag=True) == True
+            assert rec.get_tag_value('FLAG2', is_flag=True) == False
+            assert rec.get_tag_value('AC', is_flag=True) == True
+            assert rec.get_tag_value('AC', is_flag=False) == '1'
+        elif i == 2:
+            rec.remove_tag_info('FLAG1')
+            assert rec.INFO == 'AC=1;FLAG2'
+            rec.remove_tag_info('FLAG2')
+            assert rec.INFO == 'AC=1'
+            rec.remove_tag_info('AC')
+            assert rec.INFO == '.'
+            with pytest.raises(vcf_parser.MissingTag) as e:
+                assert rec.get_tag_value('AC')
+            assert '\nERROR in variant INFO field, AC tag is missing\n' == str(e.value)
+        #end if
+    #end for
+#end def

@@ -193,17 +193,17 @@ If complete_genotype=True, return '.' if tag is missing. If complete_genotype=Fa
     tag_val <str> = vnt_obj.get_genotype_value(ID_genotype, tag)
 
 ##### Manipulate INFO
-The method *remove_tag_info(tag, sep=';')* allows to remove a tag from INFO. sep is the tags separator used in INFO.
+The method *remove_tag_info(tag, sep=';')* allows to remove a tag or a flag from INFO. sep is the tags separator used in INFO.
 
     vnt_obj.remove_tag_info(tag)
 
-The method *add_tag_info(tag_value, sep=';')* allows to add a tag and its value at the end of INFO. sep is the tags separator used in INFO.
+The method *add_tag_info(tag_value, sep=';')* allows to add a tag and its value or a flag at the end of INFO. sep is the tags separator used in INFO.
 
     # add tag and value to INFO
     tag_value = 'tag=value'
     vnt_obj.add_tag_info(tag_value)
 
-The method *get_tag_value(tag, sep=';')* returns the value from tag in INFO. sep is the tags separator used in INFO.
+The method *get_tag_value(tag, is_flag=False, sep=';')* returns the value from tag in INFO. If the tag is a flag set *is_flag=True*, the function will now return True or False instead. sep is the tags separator used in INFO.
 
     tag_val <str> = vnt_obj.get_tag_value(tag)
 
