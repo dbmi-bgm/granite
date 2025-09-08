@@ -1,6 +1,6 @@
 # granite
 
-[![Python 3.9+](https://img.shields.io/badge/Python-3.6+-blue.svg)](https://www.python.org) ![License MIT](https://img.shields.io/badge/License-MIT-green)
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org) ![License MIT](https://img.shields.io/badge/License-MIT-green)
 
 granite is a collection of software to work with genomic variants. The suite provides inheritance mode callers and utilities to filter and refine variants called by other methods in VCF format.
 
