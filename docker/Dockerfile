@@ -51,9 +51,12 @@ RUN apt-get update -y && apt-get install -y \
 RUN wget https://repo.continuum.io/miniconda/Miniconda3-${CONDA_VER}-Linux-${OS_TYPE}.sh && \
     bash Miniconda3-${CONDA_VER}-Linux-${OS_TYPE}.sh -p /miniconda3 -b
 ENV PATH=/miniconda3/bin:$PATH
+RUN conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+RUN conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 RUN conda update -y conda \
     && rm Miniconda3-${CONDA_VER}-Linux-${OS_TYPE}.sh
-RUN conda config --add channels bioconda && conda config --add channels conda-forge
+RUN conda config --add channels bioconda
+RUN conda config --add channels conda-forge
 
 #######################################################################
 #     Installing granite and its dependencies
