@@ -84,7 +84,7 @@ The method *get_tag_field_idx(tag, field, tag_type='INFO', sep='|')* allows to g
     # ##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Gene|Feature|Consequence|IMPACT|...">
 
     tag, field = 'CSQ', 'Consequence'
-    idx <int> -> 3 = vcf_obj.header.get_tag_field_idx(tag, field)
+    idx <int> = vcf_obj.header.get_tag_field_idx(tag, field)
 
 The method *check_tag_definition(tag, tag_type='INFO', sep='|')* allows to check if a tag is in the header and if is standalone or field of another leading tag. Returns the leading tag and the field corresponding index, if any, to access the tag. *sep* is the fields separator used in the tag definition.
 
@@ -93,7 +93,7 @@ The method *check_tag_definition(tag, tag_type='INFO', sep='|')* allows to check
     # ##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Gene|Feature|Consequence|IMPACT|...">
 
     tag = 'Consequence'
-    lead_tag <str> -> CSQ, idx <int> idx -> 3 = vcf_obj.header.check_tag_definition(tag)
+    lead_tag <str>, idx <int> = vcf_obj.header.check_tag_definition(tag)
 
 *note: tag and field are case sensitive.*
 
@@ -207,10 +207,12 @@ The method *remove_tag_info(tag, sep=';')* allows to remove a tag or a flag from
 The method *add_tag_info(tag_value, sep=';')* allows to add a tag and its value or a flag at the end of INFO. *sep* is the tags separator used in INFO.
 
     # Add tag and value to INFO
+
     tag_value = 'tag=value'
     vnt_obj.add_tag_info(tag_value)
 
     # Add flag to INFO
+
     tag_value = 'flag'
     vnt_obj.add_tag_info(tag_value)
 
@@ -220,9 +222,11 @@ The method *get_tag_value(tag, is_flag=False, sep=';')* returns the value from t
 If the tag is a flag set *is_flag=True*, the function will now return True or False instead.
 
     # Get tag value from INFO
+
     tag_val <str> = vnt_obj.get_tag_value(tag)
 
     # Check flag in INFO
+
     tag_val <bool> = vnt_obj.get_tag_value(tag, is_flag=True)
 
 *note: tag and ID are case sensitive.*
