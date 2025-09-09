@@ -66,12 +66,9 @@ Stores sample ID(s) available in the VCF as list. If multiple samples, the order
 The method *add_tag_definition(tag_definition, tag_type='INFO')* allows to add tag_definition to the header on top of the block specified by tag_type (e.g. FORMAT, INFO).
 
     tag_definition = '##INFO=<ID=tag,Number=.,Type=.,Description="INFO tag definition example">'
-
     vcf_obj.header.add_tag_definition(tag_definition)
 
 The method *remove_tag_definition(tag, tag_type='INFO')* allows to remove tag definition from the header block specified by tag_type (e.g. FORMAT, INFO).
-
-    # Remove CSQ definition (VEP) from the header INFO block
 
     tag = 'CSQ'
     vcf_obj.header.remove_tag_definition(tag)
@@ -169,8 +166,6 @@ The method *repr()* returns the variant representation as *CHROM:POSREF>ALT*.
 ##### Manipulate genotype(s)
 The method *remove_tag_genotype(tag, sep=':')* allows to remove a tag from FORMAT and GENOTYPES. *sep* is the tags separator used in format definition and genotype(s).
 
-    # Remove AD tag from format definition and genotype(s)
-
     tag = 'AD'
     vnt_obj.remove_tag_genotype(tag)
 
@@ -183,8 +178,6 @@ The method *empty_genotype(sep=':')* returns a empty genotype based on FORMAT st
     empty <str> = vnt_obj.empty_genotype()
 
 The method *add_tag_format(tag, sep=':')* allows to add a tag at the end of FORMAT structure. *sep* is the tags separator used in format definition and genotype(s).
-
-    # Add RSTR tag to format
 
     tag = 'RSTR'
     vnt_obj.add_tag_format(tag)
@@ -206,12 +199,8 @@ The method *remove_tag_info(tag, sep=';')* allows to remove a tag or a flag from
 
 The method *add_tag_info(tag_value, sep=';')* allows to add a tag and its value or a flag at the end of INFO. *sep* is the tags separator used in INFO.
 
-    # Add tag and value to INFO
-
     tag_value = 'tag=value'
     vnt_obj.add_tag_info(tag_value)
-
-    # Add flag to INFO
 
     tag_value = 'flag'
     vnt_obj.add_tag_info(tag_value)
@@ -221,11 +210,7 @@ The method *get_tag_value(tag, is_flag=False, sep=';')* returns the value from t
 
 If the tag is a flag set *is_flag=True*, the function will now return True or False instead.
 
-    # Get tag value from INFO
-
     tag_val <str> = vnt_obj.get_tag_value(tag)
-
-    # Check flag in INFO
 
     tag_val <bool> = vnt_obj.get_tag_value(tag, is_flag=True)
 
