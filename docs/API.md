@@ -86,7 +86,7 @@ The method *get_tag_field_idx(tag, field, tag_type='INFO', sep='|')* allows to g
     tag, field = 'CSQ', 'Consequence'
     idx <int> -> 3 = vcf_obj.header.get_tag_field_idx(tag, field)
 
-The method *check_tag_definition(tag, tag_type='INFO', sep='|')* allows to check if a tag is in the header and if is standalone or field of another leading tag. Returns the leading tag and the field corresponding index, if any, to acces the tag. *sep* is the fields separator used in the tag definition.
+The method *check_tag_definition(tag, tag_type='INFO', sep='|')* allows to check if a tag is in the header and if is standalone or field of another leading tag. Returns the leading tag and the field corresponding index, if any, to access the tag. *sep* is the fields separator used in the tag definition.
 
     # Return the leading tag and index corresponding to 'Consequence' field
     # from CSQ definition (VEP) in the header INFO block
@@ -95,7 +95,7 @@ The method *check_tag_definition(tag, tag_type='INFO', sep='|')* allows to check
     tag = 'Consequence'
     lead_tag <str> -> CSQ, idx <int> idx -> 3 = vcf_obj.header.check_tag_definition(tag)
 
-*Note: tag and field are case sensitive.*
+*note: tag and field are case sensitive.*
 
 #### Variant
 This is the object used to store information for variants in VCF format.
@@ -225,7 +225,7 @@ If the tag is a flag set *is_flag=True*, the function will now return True or Fa
     # Check flag in INFO
     tag_val <bool> = vnt_obj.get_tag_value(tag, is_flag=True)
 
-*Note: tag and ID are case sensitive.*
+*note: tag and ID are case sensitive.*
 
 ### Custom error classes
 

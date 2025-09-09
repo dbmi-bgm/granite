@@ -1,7 +1,7 @@
 ## Variant Filtering
 
 ### whiteList
-whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, ClinVar or SpliceAI annotations. Positions can be also specfied as a BED format file.
+whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, ClinVar or SpliceAI annotations. Positions can be also specified as a BED format file.
 
 #### Arguments
 ```text
@@ -68,7 +68,7 @@ Whitelists variants based on SpliceAI annotations. This filters in variants with
 
     granite whiteList -i file.vcf -o file.out.vcf --SpliceAI <float>
 
-Whitelists variants based on VEP "Consequence" annotations. This withelists exonic and functional relevant variants by removing variants flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant", "regulatory_region_", "non_coding_transcript_". It is possible to specify additional [*terms*](https://m.ensembl.org/info/genome/variation/prediction/predicted_data.html "VEP calculated consequences") to remove using `--VEPremove` and terms to rescue using `--VEPrescue`. To use VEP, annotation must be provided for each variant in INFO column.
+Whitelists variants based on VEP "Consequence" annotations. This whitelists exonic and functional relevant variants by removing variants flagged as "intron_variant", "intergenic_variant", "downstream_gene_variant", "upstream_gene_variant", "regulatory_region_", "non_coding_transcript_". It is possible to specify additional [*terms*](https://m.ensembl.org/info/genome/variation/prediction/predicted_data.html "VEP calculated consequences") to remove using `--VEPremove` and terms to rescue using `--VEPrescue`. To use VEP, annotation must be provided for each variant in INFO column.
 
     granite whiteList -i file.vcf -o file.out.vcf --VEP
     granite whiteList -i file.vcf -o file.out.vcf --VEP --VEPremove <str> <str>
@@ -84,7 +84,7 @@ Combine the above filters.
     granite whiteList -i file.vcf -o file.out.vcf --BEDfile file.bed --VEP --VEPrescue <str> <str> --CLINVAR --SpliceAI <float>
 
 ### blackList
-blackList allows to filter-out variants from input VCF file based on positions set in BIG format file and/or provided population allele frequency.
+blackList allows to filter-out variants from input VCF file based on positions set in BIG format file and/or provided population allele frequency. Positions can be also specified as a BED format file.
 
 #### Arguments
 ```text

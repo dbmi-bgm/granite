@@ -120,12 +120,14 @@ where `individual` is the unique identifier for member inside the pedigree, `sam
                      RCK files. Creates an index file for the archive
         qcVCF        utility to create a report of different metrics calculated
                      for input VCF file
+        SVqcVCF      utility to create a report of different metrics calculated 
+                     for input SV VCF file
         validateVCF  utility to calculate error models for input VCF file using
                      pedigree information
 ```
 
 ### novoCaller
-novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model uses read-level information both in pedigree (trio) and unrelated samples to rank and assign a probabilty to each call. The software represents an updated and improved implementation of the original algorithm described in [Mohanty et al. 2019](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
+novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model uses read-level information both in pedigree (trio) and unrelated samples to rank and assign a probability to each call. The software represents an updated and improved implementation of the original algorithm described in [Mohanty et al. 2019](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
 
 *warning: starting from version 0.1.12, novoCaller `--triofiles` expected order changed. Now PROBAND must be listed as first.*
 
@@ -133,19 +135,22 @@ novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model us
 comHet is a calling algorithm for *compound heterozygous* mutations. The model uses genotype-level information in pedigree (trio) and VEP-based annotations to call possible compound heterozygous pairs. VEP annotations are used to assign variants to genes and transcripts, genotype information allows to refine calls based on inheritance mode. Calls are further flagged as "Phased" or "Unphased", where "Phased" means that genotype information supports in-trans inheritance for alternate alleles from parents.
 
 ### blackList
-blackList allows to filter-out variants from input VCF file based on positions set in BIG format file and/or provided population allele frequency.
+blackList allows to filter-out variants from input VCF file based on positions set in BIG format file and/or provided population allele frequency. Positions can be also specified as a BED format file.
 
 ### whiteList
-whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, ClinVar or SpliceAI annotations. Positions can be also specfied as a BED format file.
+whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, ClinVar or SpliceAI annotations. Positions can be also specified as a BED format file.
 
 ### cleanVCF
 cleanVCF allows to clean INFO field of input VCF file. The software can remove a list of TAG from INFO field, or can be used to clean VEP annotations.
 
 ### geneList
-geneList allows to clean VEP annotations by applyng a list of genes. The software removes all the transcripts that do not map to a gene on the list.
+geneList allows to clean VEP annotations by applying a list of genes. The software removes all the transcripts that do not map to a gene on the list.
 
 ### qcVCF
 qcVCF produces a report in JSON format with different quality metrics calculated for input VCF file. Both single sample and family-based metrics are available.
+
+### SVqcVCF
+SVqcVCF produces a report in JSON format with different quality metrics calculated for input SV VCF file. Currently, this function can count DEL and DUP SVs in single- and multi-sample SV VCF files. It reports the number of DEL, DUP, and total (the sum of only DEL and DUP) SVs for each sample provided in samples. Other SVTYPEs (INS, INV, CNV, BND) are currently ignored.
 
 ### mpileupCounts
 mpileupCounts uses *samtools* to access input BAM and calculates statistics for reads pileup at each position in the specified region, returns counts in RCK format.

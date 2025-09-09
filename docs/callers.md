@@ -1,7 +1,7 @@
 ## Inheritance Mode Callers
 
 ### novoCaller
-novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model uses read-level information both in pedigree (trio) and unrelated samples to rank and assign a probabilty to each call. The software represents an updated and improved implementation of the original algorithm described in [Mohanty et al. 2019](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
+novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model uses read-level information both in pedigree (trio) and unrelated samples to rank and assign a probability to each call. The software represents an updated and improved implementation of the original algorithm described in [Mohanty et al. 2019](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
 
 #### Arguments
 ```text
@@ -24,7 +24,7 @@ novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model us
                             TSV index file containing SampleID<TAB>Path/to/file
                             for family files, the PROBAND must be listed as FIRST
                             (BAM or bgzip and tabix indexed RCK)
-      --ppthr PPTHR         threshold to filter by posterior probabilty for de
+      --ppthr PPTHR         threshold to filter by posterior probability for de
                             novo calls (>=) [0]
       --afthr AFTHR         threshold to filter by population allele frequency
                             (<=) [1]
@@ -57,7 +57,7 @@ By default novoCaller expect bgzip and tabix indexed RCK files. To use BAM files
 *note*: using BAM files directly will significantly slow down the software since pileup counts need to be calculated on the spot at each position and for each bam.
 
 #### Output
-novoCaller generates output in VCF format. Two new tags are used to report additional information for each call. *RSTR* stores reads counts by strand at position for reference and alternate alleles. *novoPP* stores posterior probabilty calculated for the call. Variants are sorted by posterior probability in desceding order.
+novoCaller generates output in VCF format. Two new tags are used to report additional information for each call. *RSTR* stores reads counts by strand at position for reference and alternate alleles. *novoPP* stores posterior probability calculated for the call. Variants are sorted by posterior probability in descending order.
 
 *RSTR* tag definition (FORMAT):
 
@@ -67,14 +67,14 @@ novoCaller generates output in VCF format. Two new tags are used to report addit
 
     ##INFO=<ID=novoPP,Number=1,Type=Float,Description="Posterior probability from novoCaller">
 
-*note*: novoCaller model assumptions do not apply to unbalanced chromosomes (e.g. sex and mithocondrial chromosomes), therefore the model does not assign a posterior probabilty. When filtering by posterior probabilty (`--ppthr`), these variants are treated as if their posterior probabilty was 0.
+*note*: novoCaller model assumptions do not apply to unbalanced chromosomes (e.g. sex and mitochondrial chromosomes), therefore the model does not assign a posterior probability. When filtering by posterior probability (`--ppthr`), these variants are treated as if their posterior probability was 0.
 
 #### Examples
-Calls *de novo* variants. This will return the calls ranked and sorted by calculated posterior probabilty.
+Calls *de novo* variants. This will return the calls ranked and sorted by calculated posterior probability.
 
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles
 
-It is possible to filter-out variants with posterior probabilty lower than `--ppthr`.
+It is possible to filter-out variants with posterior probability lower than `--ppthr`.
 
     granite novoCaller -i file.vcf -o file.out.vcf -u file.unrelatedfiles -t file.triofiles --ppthr <float>
 
