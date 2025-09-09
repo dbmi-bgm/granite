@@ -4,16 +4,11 @@ A ready-to-use docker image is available to download.
 
     docker pull b3rse/granite:<version>
 
-To run locally, Python 3.6+ is required together with the following libraries:
+Run granite using docker as follow:
 
-  - [*numpy*](https://docs.scipy.org/doc/ "numpy documentation")
-  - [*pysam*](https://pysam.readthedocs.io/en/latest/ "pysam documentation")
-  - [*bitarray*](https://pypi.org/project/bitarray/ "bitarray documentation")
-  - [*pytabix*](https://pypi.org/project/pytabix/ "pytabix documentation")
-  - [*h5py*](https://www.h5py.org/ "h5py documentation")
-  - [*matplotlib*](https://matplotlib.org/ "matplotlib documentation")
+    docker run b3rse/granite:<version> granite <command> ...
 
-Additional software needs to be available in the environment:
+If installed locally, additional software needs to be available in the environment to run certain commands:
 
   - [*samtools*](http://www.htslib.org/ "samtools documentation")
   - [*bgzip*](http://www.htslib.org/doc/bgzip.1.html "bgzip documentation")
