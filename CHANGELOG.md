@@ -1,13 +1,7 @@
-=============
-granite-suite
-=============
-
-----------
-Change Log
-----------
 
 0.4.0
 =====
+*First Official Release*
 * Updated Dockerfile
 * Added BED support for blackList module
 * Improved error handling with custom error objects
