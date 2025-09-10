@@ -64,7 +64,7 @@ Whitelists only "Pathogenic" and "Likely_pathogenic" variants with ClinVar entry
 
     granite whiteList -i file.vcf -o file.out.vcf --CLINVAR --CLINVARonly Pathogenic
 
-Whitelists variants based on SpliceAI annotations. This filters in variants with SpliceAI score equal/higher than `--SpliceAI`. If available SpliceAI annotation must be provided in INFO column.
+Whitelists variants based on SpliceAI annotations. This filters in variants with SpliceAI score equal/higher than `--SpliceAI`. If available, SpliceAI annotation must be provided in INFO column.
 
     granite whiteList -i file.vcf -o file.out.vcf --SpliceAI <float>
 

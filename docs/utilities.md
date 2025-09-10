@@ -1,7 +1,7 @@
 ## Utilities
 
 ### mpileupCounts
-mpileupCounts uses *samtools* to access input BAM and calculates statistics for reads pileup at each position in the specified region, returns counts in RCK format.
+mpileupCounts uses *Samtools* to access input BAM and calculates statistics for read pileups at each position in the specified region, returns counts in RCK format.
 
 #### Arguments
 ```text
@@ -30,8 +30,8 @@ toBig converts counts from bgzip and tabix indexed RCK format into BIG format. P
 
 #### Arguments
 ```text
-    usage: granite toBig [-h] [-i INPUTFILE [INPUTFILE ...]] -o OUTPUTFILE -r
-                         REGIONFILE -f CHROMFILE [--ncores NCORES] --fithr FITHR
+    usage: granite toBig [-h] -f FILE [-f FILE ...] -o OUTPUTFILE -r
+                         REGIONFILE -c CHROMFILE [--ncores NCORES] --fithr FITHR
                          [--rdthr RDTHR] [--abthr ABTHR]
 
     optional arguments:
@@ -62,11 +62,11 @@ toBig converts counts from bgzip and tabix indexed RCK format into BIG format. P
 ```
 
 #### Examples
-toBig can be used to calculate positions to blacklist for common variants by using unrelated samples. This command will set to `True` in BIG structure positions with allelic balance for alternate allele equal/higher than `--abthr` in more that `--fithr` samples (joint calling).
+toBig can be used to calculate positions to blacklist for common variants by using unrelated samples. This command will set to `True` in BIG structure positions with allelic balance for alternate allele equal/higher than `--abthr` in more than `--fithr` samples (joint calling).
 
     granite toBig -f file -f file -f file -f file -f ... -o file.out.big -c file.chrom.sizes -r file.regions --fithr <int> --abthr <int>
 
-Absolute reads count can be used instead of allelic balance to call positions. This command will set to `True` in BIG structure positions with reads count for alternate allele equal/higher than `--rdthr` in more that `--fithr` samples (joint calling).
+Absolute read counts can be used instead of allelic balance to call positions. This command will set to `True` in BIG structure positions with read counts for alternate allele equal/higher than `--rdthr` in more than `--fithr` samples (joint calling).
 
     granite toBig -f file -f file -f file -f file -f ... -o file.out.big -c file.chrom.sizes -r file.regions --fithr <int> --rdthr <int>
 

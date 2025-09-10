@@ -52,9 +52,9 @@ Required VCF format structure:
     #CHROM   POS   ID   REF   ALT   QUAL   FILTER   INFO   FORMAT   PROBAND_ID   MOTHER_ID   FATHER_ID   ...
 
 #### Trio and unrelated files
-By default novoCaller expect bgzip and tabix indexed RCK files. To use BAM files directly specify `--bam` flag.
+By default novoCaller expects bgzip and tabix indexed RCK files. To use BAM files directly specify `--bam` flag.
 
-*note*: using BAM files directly will significantly slow down the software since pileup counts need to be calculated on the spot at each position and for each bam.
+*note*: using BAM files directly will significantly slow down the software since pileup counts need to be calculated on the spot at each position and for each BAM.
 
 #### Output
 novoCaller generates output in VCF format. Two new tags are used to report additional information for each call. *RSTR* stores reads counts by strand at position for reference and alternate alleles. *novoPP* stores posterior probability calculated for the call. Variants are sorted by posterior probability in descending order.
@@ -153,7 +153,7 @@ A cmpHet is defined for each gene and for each possible mate variant. Multiple c
 
 Example:
 
-    comHet=Phased|ENSG00000069424||STRONG_PAIR||chr1:6051661C>T,Phased|ENSG00000069424|ENST00000652845|STRONG_PAIR|STRONG_PAIR|chr1:6082358C>T,Phased|ENSG00000084636|ENST00000373672&ENST00000488897|STRONG_PAIR|STROING_PAIR|chr1:6051661G>A
+    comHet=Phased|ENSG00000069424||STRONG_PAIR||chr1:6051661C>T,Phased|ENSG00000069424|ENST00000652845|STRONG_PAIR|STRONG_PAIR|chr1:6082358C>T,Phased|ENSG00000084636|ENST00000373672&ENST00000488897|STRONG_PAIR|STRONG_PAIR|chr1:6051661G>A
 
 All shared transcripts for a given pair are listed in `transcript` field. If the pair does not share any transcript, the field is empty.
 
@@ -171,4 +171,4 @@ It is possible to reduce the output to only variants that are potential compound
     granite comHet -i file.vcf -o file.out.vcf --trio PROBAND_ID [PARENT_ID] [PARENT_ID] --filter_cmpHet
 
 #### Impact
-A variant is considered to have a potential STRONG impact if VEP impact is HIGH or MODERATE, spliceAI score is >= 0.8, or ClinVar assignment is Pathogenic | Likely Pathogenic. If both variants are STRONG, the pair is assigned as a STRONG_PAIR. If only one of the two variants is STRONG, the pair is assigned as a MEDIUM_PAIR. If none of the variants is STRONG, the pair is assigned as a WEAK_PAIR.
+A variant is considered to have a potential STRONG impact if VEP impact is HIGH or MODERATE, SpliceAI score is >= 0.8, or ClinVar assignment is Pathogenic | Likely Pathogenic. If both variants are STRONG, the pair is assigned as a STRONG_PAIR. If only one of the two variants is STRONG, the pair is assigned as a MEDIUM_PAIR. If none of the variants is STRONG, the pair is assigned as a WEAK_PAIR.

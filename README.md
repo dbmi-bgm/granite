@@ -153,7 +153,7 @@ qcVCF produces a report in JSON format with different quality metrics calculated
 SVqcVCF produces a report in JSON format with different quality metrics calculated for input SV VCF file. Currently, this function can count DEL and DUP SVs in single- and multi-sample SV VCF files. It reports the number of DEL, DUP, and total (the sum of only DEL and DUP) SVs for each sample provided in samples. Other SVTYPEs (INS, INV, CNV, BND) are currently ignored.
 
 ### mpileupCounts
-mpileupCounts uses *samtools* to access input BAM and calculates statistics for reads pileup at each position in the specified region, returns counts in RCK format.
+mpileupCounts uses *Samtools* to access input BAM and calculates statistics for read pileups at each position in the specified region, returns counts in RCK format.
 
 ### toBig
 toBig converts counts from bgzip and tabix indexed RCK format into BIG format. Positions are "called" by read counts or allelic balance for single or multiple files (joint calls) in specified regions. Positions "called" are set to True (or 1) in BIG binary structure.

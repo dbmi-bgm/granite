@@ -24,7 +24,7 @@ The method *parse_variants()* will read the file and return a generator to *Vari
         ...
 
 ##### Write to file
-The method *write_header(fo)* allows to write header definitions and columns to specified buffer (fo).
+The method *write_header(fo)* writes header definitions and columns to specified buffer (fo).
 
     with open('outputfile.vcf', 'w') as fo:
         vcf_obj.write_header(fo)
@@ -35,7 +35,7 @@ It is possible to write only definitions or columns respectively with the method
         vcf_obj.write_definitions(fo)
         vcf_obj.write_columns(fo)
 
-The method *write_variant(fo, Variant_obj)* allows to write information from *Variant* object to specified buffer (fo).
+The method *write_variant(fo, Variant_obj)* writes information from *Variant* object to specified buffer (fo).
 
     with open('outputfile.vcf', 'w') as fo:
         vcf_obj.write_variant(fo, vnt_obj)
@@ -63,18 +63,18 @@ Stores sample ID(s) available in the VCF as list. If multiple samples, the order
     vcf_obj.header.IDs_genotypes
 
 ##### Add or remove definitions
-The method *add_tag_definition(tag_definition, tag_type='INFO')* allows to add tag_definition to the header on top of the block specified by tag_type (e.g. FORMAT, INFO).
+The method *add_tag_definition(tag_definition, tag_type='INFO')* adds tag_definition to the header on top of the block specified by tag_type (e.g. FORMAT, INFO).
 
     tag_definition = '##INFO=<ID=tag,Number=.,Type=.,Description="INFO tag definition example">'
     vcf_obj.header.add_tag_definition(tag_definition)
 
-The method *remove_tag_definition(tag, tag_type='INFO')* allows to remove tag definition from the header block specified by tag_type (e.g. FORMAT, INFO).
+The method *remove_tag_definition(tag, tag_type='INFO')* removes tag definition from the header block specified by tag_type (e.g. FORMAT, INFO).
 
     tag = 'CSQ'
     vcf_obj.header.remove_tag_definition(tag)
 
 ##### Extract information
-The method *get_tag_field_idx(tag, field, tag_type='INFO', sep='|')* allows to get the index corresponding to value field in tag from definition, block specified by tag_type (e.g. FORMAT, INFO). *sep* is the fields separator used in the tag definition.
+The method *get_tag_field_idx(tag, field, tag_type='INFO', sep='|')* gets the index corresponding to value field in tag from definition, block specified by tag_type (e.g. FORMAT, INFO). *sep* is the fields separator used in the tag definition.
 
     # Return the index corresponding to 'Consequence' field
     # from CSQ definition (VEP) in the header INFO block
@@ -83,7 +83,7 @@ The method *get_tag_field_idx(tag, field, tag_type='INFO', sep='|')* allows to g
     tag, field = 'CSQ', 'Consequence'
     idx <int> = vcf_obj.header.get_tag_field_idx(tag, field)
 
-The method *check_tag_definition(tag, tag_type='INFO', sep='|')* allows to check if a tag is in the header and if is standalone or field of another leading tag. Returns the leading tag and the field corresponding index, if any, to access the tag. *sep* is the fields separator used in the tag definition.
+The method *check_tag_definition(tag, tag_type='INFO', sep='|')* checks if a tag is in the header and if it is standalone or a field of another leading tag. Returns the leading tag and the field corresponding index, if any, to access the tag. *sep* is the fields separator used in the tag definition.
 
     # Return the leading tag and index corresponding to 'Consequence' field
     # from CSQ definition (VEP) in the header INFO block
@@ -159,12 +159,12 @@ The method *to_string()* returns the variant representation in VCF format.
 
     vnt_vcf <str> = vnt_obj.to_string()
 
-The method *repr()* returns the variant representation as *CHROM:POSREF>ALT*.
+The method *repr()* returns the variant representation in the form *CHROM:POSREF>ALT*.
 
     vnt_repr <str> = vnt_obj.repr()
 
 ##### Manipulate genotype(s)
-The method *remove_tag_genotype(tag, sep=':')* allows to remove a tag from FORMAT and GENOTYPES. *sep* is the tags separator used in format definition and genotype(s).
+The method *remove_tag_genotype(tag, sep=':')* removes a tag from FORMAT and GENOTYPES. *sep* is the tags separator used in format definition and genotype(s).
 
     tag = 'AD'
     vnt_obj.remove_tag_genotype(tag)
@@ -173,31 +173,31 @@ The method *complete_genotype(sep=':')* fills in the trailing fields that are mi
 
     vnt_obj.complete_genotype()
 
-The method *empty_genotype(sep=':')* returns a empty genotype based on FORMAT structure. *sep* is the tags separator used in format definition and genotype(s).
+The method *empty_genotype(sep=':')* returns an empty genotype based on the FORMAT structure. *sep* is the tags separator used in format definition and genotype(s).
 
     empty <str> = vnt_obj.empty_genotype()
 
-The method *add_tag_format(tag, sep=':')* allows to add a tag at the end of FORMAT structure. *sep* is the tags separator used in format definition and genotype(s).
+The method *add_tag_format(tag, sep=':')* adds a tag at the end of FORMAT structure. *sep* is the tags separator used in format definition and genotype(s).
 
     tag = 'RSTR'
     vnt_obj.add_tag_format(tag)
 
-The method *add_values_genotype(ID_genotype, values, sep=':')* allows to add values at the end of the genotype specified by corresponding ID. *sep* is the tags separator used in format definition and genotype(s).
+The method *add_values_genotype(ID_genotype, values, sep=':')* adds values at the end of the genotype specified by corresponding ID. *sep* is the tags separator used in format definition and genotype(s).
 
     vnt_obj.add_values_genotype(ID_genotype, values)
 
 The method *get_genotype_value(ID_genotype, tag, complete_genotype=False, sep=':')* returns value for tag from the genotype specified by corresponding ID. *sep* is the tags separator used in format definition and genotype(s).
 
-If *complete_genotype=True*, return '.' if tag is missing. If complete_genotype=False (default) raise exception for the missing tag.
+If *complete_genotype=True*, it returns '.' if tag is missing. If complete_genotype=False (default), it raises an exception for the missing tag.
 
     tag_val <str> = vnt_obj.get_genotype_value(ID_genotype, tag)
 
 ##### Manipulate INFO
-The method *remove_tag_info(tag, sep=';')* allows to remove a tag or a flag from INFO. *sep* is the tags separator used in INFO.
+The method *remove_tag_info(tag, sep=';')* removes a tag or a flag from INFO. *sep* is the tags separator used in INFO.
 
     vnt_obj.remove_tag_info(tag)
 
-The method *add_tag_info(tag_value, sep=';')* allows to add a tag and its value or a flag at the end of INFO. *sep* is the tags separator used in INFO.
+The method *add_tag_info(tag_value, sep=';')* adds a tag and its value or a flag at the end of INFO. *sep* is the tags separator used in INFO.
 
     tag_value = 'tag=value'
     vnt_obj.add_tag_info(tag_value)
@@ -208,7 +208,7 @@ The method *add_tag_info(tag_value, sep=';')* allows to add a tag and its value 
 
 The method *get_tag_value(tag, is_flag=False, sep=';')* returns the value from tag in INFO. *sep* is the tags separator used in INFO.
 
-If the tag is a flag set *is_flag=True*, the function will now return True or False instead.
+If the tag is a flag, set *is_flag=True*; the function will return True or False instead.
 
     tag_val <str> = vnt_obj.get_tag_value(tag)
 
