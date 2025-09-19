@@ -1,6 +1,6 @@
 ## Install
 
-A ready-to-use docker image is available to download.
+A ready-to-use docker image is available to download [here](https://hub.docker.com/r/b3rse/granite "granite docker").
 
     docker pull b3rse/granite:<version>
 

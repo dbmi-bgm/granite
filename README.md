@@ -9,7 +9,7 @@ granite library can also be used through an API to manipulate files in VCF forma
 For more details, see granite [*documentation*](https://granite-suite.readthedocs.io/en/latest/ "granite documentation").
 
 ## Availability and requirements
-A ready-to-use docker image is available to download.
+A ready-to-use docker image is available to download [here](https://hub.docker.com/r/b3rse/granite "granite docker").
 
     docker pull b3rse/granite:<version>
 
@@ -101,8 +101,10 @@ where `individual` is the unique identifier for member inside the pedigree, `sam
       <command>
         novoCaller   Bayesian de novo variant caller
         comHet       compound heterozygous variant caller
+        filterByTag  utility to filter variants from input VCF file
+                     by INFO field tags and thresholds
         mpileupCounts
-                     samtools wrapper to calculate reads statistics for pileup at
+                     samtools wrapper to calculate read statistics for pileup at
                      each position
         blackList    utility to blacklist and filter out variants from input VCF
                      file based on positions set in BIG format file and/or
@@ -133,6 +135,9 @@ novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model us
 
 ### comHet
 comHet is a calling algorithm for *compound heterozygous* mutations. The model uses genotype-level information in pedigree (trio) and VEP-based annotations to call possible compound heterozygous pairs. VEP annotations are used to assign variants to genes and transcripts, genotype information allows to refine calls based on inheritance mode. Calls are further flagged as "Phased" or "Unphased", where "Phased" means that genotype information supports in-trans inheritance for alternate alleles from parents.
+
+### filterByTag
+filterByTag allows to filter variants from input VCF file by INFO field tags and thresholds. Users can define one or more filters on numeric, string, or boolean annotations. Each filter specifies the tag name, a value, an operator, type, and logic for aggregation. Multiple filters can be combined with global across-tag logic (any or all).
 
 ### blackList
 blackList allows to filter-out variants from input VCF file based on positions set in BIG format file and/or provided population allele frequency. Positions can be also specified as a BED format file.
