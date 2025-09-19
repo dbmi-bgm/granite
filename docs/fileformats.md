@@ -6,7 +6,7 @@ RCK is a tabular format that allows to efficiently store counts by strand (ForWa
 
 Tabular format structure:
 
-    #CHR   POS   COVERAGE   REF_FW   REF_RV   ALT_FW   ALT_RV   INS_FW   INS_RV   DEL_FW   DEL_REV
+    #CHR   POS   COVERAGE   REF_FW   REF_RV   ALT_FW   ALT_RV   INS_FW   INS_RV   DEL_FW   DEL_RV
     13     1     23         0        0        11       12       0        0        0        0
     13     2     35         18       15       1        1        0        0        0        0
 
@@ -33,7 +33,7 @@ hdf5 format structure:
 *note*: hdf5 keys are built as the chromosome name based on reference (e.g. chr1) plus the suffix specifying whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
 
 ### Pedigree in JSON format
-When the program requires pedigree information, the expected format is as follow:
+When the program requires pedigree information, the expected format is as follows:
 
     [
       {

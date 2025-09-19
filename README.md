@@ -13,7 +13,7 @@ A ready-to-use docker image is available to download [here](https://hub.docker.c
 
     docker pull b3rse/granite:<version>
 
-Run granite using docker as follow:
+Run granite using docker as follows:
 
     docker run b3rse/granite:<version> granite <command> ...
 
@@ -42,7 +42,7 @@ RCK is a tabular format that allows to efficiently store counts by strand (ForWa
 
 Tabular format structure:
 
-    #CHR   POS   COVERAGE   REF_FW   REF_RV   ALT_FW   ALT_RV   INS_FW   INS_RV   DEL_FW   DEL_REV
+    #CHR   POS   COVERAGE   REF_FW   REF_RV   ALT_FW   ALT_RV   INS_FW   INS_RV   DEL_FW   DEL_RV
     13     1     23         0        0        11       12       0        0        0        0
     13     2     35         18       15       1        1        0        0        0        0
 
@@ -68,7 +68,7 @@ hdf5 format structure:
 *note*: hdf5 keys are built as the chromosome name based on reference (e.g. chr1) plus the suffix specifying whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
 
 ### Pedigree in JSON format
-When the program requires pedigree information, the expected format is as follow:
+When the program requires pedigree information, the expected format is as follows:
 
     [
       {
@@ -122,7 +122,7 @@ where `individual` is the unique identifier for member inside the pedigree, `sam
                      RCK files. Creates an index file for the archive
         qcVCF        utility to create a report of different metrics calculated
                      for input VCF file
-        SVqcVCF      utility to create a report of different metrics calculated 
+        SVqcVCF      utility to create a report of different metrics calculated
                      for input SV VCF file
         validateVCF  utility to calculate error models for input VCF file using
                      pedigree information
@@ -131,7 +131,7 @@ where `individual` is the unique identifier for member inside the pedigree, `sam
 ### novoCaller
 novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model uses read-level information both in pedigree (trio) and unrelated samples to rank and assign a probability to each call. The software represents an updated and improved implementation of the original algorithm described in [Mohanty et al. 2019](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
 
-*warning: starting from version 0.1.12, novoCaller `--triofiles` expected order changed. Now PROBAND must be listed as first.*
+*WARNING: starting from version 0.1.12, novoCaller `--triofiles` expected order changed. Now PROBAND must be listed as first.*
 
 ### comHet
 comHet is a calling algorithm for *compound heterozygous* mutations. The model uses genotype-level information in pedigree (trio) and VEP-based annotations to call possible compound heterozygous pairs. VEP annotations are used to assign variants to genes and transcripts, genotype information allows to refine calls based on inheritance mode. Calls are further flagged as "Phased" or "Unphased", where "Phased" means that genotype information supports in-trans inheritance for alternate alleles from parents.

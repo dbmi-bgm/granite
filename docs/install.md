@@ -4,7 +4,7 @@ A ready-to-use docker image is available to download [here](https://hub.docker.c
 
     docker pull b3rse/granite:<version>
 
-Run granite using docker as follow:
+Run granite using docker as follows:
 
     docker run b3rse/granite:<version> granite <command> ...
 
