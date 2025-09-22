@@ -159,7 +159,12 @@ def test_minimal_flag_emptyINFO():
         elif i == 1:
             assert rec.get_tag_value('FLAG1', is_flag=True) == True
             assert rec.get_tag_value('FLAG2', is_flag=True) == False
-            assert rec.get_tag_value('AC', is_flag=True) == True
+            with pytest.raises(vcf_parser.TagFormatError) as e:
+                assert rec.get_tag_value('FLAG1')
+            assert '\nERROR in variant INFO field, FLAG1 tag is a flag, not key=value\n' == str(e.value)
+            with pytest.raises(vcf_parser.TagFormatError) as e:
+                assert rec.get_tag_value('AC', is_flag=True)
+            assert '\nERROR in variant INFO field, AC tag is key=value, not a flag\n' == str(e.value)
             assert rec.get_tag_value('AC', is_flag=False) == '1'
         elif i == 2:
             rec.remove_tag_info('FLAG1')

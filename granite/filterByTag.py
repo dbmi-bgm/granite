@@ -122,11 +122,9 @@ def main(args):
             sys.exit(f'\nERROR in tag filter format: {tag}. Expected format: name/value/operator/type/logic[/field=sep/entry=sep]\n')
         name_, value, operator, type_, logic = tag_[:5]
         # Sanitize components
-        name_    = name_.strip()
-        value    = value.strip()
-        operator = operator.strip().lower()
-        type_    = type_.strip().lower()
-        logic    = logic.strip().lower()
+        operator = operator.lower()
+        type_    = type_.lower()
+        logic    = logic.lower()
         # Get separators
         field_sep = None
         entry_sep = None
@@ -161,6 +159,8 @@ def main(args):
             (operator in ['<', '<=', '>', '>='] and type_ not in ['int', 'float'])
         ):
             sys.exit(f'\nERROR in tag filter type for operator {operator}: {type_}\n')
+        if value == '':
+            sys.exit('\nERROR in tag filter value: empty string not allowed for value\n')
         # Need a field_sep for check_tag_definition, the function will take care of everything else
         # If field_sep is not provided, it will default to '|' (for VEP-like annotations)
         field_sep_ = field_sep if field_sep is not None else '|'
