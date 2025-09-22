@@ -137,7 +137,7 @@ novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model us
 comHet is a calling algorithm for *compound heterozygous* mutations. The model uses genotype-level information in pedigree (trio) and VEP-based annotations to call possible compound heterozygous pairs. VEP annotations are used to assign variants to genes and transcripts, genotype information allows to refine calls based on inheritance mode. Calls are further flagged as "Phased" or "Unphased", where "Phased" means that genotype information supports in-trans inheritance for alternate alleles from parents.
 
 ### filterByTag
-filterByTag allows to filter variants from input VCF file by INFO field tags and thresholds. Users can define one or more filters on numeric, string, or boolean annotations. Each filter specifies the tag name, a value, an operator, type, and logic for aggregation. Multiple filters can be combined with global across-tag logic (any or all).
+filterByTag allows to filter variants from input VCF file by INFO field tags and thresholds. Users can define one or more filters on numeric, string, or boolean annotations. Each filter specifies the tag or field name, a value, an operator, type, and logic for aggregation. Multiple filters can be combined with global across-tag logic (any or all).
 
 ### blackList
 blackList allows to filter-out variants from input VCF file based on positions set in BIG format file and/or provided population allele frequency. Positions can be also specified as a BED format file.

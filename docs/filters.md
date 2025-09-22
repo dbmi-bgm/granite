@@ -1,7 +1,7 @@
 ## Variant Filtering
 
 ### filterByTag
-filterByTag allows to filter variants from input VCF file by INFO field tags and thresholds. Users can define one or more filters on numeric, string, or boolean annotations. Each filter specifies the tag name, a value, an operator, type, and logic for aggregation. Multiple filters can be combined with global across-tag logic (`any` or `all`).
+filterByTag allows to filter variants from input VCF file by INFO field tags and thresholds. Users can define one or more filters on numeric, string, or boolean annotations. Each filter specifies the tag or field name, a value, an operator, type, and logic for aggregation. Multiple filters can be combined with global across-tag logic (`any` or `all`).
 
 #### Arguments
 ```text
