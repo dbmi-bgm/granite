@@ -271,4 +271,14 @@ def test_run_errors():
     with pytest.raises(SystemExit) as e:
         assert main_filterByTag(args)
     assert '\nERROR in tag filter format: IMPACT/HIGH/==/str. Expected format: name/value/operator/type/logic[/field=sep/entry=sep]\n' == str(e.value)
+
+    args['tag'] = ['IMPACT/HIGH/==/str/any/field=']
+    with pytest.raises(SystemExit) as e:
+        assert main_filterByTag(args)
+    assert '\nERROR in tag filter: empty field separator in IMPACT/HIGH/==/str/any/field=\n' == str(e.value)
+
+    args['tag'] = ['IMPACT/HIGH/>/str/any']
+    with pytest.raises(SystemExit) as e:
+        assert main_filterByTag(args)
+    assert '\nERROR in tag filter type for operator >: str\n' == str(e.value)
 #end def
