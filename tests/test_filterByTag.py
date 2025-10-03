@@ -238,6 +238,68 @@ def test_run_missing_tag_value_missing_field():
     os.remove('tests/files/main_test.out')
 #end def
 
+def test_run_missing_tag_value_missing_field_CSQ():
+    ''' '''
+    # Variables
+    inputfile = 'input_filterByTag_missing_tag_value_CSQ.vcf'
+    compare_outputfile = 'input_filterByTag_missing_tag_value_CSQ.out'
+    args = {'inputfile': f'tests/files/{inputfile}', 'outputfile': 'tests/files/main_test.out',
+            'logic': 'any', 'verbose': None, 'separator': ';',
+            'tag': [
+                'gnomADc_AF_joint/0.01/</float/all/field=|/entry=,'
+            ]}
+    # Run
+    main_filterByTag(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open(f'tests/files/{compare_outputfile}')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+def test_run_value_values_sep():
+    ''' '''
+    # Variables
+    inputfile = 'input_filterByTag_value_values_sep.vcf'
+    compare_outputfile = 'input_filterByTag_value_values_sep.out'
+    args = {'inputfile': f'tests/files/{inputfile}', 'outputfile': 'tests/files/main_test.out',
+            'logic': 'any', 'verbose': None, 'separator': ';',
+            'tag': [
+                'gnomADc_AF_joint/0.01/</float/all/entry=,/value=&/field=|'
+            ]}
+    # Run
+    main_filterByTag(args)
+    # Tests
+    assert [row for row in open('tests/files/main_test.out')] == [row for row in open(f'tests/files/{compare_outputfile}')]
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
+
+def test_run_value_values_sep_error():
+    ''' '''
+    # Variables
+    inputfile = 'input_filterByTag_value_values_sep.vcf'
+    compare_outputfile = 'input_filterByTag_value_values_sep.out'
+    args = {'inputfile': f'tests/files/{inputfile}', 'outputfile': 'tests/files/main_test.out',
+            'logic': 'any', 'verbose': None, 'separator': ';',
+            'tag': [
+                'gnomADc_AF_joint/0.01/</float/all/entry=,/field=|'
+            ]}
+    # Run
+    with pytest.raises(SystemExit) as e:
+        assert main_filterByTag(args)
+    assert str(e.value) == """
+ERROR in tag value: cannot convert token "0.005&0.1" to float for tag "CSQ"
+  Value extracted using field index: 47
+  Token index within flattened values: 0
+  Separators: entry_sep=",", field_sep="|", value_sep="None"
+  Variant: chr1:121939375T>A
+Please confirm the separators and field index are correct
+"""
+    # Clean
+    os.remove('tests/files/main_test.out')
+#end def
+
 def test_run_errors():
     ''' '''
     # Variables
@@ -270,7 +332,7 @@ def test_run_errors():
     args['tag'] = ['IMPACT/HIGH/==/str']
     with pytest.raises(SystemExit) as e:
         assert main_filterByTag(args)
-    assert '\nERROR in tag filter format: IMPACT/HIGH/==/str. Expected format: name/value/operator/type/logic[/field=sep/entry=sep]\n' == str(e.value)
+    assert '\nERROR in tag filter format: IMPACT/HIGH/==/str. Expected format: name/value/operator/type/logic[/entry=sep][/field=sep][/value=sep]\n' == str(e.value)
 
     args['tag'] = ['IMPACT/HIGH/==/str/any/field=']
     with pytest.raises(SystemExit) as e:

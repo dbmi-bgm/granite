@@ -22,7 +22,7 @@ filterByTag allows to filter variants from input VCF file by INFO field tags and
                             special characters
 
                             format:
-                              'name/value/operator/type/logic[/field=sep][/entry=sep]'
+                              'name/value/operator/type/logic[/entry=sep][/field=sep][/value=sep]'
 
                             components:
                               name       tag name (e.g. DP, CSQ) or
@@ -42,14 +42,18 @@ filterByTag allows to filter variants from input VCF file by INFO field tags and
                                            false   flag is unset (bool)
                               type       str | int | float | bool
                               logic      any | all (within-tag aggregation across entries)
-                              field=sep  value separator within a tag, if tag has
-                                         embedded values (e.g. VEP annotations)
                               entry=sep  entry separator within a tag, if tag has
                                          multiple entries (e.g. VEP transcripts)
+                              field=sep  field separator within a tag, if tag/entry has
+                                         embedded fields (e.g. VEP annotations)
+                              value=sep  value separator within a field, if tag/entry
+                                         has multiple values per field (e.g. VEP Consequence)
 
                             notes:
                               - if a numeric tag or embedded numeric value is missing in the
                                 VCF INFO field, it is treated as 0
+                              - if a string tag or embedded string value is missing in the
+                                VCF INFO field, it is treated as empty string
                               - all string comparisons and tag matching are case-sensitive
 
       --separator SEP       tag separator within INFO field [;]
@@ -68,7 +72,7 @@ Filter variants with depth >=10.
 
 Filter variants with gnomAD genome allele frequency <=0.01, evaluating all entries (transcripts) from VEP annotations.
 
-    granite filterByTag -i file.vcf -o file.out.vcf -t 'gnomADg_AF/0.01/<=/float/all/field=|/entry=,'
+    granite filterByTag -i file.vcf -o file.out.vcf -t 'gnomADg_AF/0.01/<=/float/all/field=|/entry=,/value=&'
 
 Filter variants where a boolean PON (in panel of normal) flag is not set.
 
@@ -82,7 +86,7 @@ Combine filters with global across-tag logic to require `all` filters to be true
 
     granite filterByTag -i file.vcf -o file.out.vcf -l all \
         -t 'DP/10/>=/int/any' \
-           'gnomADg_AF/0.01/<=/float/all/field=|/entry=,' \
+           'gnomADg_AF/0.01/<=/float/all/field=|/entry=,/value=&' \
            'PON/-/false/bool/any' \
            'IMPACT/HIGH/==/str/any/field=|/entry=,'
 

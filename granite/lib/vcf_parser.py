@@ -119,6 +119,9 @@ class Vcf(object):
                 #end if
                 new_definitions += line + '\n'
             #end for
+            if not added_tag: # if no block found, add at the end
+                new_definitions += tag_definition + '\n'
+            #end if
             self.definitions = new_definitions
         #end def
 
@@ -303,7 +306,10 @@ class Vcf(object):
 
         def add_tag_format(self, tag_to_add, sep=':'):
             ''' add tag field to FORMAT '''
-            self.FORMAT += sep + tag_to_add
+            if self.FORMAT:  # FORMAT already has content
+                self.FORMAT += sep + tag_to_add
+            else:  # FORMAT is empty, start with the tag
+                self.FORMAT = tag_to_add
         #end def
 
         def add_values_genotype(self, ID_genotype, values, sep=':'):

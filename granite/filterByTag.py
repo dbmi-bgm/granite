@@ -26,7 +26,7 @@ from granite.lib import vcf_parser
 #
 #################################################################################
 class Tag:
-    def __init__(self, name, idx, value, operator, type_, logic, field_sep, entry_sep):
+    def __init__(self, name, idx, value, operator, type_, logic, field_sep, entry_sep, value_sep):
         self.name = name
         self.idx = idx
         self.value = value
@@ -35,6 +35,7 @@ class Tag:
         self.logic = logic
         self.field_sep = field_sep
         self.entry_sep = entry_sep
+        self.value_sep = value_sep
 
 
 #################################################################
@@ -64,20 +65,36 @@ def get_tag_value(vnt_obj, tag_obj, info_sep):
         else:
             value = entry
 
-        # Handle missing values for numeric types
-        if (value == '' or value == '.') and tag_obj.type_ in ['int', 'float']:
-            value = '0'
-        values.append(value)
+        # Split into multiple values if needed
+        split_vals = value.split(tag_obj.value_sep) if tag_obj.value_sep else [value]
 
-    # Apply type conversion
-    try:
-        if tag_obj.type_ == 'int':
-            values = [int(v) for v in values]
-        elif tag_obj.type_ == 'float':
-            values = [float(v) for v in values]
-        # str: leave as-is; bool handled above
-    except ValueError:
-        sys.exit(f'\nERROR in tag value: cannot convert tag "{tag_obj.name}" value(s) to {tag_obj.type_}\n')
+        # Normalize numeric missing *per element*
+        for value_ in split_vals:
+            if (value_ == '' or value_ == '.') and tag_obj.type_ in ['int', 'float']:
+                value_ = '0'
+            values.append(value_)
+
+    # Apply type conversion (per-element so we can pinpoint failures)
+    if tag_obj.type_ in ('int', 'float'):
+        cast = int if tag_obj.type_ == 'int' else float
+        casted = []
+        for idx, v in enumerate(values):
+            try:
+                casted.append(cast(v))
+            except ValueError:
+                # Try to include some helpful context
+                vnt_repr = vnt_obj.repr()
+                # Mention separators and field index used to extract this value
+                sys.exit(
+                    f'\nERROR in tag value: cannot convert token "{v}" to {tag_obj.type_} for tag "{tag_obj.name}"\n'
+                    f'  Value extracted using field index: {tag_obj.idx}\n'
+                    f'  Token index within flattened values: {idx}\n'
+                    f'  Separators: entry_sep="{tag_obj.entry_sep}", field_sep="{tag_obj.field_sep}", value_sep="{tag_obj.value_sep}"\n'
+                    f'  Variant: {vnt_repr}\n'
+                    'Please confirm the separators and field index are correct\n'
+                )
+        values = casted
+    # else: str -> leave as-is; bool handled above
 
     return values
 
@@ -119,7 +136,7 @@ def main(args):
         # Splitting the tag into its components
         tag_ = tag.split('/')
         if len(tag_) < 5:
-            sys.exit(f'\nERROR in tag filter format: {tag}. Expected format: name/value/operator/type/logic[/field=sep/entry=sep]\n')
+            sys.exit(f'\nERROR in tag filter format: {tag}. Expected format: name/value/operator/type/logic[/entry=sep][/field=sep][/value=sep]\n')
         name_, value, operator, type_, logic = tag_[:5]
         # Sanitize components
         operator = operator.lower()
@@ -128,6 +145,7 @@ def main(args):
         # Get separators
         field_sep = None
         entry_sep = None
+        value_sep = None
         for item in tag_[5:]:
             try:
                 key, sep = item.split('=', 1)
@@ -141,6 +159,10 @@ def main(args):
                 if sep == '':
                     sys.exit(f'\nERROR in tag filter: empty entry separator in {tag}\n')
                 entry_sep = sep
+            elif key == 'value':
+                if sep == '':
+                    sys.exit(f'\nERROR in tag filter: empty value separator in {tag}\n')
+                value_sep = sep
             else:
                 sys.exit(f'\nERROR in tag filter: unknown extra option "{key}" in {tag}\n')
         # Validate components
@@ -179,7 +201,7 @@ def main(args):
                 value = float(value)
             except ValueError: sys.exit(f'\nERROR in tag filter value: cannot convert "{value}" to float\n')
         # Create Tag object
-        tag_filters.append(Tag(name, idx, value, operator, type_, logic, field_sep, entry_sep))
+        tag_filters.append(Tag(name, idx, value, operator, type_, logic, field_sep, entry_sep, value_sep))
 
     # Parsing variants and write output
     with open(args['outputfile'], 'w', encoding='utf-8') as fo:
