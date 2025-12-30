@@ -119,6 +119,9 @@ class Vcf(object):
                 #end if
                 new_definitions += line + '\n'
             #end for
+            if not added_tag: # if no block found, add at the end
+                new_definitions += tag_definition + '\n'
+            #end if
             self.definitions = new_definitions
         #end def
 
@@ -303,7 +306,10 @@ class Vcf(object):
 
         def add_tag_format(self, tag_to_add, sep=':'):
             ''' add tag field to FORMAT '''
-            self.FORMAT += sep + tag_to_add
+            if self.FORMAT:  # FORMAT already has content
+                self.FORMAT += sep + tag_to_add
+            else:  # FORMAT is empty, start with the tag
+                self.FORMAT = tag_to_add
         #end def
 
         def add_values_genotype(self, ID_genotype, values, sep=':'):
@@ -332,18 +338,26 @@ class Vcf(object):
             ''' get value from tag (tag_to_get) in INFO '''
             items = [t for t in self.INFO.split(sep) if t] if self.INFO != '.' else []
             for tag in items:
+                # key=value present
                 if tag.startswith(tag_to_get + '='):
+                    if is_flag:
+                        raise TagFormatError('\nERROR in variant INFO field, {0} tag is key=value, not a flag\n'
+                                    .format(tag_to_get))
+                    # end if
                     try:
-                        if is_flag:
-                            return True
-                        return tag.split(tag_to_get + '=')[1]
+                        return tag.split(tag_to_get + '=', 1)[1]
                     except Exception: # tag field is in a wrong format
                         raise TagFormatError('\nERROR in variant INFO field, {0} tag is in the wrong format\n'
                                     .format(tag_to_get))
                     #end try
                 # flag present
-                if tag == tag_to_get and is_flag:
-                    return True
+                if tag == tag_to_get:
+                    if is_flag:
+                        return True
+                    raise TagFormatError('\nERROR in variant INFO field, {0} tag is a flag, not key=value\n'
+                                 .format(tag_to_get))
+                    # end if
+                # end if
             #end for
 
             # tag_to_get not found
@@ -351,6 +365,7 @@ class Vcf(object):
                 return False
             else:
                 raise MissingTag('\nERROR in variant INFO field, {0} tag is missing\n'.format(tag_to_get))
+            #end if
         #end def
 
         def get_genotype_value(self, ID_genotype, tag_to_get, complete_genotype=False, sep=':'):

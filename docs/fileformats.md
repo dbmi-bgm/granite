@@ -6,7 +6,7 @@ RCK is a tabular format that allows to efficiently store counts by strand (ForWa
 
 Tabular format structure:
 
-    #CHR   POS   COVERAGE   REF_FW   REF_RV   ALT_FW   ALT_RV   INS_FW   INS_RV   DEL_FW   DEL_REV
+    #CHR   POS   COVERAGE   REF_FW   REF_RV   ALT_FW   ALT_RV   INS_FW   INS_RV   DEL_FW   DEL_RV
     13     1     23         0        0        11       12       0        0        0        0
     13     2     35         18       15       1        1        0        0        0        0
 
@@ -17,9 +17,9 @@ Commands to compress and index files:
 ```
 
 ### BinaryIndexGenome (.big)
-BIG is a hdf5-based binary format that stores boolean values for each genomic position as bit arrays. Each position is represented in three complementary arrays that account for SNVs (Single-Nucleotide Variants), insertions and deletions respectively. 1-based.
+BIG is a HDF5-based binary format that stores boolean values for each genomic position as bit arrays. Each position is represented in three complementary arrays that account for SNVs (Single-Nucleotide Variants), insertions and deletions respectively. 1-based.
 
-hdf5 format structure:
+HDF5 format structure:
 
     e.g.
     chr1_snv: array(bool)
@@ -30,10 +30,10 @@ hdf5 format structure:
     ...
     chrM_del: array(bool)
 
-*note*: hdf5 keys are built as the chromosome name based on reference (e.g. chr1) plus the suffix specifying whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
+*note*: HDF5 keys are built as the chromosome name based on reference (e.g. chr1) plus the suffix specifying whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
 
 ### Pedigree in JSON format
-When the program requires pedigree information, the expected format is as follow:
+When the program requires pedigree information, the expected format is as follows:
 
     [
       {
@@ -56,4 +56,4 @@ When the program requires pedigree information, the expected format is as follow
       }
     ]
 
-where `individual` is the unique identifier for member inside the pedigree, `sample_name` is the corresponding sample ID in VCF file, and `parents` is the list of unique identifiers for member parents if any.
+where `individual` is the unique identifier for a member within the pedigree, `sample_name` is the corresponding sample ID in VCF file, and `parents` is the list of unique identifiers for the parents, if any.

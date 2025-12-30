@@ -2,24 +2,24 @@
 
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org) ![License MIT](https://img.shields.io/badge/License-MIT-green)
 
-granite is a collection of software to work with genomic variants. The suite provides inheritance mode callers and utilities to filter and refine variants called by other methods in VCF format.
+granite is a software suite for working with genomic variants. The suite provides inheritance mode callers and utilities to filter and refine variants called by other methods in VCF format.
 
-granite library can also be used through an API to manipulate files in VCF format.
+The granite library can also be used through a Python API to manipulate files in VCF format.
 
 For more details, see granite [*documentation*](https://granite-suite.readthedocs.io/en/latest/ "granite documentation").
 
 ## Availability and requirements
-A ready-to-use docker image is available to download.
+A ready-to-use Docker image is available to download [here](https://hub.docker.com/r/b3rse/granite "granite Docker").
 
     docker pull b3rse/granite:<version>
 
-Run granite using docker as follow:
+Run granite using Docker as follows:
 
     docker run b3rse/granite:<version> granite <command> ...
 
 If installed locally, additional software needs to be available in the environment to run certain commands:
 
-  - [*samtools*](http://www.htslib.org/ "samtools documentation")
+  - [*Samtools*](http://www.htslib.org/ "Samtools documentation")
   - [*bgzip*](http://www.htslib.org/doc/bgzip.1.html "bgzip documentation")
   - [*tabix*](http://www.htslib.org/doc/tabix.1.html "tabix documentation")
 
@@ -34,6 +34,12 @@ To install the program with pip:
 
     pip install granite-suite
 
+### VEP annotations
+The comHet command requires gene- and transcript-level annotations produced by the Ensembl Variant Effect Predictor (VEP). granite does not run VEP directly; instead, it consumes VEP annotations already present in the input VCF file and uses them to assign variants to genes and transcripts and to evaluate inheritance patterns.
+
+VEP annotations are expected to follow the standard VCF INFO field format (e.g. the *CSQ* tag), as produced by default VEP configurations. For details on running VEP and generating compatible annotations, please refer to the official documentation:
+https://github.com/Ensembl/ensembl-vep
+
 ## File formats
 The program is compatible with standard BED, BAM and VCF formats (`VCFv4.x`).
 
@@ -42,7 +48,7 @@ RCK is a tabular format that allows to efficiently store counts by strand (ForWa
 
 Tabular format structure:
 
-    #CHR   POS   COVERAGE   REF_FW   REF_RV   ALT_FW   ALT_RV   INS_FW   INS_RV   DEL_FW   DEL_REV
+    #CHR   POS   COVERAGE   REF_FW   REF_RV   ALT_FW   ALT_RV   INS_FW   INS_RV   DEL_FW   DEL_RV
     13     1     23         0        0        11       12       0        0        0        0
     13     2     35         18       15       1        1        0        0        0        0
 
@@ -52,9 +58,9 @@ Commands to compress and index files:
     tabix -b 2 -s 1 -e 0 -c "#" PATH/TO/FILE.gz
 
 ### BinaryIndexGenome (.big)
-BIG is a hdf5-based binary format that stores boolean values for each genomic position as bit arrays. Each position is represented in three complementary arrays that account for SNVs (Single-Nucleotide Variants), insertions and deletions respectively. 1-based.
+BIG is a HDF5-based binary format that stores boolean values for each genomic position as bit arrays. Each position is represented in three complementary arrays that account for SNVs (Single-Nucleotide Variants), insertions and deletions respectively. 1-based.
 
-hdf5 format structure:
+HDF5 format structure:
 
     e.g.
     chr1_snv: array(bool)
@@ -65,10 +71,10 @@ hdf5 format structure:
     ...
     chrM_del: array(bool)
 
-*note*: hdf5 keys are built as the chromosome name based on reference (e.g. chr1) plus the suffix specifying whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
+*note*: HDF5 keys are built as the chromosome name based on reference (e.g. chr1) plus the suffix specifying whether the array represents SNVs (_snv), insertions (_ins) or deletions (_del).
 
 ### Pedigree in JSON format
-When the program requires pedigree information, the expected format is as follow:
+When the program requires pedigree information, the expected format is as follows:
 
     [
       {
@@ -91,7 +97,7 @@ When the program requires pedigree information, the expected format is as follow
       }
     ]
 
-where `individual` is the unique identifier for member inside the pedigree, `sample_name` is the corresponding sample ID in VCF file, and `parents` is the list of unique identifiers for member parents if any.
+where `individual` is the unique identifier for a member within the pedigree, `sample_name` is the corresponding sample ID in VCF file, and `parents` is the list of unique identifiers for the parents, if any.
 
 ## Usage
 ```text
@@ -101,8 +107,10 @@ where `individual` is the unique identifier for member inside the pedigree, `sam
       <command>
         novoCaller   Bayesian de novo variant caller
         comHet       compound heterozygous variant caller
+        filterByTag  utility to filter variants from input VCF file
+                     by INFO field tags and thresholds
         mpileupCounts
-                     samtools wrapper to calculate reads statistics for pileup at
+                     samtools wrapper to calculate read statistics for pileup at
                      each position
         blackList    utility to blacklist and filter out variants from input VCF
                      file based on positions set in BIG format file and/or
@@ -120,7 +128,7 @@ where `individual` is the unique identifier for member inside the pedigree, `sam
                      RCK files. Creates an index file for the archive
         qcVCF        utility to create a report of different metrics calculated
                      for input VCF file
-        SVqcVCF      utility to create a report of different metrics calculated 
+        SVqcVCF      utility to create a report of different metrics calculated
                      for input SV VCF file
         validateVCF  utility to calculate error models for input VCF file using
                      pedigree information
@@ -129,10 +137,13 @@ where `individual` is the unique identifier for member inside the pedigree, `sam
 ### novoCaller
 novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model uses read-level information both in pedigree (trio) and unrelated samples to rank and assign a probability to each call. The software represents an updated and improved implementation of the original algorithm described in [Mohanty et al. 2019](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/bty749/5087716).
 
-*warning: starting from version 0.1.12, novoCaller `--triofiles` expected order changed. Now PROBAND must be listed as first.*
+*WARNING: starting from version 0.1.12, novoCaller `--triofiles` expected order changed. Now PROBAND must be listed as first.*
 
 ### comHet
 comHet is a calling algorithm for *compound heterozygous* mutations. The model uses genotype-level information in pedigree (trio) and VEP-based annotations to call possible compound heterozygous pairs. VEP annotations are used to assign variants to genes and transcripts, genotype information allows to refine calls based on inheritance mode. Calls are further flagged as "Phased" or "Unphased", where "Phased" means that genotype information supports in-trans inheritance for alternate alleles from parents.
+
+### filterByTag
+filterByTag allows to filter variants from input VCF file by INFO field tags and thresholds. Users can define one or more filters on numeric, string, or boolean annotations. Each filter specifies the tag or field name, a value, an operator, type, and logic for aggregation. Multiple filters can be combined with global across-tag logic (any or all).
 
 ### blackList
 blackList allows to filter-out variants from input VCF file based on positions set in BIG format file and/or provided population allele frequency. Positions can be also specified as a BED format file.
@@ -153,7 +164,7 @@ qcVCF produces a report in JSON format with different quality metrics calculated
 SVqcVCF produces a report in JSON format with different quality metrics calculated for input SV VCF file. Currently, this function can count DEL and DUP SVs in single- and multi-sample SV VCF files. It reports the number of DEL, DUP, and total (the sum of only DEL and DUP) SVs for each sample provided in samples. Other SVTYPEs (INS, INV, CNV, BND) are currently ignored.
 
 ### mpileupCounts
-mpileupCounts uses *Samtools* to access input BAM and calculates statistics for read pileups at each position in the specified region, returns counts in RCK format.
+mpileupCounts uses *Samtools* to access input BAM and calculates statistics for read pileups at each position in the specified region, returns read counts in RCK format.
 
 ### toBig
 toBig converts counts from bgzip and tabix indexed RCK format into BIG format. Positions are "called" by read counts or allelic balance for single or multiple files (joint calls) in specified regions. Positions "called" are set to True (or 1) in BIG binary structure.

@@ -1,0 +1,286 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##FILTER=<ID=FAIL,Description="Fail the site if all alleles fail but for different reasons.">
+##FILTER=<ID=base_qual,Description="alt median base quality">
+##FILTER=<ID=clustered_events,Description="Clustered events observed in the tumor">
+##FILTER=<ID=contamination,Description="contamination">
+##FILTER=<ID=duplicate,Description="evidence for alt allele is overrepresented by apparent duplicates">
+##FILTER=<ID=fragment,Description="abs(ref - alt) median fragment length">
+##FILTER=<ID=germline,Description="Evidence indicates this site is germline, not somatic">
+##FILTER=<ID=haplotype,Description="Variant near filtered variant on same haplotype.">
+##FILTER=<ID=low_allele_frac,Description="Allele fraction is below specified threshold">
+##FILTER=<ID=map_qual,Description="ref - alt median mapping quality">
+##FILTER=<ID=multiallelic,Description="Site filtered because too many alt alleles pass tumor LOD">
+##FILTER=<ID=n_ratio,Description="Ratio of N to alt exceeds specified ratio">
+##FILTER=<ID=normal_artifact,Description="artifact_in_normal">
+##FILTER=<ID=orientation,Description="Orientation bias detected by the orientation bias mixture model">
+##FILTER=<ID=panel_of_normals,Description="Blacklisted site in panel of normals">
+##FILTER=<ID=position,Description="median distance of alt variants from end of reads">
+##FILTER=<ID=slippage,Description="Variant near filtered variant on same haplotype.">
+##FILTER=<ID=strand_bias,Description="Evidence for alt allele comes from one read direction only">
+##FILTER=<ID=strict_strand,Description="Evidence for alt allele is not represented in both directions">
+##FILTER=<ID=weak_evidence,Description="Mutation does not meet likelihood threshold">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=AF,Number=A,Type=Float,Description="Allele fractions of alternate alleles in the tumor">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=F1R2,Number=R,Type=Integer,Description="Count of reads in F1R2 pair orientation supporting each allele">
+##FORMAT=<ID=F2R1,Number=R,Type=Integer,Description="Count of reads in F2R1 pair orientation supporting each allele">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=PGT,Number=1,Type=String,Description="Physical phasing haplotype information, describing how the alternate alleles are phased in relation to one another">
+##FORMAT=<ID=PID,Number=1,Type=String,Description="Physical phasing ID information, where each unique ID within a given sample (but not across samples) connects records within a phasing group">
+##FORMAT=<ID=PS,Number=1,Type=Integer,Description="Phasing set (typically the position of the first variant in the set)">
+##FORMAT=<ID=SB,Number=4,Type=Integer,Description="Per-sample component statistics which comprise the Fisher's Exact Test to detect strand bias.">
+##INFO=<ID=AS_FilterStatus,Number=1,Type=String,Description="Filter status for each allele, as assessed by ApplyRecalibration. Note that the VCF filter field will reflect the most lenient/sensitive status across all alleles.">
+##INFO=<ID=AS_SB_TABLE,Number=1,Type=String,Description="Allele-specific forward/reverse read counts for strand bias tests. Includes the reference and alleles separated by |.">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth; some reads may have been filtered">
+##INFO=<ID=ECNT,Number=1,Type=Integer,Description="Number of events in this haplotype">
+##INFO=<ID=GERMQ,Number=1,Type=Integer,Description="Phred-scaled quality that alt alleles are not germline variants">
+##INFO=<ID=MBQ,Number=R,Type=Integer,Description="median base quality">
+##INFO=<ID=MFRL,Number=R,Type=Integer,Description="median fragment length">
+##INFO=<ID=MMQ,Number=R,Type=Integer,Description="median mapping quality">
+##INFO=<ID=MPOS,Number=A,Type=Integer,Description="median distance from end of read">
+##INFO=<ID=NALOD,Number=A,Type=Float,Description="Negative log 10 odds of artifact in normal with same allele fraction as tumor">
+##INFO=<ID=NLOD,Number=A,Type=Float,Description="Normal log 10 likelihood ratio of diploid het or hom alt genotypes">
+##INFO=<ID=PON,Number=0,Type=Flag,Description="site found in panel of normals">
+##INFO=<ID=POPAF,Number=A,Type=Float,Description="negative log 10 population allele frequencies of alt alleles">
+##INFO=<ID=ROQ,Number=1,Type=Float,Description="Phred-scaled qualities that alt allele are not due to read orientation artifact">
+##INFO=<ID=RPA,Number=R,Type=Integer,Description="Number of times tandem repeat unit is repeated, for each allele (including reference)">
+##INFO=<ID=RU,Number=1,Type=String,Description="Tandem repeat unit (bases)">
+##INFO=<ID=STR,Number=0,Type=Flag,Description="Variant is a short tandem repeat">
+##INFO=<ID=STRQ,Number=1,Type=Integer,Description="Phred-scaled quality that alt alleles in STRs are not polymerase slippage errors">
+##INFO=<ID=TLOD,Number=A,Type=Float,Description="Log 10 likelihood ratio score of variant existing versus not existing">
+##SentieonCommandLine.TNfilter=<ID=TNfilter,Version="sentieon-genomics-202308.01",Date="2025-05-06T22:12:42Z",CommandLine="/n/data1/hms/dbmi/park/SOFTWARE/Sentieon/sentieon-genomics-202308.01/libexec/driver -t 16 -r /n/data1/hms/dbmi/park/dominika/reference_files/hg38_smaht/SMAFI23ELK2A.fa --algo TNfilter -v merged.vcf.gz --tumor_sample ST002-1D_BCM_ill_DS150x --normal_sample ST002-1G_BCM_ill_DS150x --contamination merged.contamination --tumor_segments merged.segments --orientation_priors merged.priors output.vcf.gz">
+##contig=<ID=chr1,length=248956422,assembly=hg38>
+##contig=<ID=chr2,length=242193529,assembly=hg38>
+##contig=<ID=chr3,length=198295559,assembly=hg38>
+##contig=<ID=chr4,length=190214555,assembly=hg38>
+##contig=<ID=chr5,length=181538259,assembly=hg38>
+##contig=<ID=chr6,length=170805979,assembly=hg38>
+##contig=<ID=chr7,length=159345973,assembly=hg38>
+##contig=<ID=chr8,length=145138636,assembly=hg38>
+##contig=<ID=chr9,length=138394717,assembly=hg38>
+##contig=<ID=chr10,length=133797422,assembly=hg38>
+##contig=<ID=chr11,length=135086622,assembly=hg38>
+##contig=<ID=chr12,length=133275309,assembly=hg38>
+##contig=<ID=chr13,length=114364328,assembly=hg38>
+##contig=<ID=chr14,length=107043718,assembly=hg38>
+##contig=<ID=chr15,length=101991189,assembly=hg38>
+##contig=<ID=chr16,length=90338345,assembly=hg38>
+##contig=<ID=chr17,length=83257441,assembly=hg38>
+##contig=<ID=chr18,length=80373285,assembly=hg38>
+##contig=<ID=chr19,length=58617616,assembly=hg38>
+##contig=<ID=chr20,length=64444167,assembly=hg38>
+##contig=<ID=chr21,length=46709983,assembly=hg38>
+##contig=<ID=chr22,length=50818468,assembly=hg38>
+##contig=<ID=chrX,length=156040895,assembly=hg38>
+##contig=<ID=chrY,length=57227415,assembly=hg38>
+##contig=<ID=chrM,length=16569,assembly=hg38>
+##contig=<ID=chr1_KI270706v1_random,length=175055,assembly=hg38>
+##contig=<ID=chr1_KI270707v1_random,length=32032,assembly=hg38>
+##contig=<ID=chr1_KI270708v1_random,length=127682,assembly=hg38>
+##contig=<ID=chr1_KI270709v1_random,length=66860,assembly=hg38>
+##contig=<ID=chr1_KI270710v1_random,length=40176,assembly=hg38>
+##contig=<ID=chr1_KI270711v1_random,length=42210,assembly=hg38>
+##contig=<ID=chr1_KI270712v1_random,length=176043,assembly=hg38>
+##contig=<ID=chr1_KI270713v1_random,length=40745,assembly=hg38>
+##contig=<ID=chr1_KI270714v1_random,length=41717,assembly=hg38>
+##contig=<ID=chr2_KI270715v1_random,length=161471,assembly=hg38>
+##contig=<ID=chr2_KI270716v1_random,length=153799,assembly=hg38>
+##contig=<ID=chr3_GL000221v1_random,length=155397,assembly=hg38>
+##contig=<ID=chr4_GL000008v2_random,length=209709,assembly=hg38>
+##contig=<ID=chr5_GL000208v1_random,length=92689,assembly=hg38>
+##contig=<ID=chr9_KI270717v1_random,length=40062,assembly=hg38>
+##contig=<ID=chr9_KI270718v1_random,length=38054,assembly=hg38>
+##contig=<ID=chr9_KI270719v1_random,length=176845,assembly=hg38>
+##contig=<ID=chr9_KI270720v1_random,length=39050,assembly=hg38>
+##contig=<ID=chr11_KI270721v1_random,length=100316,assembly=hg38>
+##contig=<ID=chr14_GL000009v2_random,length=201709,assembly=hg38>
+##contig=<ID=chr14_GL000225v1_random,length=211173,assembly=hg38>
+##contig=<ID=chr14_KI270722v1_random,length=194050,assembly=hg38>
+##contig=<ID=chr14_GL000194v1_random,length=191469,assembly=hg38>
+##contig=<ID=chr14_KI270723v1_random,length=38115,assembly=hg38>
+##contig=<ID=chr14_KI270724v1_random,length=39555,assembly=hg38>
+##contig=<ID=chr14_KI270725v1_random,length=172810,assembly=hg38>
+##contig=<ID=chr14_KI270726v1_random,length=43739,assembly=hg38>
+##contig=<ID=chr15_KI270727v1_random,length=448248,assembly=hg38>
+##contig=<ID=chr16_KI270728v1_random,length=1872759,assembly=hg38>
+##contig=<ID=chr17_GL000205v2_random,length=185591,assembly=hg38>
+##contig=<ID=chr17_KI270729v1_random,length=280839,assembly=hg38>
+##contig=<ID=chr17_KI270730v1_random,length=112551,assembly=hg38>
+##contig=<ID=chr22_KI270731v1_random,length=150754,assembly=hg38>
+##contig=<ID=chr22_KI270732v1_random,length=41543,assembly=hg38>
+##contig=<ID=chr22_KI270733v1_random,length=179772,assembly=hg38>
+##contig=<ID=chr22_KI270734v1_random,length=165050,assembly=hg38>
+##contig=<ID=chr22_KI270735v1_random,length=42811,assembly=hg38>
+##contig=<ID=chr22_KI270736v1_random,length=181920,assembly=hg38>
+##contig=<ID=chr22_KI270737v1_random,length=103838,assembly=hg38>
+##contig=<ID=chr22_KI270738v1_random,length=99375,assembly=hg38>
+##contig=<ID=chr22_KI270739v1_random,length=73985,assembly=hg38>
+##contig=<ID=chrY_KI270740v1_random,length=37240,assembly=hg38>
+##contig=<ID=chrUn_KI270302v1,length=2274,assembly=hg38>
+##contig=<ID=chrUn_KI270304v1,length=2165,assembly=hg38>
+##contig=<ID=chrUn_KI270303v1,length=1942,assembly=hg38>
+##contig=<ID=chrUn_KI270305v1,length=1472,assembly=hg38>
+##contig=<ID=chrUn_KI270322v1,length=21476,assembly=hg38>
+##contig=<ID=chrUn_KI270320v1,length=4416,assembly=hg38>
+##contig=<ID=chrUn_KI270310v1,length=1201,assembly=hg38>
+##contig=<ID=chrUn_KI270316v1,length=1444,assembly=hg38>
+##contig=<ID=chrUn_KI270315v1,length=2276,assembly=hg38>
+##contig=<ID=chrUn_KI270312v1,length=998,assembly=hg38>
+##contig=<ID=chrUn_KI270311v1,length=12399,assembly=hg38>
+##contig=<ID=chrUn_KI270317v1,length=37690,assembly=hg38>
+##contig=<ID=chrUn_KI270412v1,length=1179,assembly=hg38>
+##contig=<ID=chrUn_KI270411v1,length=2646,assembly=hg38>
+##contig=<ID=chrUn_KI270414v1,length=2489,assembly=hg38>
+##contig=<ID=chrUn_KI270419v1,length=1029,assembly=hg38>
+##contig=<ID=chrUn_KI270418v1,length=2145,assembly=hg38>
+##contig=<ID=chrUn_KI270420v1,length=2321,assembly=hg38>
+##contig=<ID=chrUn_KI270424v1,length=2140,assembly=hg38>
+##contig=<ID=chrUn_KI270417v1,length=2043,assembly=hg38>
+##contig=<ID=chrUn_KI270422v1,length=1445,assembly=hg38>
+##contig=<ID=chrUn_KI270423v1,length=981,assembly=hg38>
+##contig=<ID=chrUn_KI270425v1,length=1884,assembly=hg38>
+##contig=<ID=chrUn_KI270429v1,length=1361,assembly=hg38>
+##contig=<ID=chrUn_KI270442v1,length=392061,assembly=hg38>
+##contig=<ID=chrUn_KI270466v1,length=1233,assembly=hg38>
+##contig=<ID=chrUn_KI270465v1,length=1774,assembly=hg38>
+##contig=<ID=chrUn_KI270467v1,length=3920,assembly=hg38>
+##contig=<ID=chrUn_KI270435v1,length=92983,assembly=hg38>
+##contig=<ID=chrUn_KI270438v1,length=112505,assembly=hg38>
+##contig=<ID=chrUn_KI270468v1,length=4055,assembly=hg38>
+##contig=<ID=chrUn_KI270510v1,length=2415,assembly=hg38>
+##contig=<ID=chrUn_KI270509v1,length=2318,assembly=hg38>
+##contig=<ID=chrUn_KI270518v1,length=2186,assembly=hg38>
+##contig=<ID=chrUn_KI270508v1,length=1951,assembly=hg38>
+##contig=<ID=chrUn_KI270516v1,length=1300,assembly=hg38>
+##contig=<ID=chrUn_KI270512v1,length=22689,assembly=hg38>
+##contig=<ID=chrUn_KI270519v1,length=138126,assembly=hg38>
+##contig=<ID=chrUn_KI270522v1,length=5674,assembly=hg38>
+##contig=<ID=chrUn_KI270511v1,length=8127,assembly=hg38>
+##contig=<ID=chrUn_KI270515v1,length=6361,assembly=hg38>
+##contig=<ID=chrUn_KI270507v1,length=5353,assembly=hg38>
+##contig=<ID=chrUn_KI270517v1,length=3253,assembly=hg38>
+##contig=<ID=chrUn_KI270529v1,length=1899,assembly=hg38>
+##contig=<ID=chrUn_KI270528v1,length=2983,assembly=hg38>
+##contig=<ID=chrUn_KI270530v1,length=2168,assembly=hg38>
+##contig=<ID=chrUn_KI270539v1,length=993,assembly=hg38>
+##contig=<ID=chrUn_KI270538v1,length=91309,assembly=hg38>
+##contig=<ID=chrUn_KI270544v1,length=1202,assembly=hg38>
+##contig=<ID=chrUn_KI270548v1,length=1599,assembly=hg38>
+##contig=<ID=chrUn_KI270583v1,length=1400,assembly=hg38>
+##contig=<ID=chrUn_KI270587v1,length=2969,assembly=hg38>
+##contig=<ID=chrUn_KI270580v1,length=1553,assembly=hg38>
+##contig=<ID=chrUn_KI270581v1,length=7046,assembly=hg38>
+##contig=<ID=chrUn_KI270579v1,length=31033,assembly=hg38>
+##contig=<ID=chrUn_KI270589v1,length=44474,assembly=hg38>
+##contig=<ID=chrUn_KI270590v1,length=4685,assembly=hg38>
+##contig=<ID=chrUn_KI270584v1,length=4513,assembly=hg38>
+##contig=<ID=chrUn_KI270582v1,length=6504,assembly=hg38>
+##contig=<ID=chrUn_KI270588v1,length=6158,assembly=hg38>
+##contig=<ID=chrUn_KI270593v1,length=3041,assembly=hg38>
+##contig=<ID=chrUn_KI270591v1,length=5796,assembly=hg38>
+##contig=<ID=chrUn_KI270330v1,length=1652,assembly=hg38>
+##contig=<ID=chrUn_KI270329v1,length=1040,assembly=hg38>
+##contig=<ID=chrUn_KI270334v1,length=1368,assembly=hg38>
+##contig=<ID=chrUn_KI270333v1,length=2699,assembly=hg38>
+##contig=<ID=chrUn_KI270335v1,length=1048,assembly=hg38>
+##contig=<ID=chrUn_KI270338v1,length=1428,assembly=hg38>
+##contig=<ID=chrUn_KI270340v1,length=1428,assembly=hg38>
+##contig=<ID=chrUn_KI270336v1,length=1026,assembly=hg38>
+##contig=<ID=chrUn_KI270337v1,length=1121,assembly=hg38>
+##contig=<ID=chrUn_KI270363v1,length=1803,assembly=hg38>
+##contig=<ID=chrUn_KI270364v1,length=2855,assembly=hg38>
+##contig=<ID=chrUn_KI270362v1,length=3530,assembly=hg38>
+##contig=<ID=chrUn_KI270366v1,length=8320,assembly=hg38>
+##contig=<ID=chrUn_KI270378v1,length=1048,assembly=hg38>
+##contig=<ID=chrUn_KI270379v1,length=1045,assembly=hg38>
+##contig=<ID=chrUn_KI270389v1,length=1298,assembly=hg38>
+##contig=<ID=chrUn_KI270390v1,length=2387,assembly=hg38>
+##contig=<ID=chrUn_KI270387v1,length=1537,assembly=hg38>
+##contig=<ID=chrUn_KI270395v1,length=1143,assembly=hg38>
+##contig=<ID=chrUn_KI270396v1,length=1880,assembly=hg38>
+##contig=<ID=chrUn_KI270388v1,length=1216,assembly=hg38>
+##contig=<ID=chrUn_KI270394v1,length=970,assembly=hg38>
+##contig=<ID=chrUn_KI270386v1,length=1788,assembly=hg38>
+##contig=<ID=chrUn_KI270391v1,length=1484,assembly=hg38>
+##contig=<ID=chrUn_KI270383v1,length=1750,assembly=hg38>
+##contig=<ID=chrUn_KI270393v1,length=1308,assembly=hg38>
+##contig=<ID=chrUn_KI270384v1,length=1658,assembly=hg38>
+##contig=<ID=chrUn_KI270392v1,length=971,assembly=hg38>
+##contig=<ID=chrUn_KI270381v1,length=1930,assembly=hg38>
+##contig=<ID=chrUn_KI270385v1,length=990,assembly=hg38>
+##contig=<ID=chrUn_KI270382v1,length=4215,assembly=hg38>
+##contig=<ID=chrUn_KI270376v1,length=1136,assembly=hg38>
+##contig=<ID=chrUn_KI270374v1,length=2656,assembly=hg38>
+##contig=<ID=chrUn_KI270372v1,length=1650,assembly=hg38>
+##contig=<ID=chrUn_KI270373v1,length=1451,assembly=hg38>
+##contig=<ID=chrUn_KI270375v1,length=2378,assembly=hg38>
+##contig=<ID=chrUn_KI270371v1,length=2805,assembly=hg38>
+##contig=<ID=chrUn_KI270448v1,length=7992,assembly=hg38>
+##contig=<ID=chrUn_KI270521v1,length=7642,assembly=hg38>
+##contig=<ID=chrUn_GL000195v1,length=182896,assembly=hg38>
+##contig=<ID=chrUn_GL000219v1,length=179198,assembly=hg38>
+##contig=<ID=chrUn_GL000220v1,length=161802,assembly=hg38>
+##contig=<ID=chrUn_GL000224v1,length=179693,assembly=hg38>
+##contig=<ID=chrUn_KI270741v1,length=157432,assembly=hg38>
+##contig=<ID=chrUn_GL000226v1,length=15008,assembly=hg38>
+##contig=<ID=chrUn_GL000213v1,length=164239,assembly=hg38>
+##contig=<ID=chrUn_KI270743v1,length=210658,assembly=hg38>
+##contig=<ID=chrUn_KI270744v1,length=168472,assembly=hg38>
+##contig=<ID=chrUn_KI270745v1,length=41891,assembly=hg38>
+##contig=<ID=chrUn_KI270746v1,length=66486,assembly=hg38>
+##contig=<ID=chrUn_KI270747v1,length=198735,assembly=hg38>
+##contig=<ID=chrUn_KI270748v1,length=93321,assembly=hg38>
+##contig=<ID=chrUn_KI270749v1,length=158759,assembly=hg38>
+##contig=<ID=chrUn_KI270750v1,length=148850,assembly=hg38>
+##contig=<ID=chrUn_KI270751v1,length=150742,assembly=hg38>
+##contig=<ID=chrUn_KI270752v1,length=27745,assembly=hg38>
+##contig=<ID=chrUn_KI270753v1,length=62944,assembly=hg38>
+##contig=<ID=chrUn_KI270754v1,length=40191,assembly=hg38>
+##contig=<ID=chrUn_KI270755v1,length=36723,assembly=hg38>
+##contig=<ID=chrUn_KI270756v1,length=79590,assembly=hg38>
+##contig=<ID=chrUn_KI270757v1,length=71251,assembly=hg38>
+##contig=<ID=chrUn_GL000214v1,length=137718,assembly=hg38>
+##contig=<ID=chrUn_KI270742v1,length=186739,assembly=hg38>
+##contig=<ID=chrUn_GL000216v2,length=176608,assembly=hg38>
+##contig=<ID=chrUn_GL000218v1,length=161147,assembly=hg38>
+##contig=<ID=chrEBV,length=171823,assembly=hg38>
+##reference=file:///n/data1/hms/dbmi/park/dominika/reference_files/hg38_smaht/SMAFI23ELK2A.fa
+##tumor_sample=ST002-1D_BCM_ill_DS150x
+##normal_sample=ST002-1G_BCM_ill_DS150x
+##bcftools_normVersion=1.22+htslib-1.22
+##bcftools_normCommand=norm --check-ref x -m- -f hg38_no_alt.fa -Ou ST002-1D_ST002-1G_BCM_150x.vcf.gz; Date=Thu Aug 14 15:13:53 2025
+##bcftools_viewVersion=1.22+htslib-1.22
+##bcftools_viewCommand=view -i FILTER=="PASS" -Oz -o 3_MT2_pm-ST002-1D_ST002-1G_BCM_150x.norm.PASS.vcf.gz -Wtbi; Date=Thu Aug 14 15:13:53 2025
+##bcftools_normCommand=norm -a -Oz -o 3_MT2_pm-ST002-1D_ST002-1G_BCM_150x.norm.PASS.atom.vcf.gz -Wtbi 3_MT2_pm-ST002-1D_ST002-1G_BCM_150x.norm.PASS.vcf.gz; Date=Thu Aug 14 15:13:57 2025
+##bcftools_viewCommand=view -T ^GRCh38_UCSC_SegDup.formatted.bed 3_MT2_pm-ST002-1D_ST002-1G_BCM_150x.norm.PASS.atom.dedup.vcf.gz; Date=Tue Aug 19 15:48:21 2025
+##bcftools_viewCommand=view -T ^centromere.bed; Date=Tue Aug 19 15:48:21 2025
+##bcftools_filterVersion=1.22+htslib-1.22
+##bcftools_filterCommand=filter -e 'INFO/DP > 300' -Oz -o filtered.vcf.gz; Date=Tue Aug 19 15:48:21 2025
+##VEP="v114.2" API="v114" time="2025-09-04 17:45:05" cache="vep_cache.zugmls/homo_sapiens/114_GRCh38" ensembl=114.1117691 ensembl-compara=114.5def311 ensembl-funcgen=114.dc9dfbc ensembl-io=114.ec3b610 ensembl-variation=114.ac9116d 1000genomes="phase3" COSMIC="100" ClinVar="202409" HGMD-PUBLIC="20204" assembly="GRCh38.p14" dbSNP="156" gencode="GENCODE 48" genebuild="GENCODE48" gnomADe="v4.1" gnomADg="v4.1" polyphen="2.2.3" regbuild="1.0" sift="6.2.1"
+##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Allele|Consequence|IMPACT|SYMBOL|Gene|Feature_type|Feature|BIOTYPE|EXON|INTRON|HGVSc|HGVSp|cDNA_position|CDS_position|Protein_position|Amino_acids|Codons|Existing_variation|DISTANCE|STRAND|FLAGS|VARIANT_CLASS|SYMBOL_SOURCE|HGNC_ID|CANONICAL|ENSP|SWISSPROT|TREMBL|UNIPARC|UNIPROT_ISOFORM|SOURCE|GENE_PHENO|DOMAINS|HGVS_OFFSET|CLIN_SIG|SOMATIC|PHENO|PUBMED|VAR_SYNONYMS|MOTIF_NAME|MOTIF_POS|HIGH_INF_POS|MOTIF_SCORE_CHANGE|TRANSCRIPTION_FACTORS|gnomADc|gnomADc_AC_joint|gnomADc_AN_joint|gnomADc_AF_joint|gnomADc_AC_exomes|gnomADc_AN_exomes|gnomADc_AF_exomes|gnomADc_AC_genomes|gnomADc_AN_genomes|gnomADc_AF_genomes|gnomADc_AC_grpmax_joint|gnomADc_AF_grpmax_joint|gnomADc_AN_grpmax_joint|gnomADc_AC_grpmax_exomes|gnomADc_AF_grpmax_exomes|gnomADc_AN_grpmax_exomes|gnomADc_AC_grpmax_genomes|gnomADc_AF_grpmax_genomes|gnomADc_AN_grpmax_genomes">
+##INFO=<ID=gnomADc,Number=.,Type=String,Description="gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AC_joint,Number=.,Type=String,Description="AC_joint field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AN_joint,Number=.,Type=String,Description="AN_joint field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AF_joint,Number=.,Type=String,Description="AF_joint field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AC_exomes,Number=.,Type=String,Description="AC_exomes field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AN_exomes,Number=.,Type=String,Description="AN_exomes field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AF_exomes,Number=.,Type=String,Description="AF_exomes field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AC_genomes,Number=.,Type=String,Description="AC_genomes field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AN_genomes,Number=.,Type=String,Description="AN_genomes field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AF_genomes,Number=.,Type=String,Description="AF_genomes field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AC_grpmax_joint,Number=.,Type=String,Description="AC_grpmax_joint field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AF_grpmax_joint,Number=.,Type=String,Description="AF_grpmax_joint field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AN_grpmax_joint,Number=.,Type=String,Description="AN_grpmax_joint field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AC_grpmax_exomes,Number=.,Type=String,Description="AC_grpmax_exomes field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AF_grpmax_exomes,Number=.,Type=String,Description="AF_grpmax_exomes field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AN_grpmax_exomes,Number=.,Type=String,Description="AN_grpmax_exomes field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AC_grpmax_genomes,Number=.,Type=String,Description="AC_grpmax_genomes field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AF_grpmax_genomes,Number=.,Type=String,Description="AF_grpmax_genomes field from gnomad.joint.v4.1.sites.vcf.gz">
+##INFO=<ID=gnomADc_AN_grpmax_genomes,Number=.,Type=String,Description="AN_grpmax_genomes field from gnomad.joint.v4.1.sites.vcf.gz">
+##VEP-command-line='vep --assembly GRCh38 --biotype --cache --canonical --compress_output bgzip --custom file=gnomad.joint.v4.1.sites.vcf.gz,short_name=gnomADc,format=vcf,type=exact,fields=AC_joint%AN_joint%AF_joint%AC_exomes%AN_exomes%AF_exomes%AC_genomes%AN_genomes%AF_genomes%AC_grpmax_joint%AF_grpmax_joint%AN_grpmax_joint%AC_grpmax_exomes%AF_grpmax_exomes%AN_grpmax_exomes%AC_grpmax_genomes%AF_grpmax_genomes%AN_grpmax_genomes --database 0 --dir_cache vep_cache.zugmls --domains --fasta GCA_000001405.15_GRCh38_no_alt_analysis_set.fa --force_overwrite --gene_phenotype --hgvs --input_file [PATH]/chr1_1__10000000.vcf --no_stats --offline --output_file [PATH]/chr1_1__10000000.vep.vcf.gz --protein --pubmed --regulatory --symbol --uniprot --use_given_ref --var_synonyms --variant_class --vcf'
+##bcftools_concatVersion=1.17+htslib-1.17
+##bcftools_concatCommand=concat -a -D -O v -o vep_shards.nAcX8w/merged.vep.vcf vep_shards.nAcX8w/chr1_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chr1_10000001__20000000.vep.vcf.gz vep_shards.nAcX8w/chr1_60000001__70000000.vep.vcf.gz vep_shards.nAcX8w/chr1_70000001__80000000.vep.vcf.gz vep_shards.nAcX8w/chr1_120000001__130000000.vep.vcf.gz vep_shards.nAcX8w/chr1_180000001__190000000.vep.vcf.gz vep_shards.nAcX8w/chr1_210000001__220000000.vep.vcf.gz vep_shards.nAcX8w/chr1_220000001__230000000.vep.vcf.gz vep_shards.nAcX8w/chr2_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chr2_20000001__30000000.vep.vcf.gz vep_shards.nAcX8w/chr2_30000001__40000000.vep.vcf.gz vep_shards.nAcX8w/chr2_40000001__50000000.vep.vcf.gz vep_shards.nAcX8w/chr2_50000001__60000000.vep.vcf.gz vep_shards.nAcX8w/chr2_70000001__80000000.vep.vcf.gz vep_shards.nAcX8w/chr2_100000001__110000000.vep.vcf.gz vep_shards.nAcX8w/chr2_110000001__120000000.vep.vcf.gz vep_shards.nAcX8w/chr2_120000001__130000000.vep.vcf.gz vep_shards.nAcX8w/chr2_150000001__160000000.vep.vcf.gz vep_shards.nAcX8w/chr2_160000001__170000000.vep.vcf.gz vep_shards.nAcX8w/chr2_240000001__242193529.vep.vcf.gz vep_shards.nAcX8w/chr3_70000001__80000000.vep.vcf.gz vep_shards.nAcX8w/chr3_100000001__110000000.vep.vcf.gz vep_shards.nAcX8w/chr3_160000001__170000000.vep.vcf.gz vep_shards.nAcX8w/chr3_170000001__180000000.vep.vcf.gz vep_shards.nAcX8w/chr4_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chr4_70000001__80000000.vep.vcf.gz vep_shards.nAcX8w/chr4_140000001__150000000.vep.vcf.gz vep_shards.nAcX8w/chr4_150000001__160000000.vep.vcf.gz vep_shards.nAcX8w/chr5_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chr5_90000001__100000000.vep.vcf.gz vep_shards.nAcX8w/chr6_80000001__90000000.vep.vcf.gz vep_shards.nAcX8w/chr6_100000001__110000000.vep.vcf.gz vep_shards.nAcX8w/chr6_150000001__160000000.vep.vcf.gz vep_shards.nAcX8w/chr6_160000001__170000000.vep.vcf.gz vep_shards.nAcX8w/chr6_170000001__170805979.vep.vcf.gz vep_shards.nAcX8w/chr7_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chr7_30000001__40000000.vep.vcf.gz vep_shards.nAcX8w/chr7_90000001__100000000.vep.vcf.gz vep_shards.nAcX8w/chr7_100000001__110000000.vep.vcf.gz vep_shards.nAcX8w/chr7_110000001__120000000.vep.vcf.gz vep_shards.nAcX8w/chr7_150000001__159345973.vep.vcf.gz vep_shards.nAcX8w/chr8_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chr8_60000001__70000000.vep.vcf.gz vep_shards.nAcX8w/chr8_70000001__80000000.vep.vcf.gz vep_shards.nAcX8w/chr8_110000001__120000000.vep.vcf.gz vep_shards.nAcX8w/chr8_120000001__130000000.vep.vcf.gz vep_shards.nAcX8w/chr8_130000001__140000000.vep.vcf.gz vep_shards.nAcX8w/chr9_120000001__130000000.vep.vcf.gz vep_shards.nAcX8w/chr9_130000001__138394717.vep.vcf.gz vep_shards.nAcX8w/chr10_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chr10_60000001__70000000.vep.vcf.gz vep_shards.nAcX8w/chr10_70000001__80000000.vep.vcf.gz vep_shards.nAcX8w/chr10_130000001__133797422.vep.vcf.gz vep_shards.nAcX8w/chr11_20000001__30000000.vep.vcf.gz vep_shards.nAcX8w/chr11_40000001__50000000.vep.vcf.gz vep_shards.nAcX8w/chr11_70000001__80000000.vep.vcf.gz vep_shards.nAcX8w/chr11_100000001__110000000.vep.vcf.gz vep_shards.nAcX8w/chr11_130000001__135086622.vep.vcf.gz vep_shards.nAcX8w/chr12_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chr12_50000001__60000000.vep.vcf.gz vep_shards.nAcX8w/chr12_120000001__130000000.vep.vcf.gz vep_shards.nAcX8w/chr13_20000001__30000000.vep.vcf.gz vep_shards.nAcX8w/chr13_60000001__70000000.vep.vcf.gz vep_shards.nAcX8w/chr13_100000001__110000000.vep.vcf.gz vep_shards.nAcX8w/chr14_100000001__107043718.vep.vcf.gz vep_shards.nAcX8w/chr15_40000001__50000000.vep.vcf.gz vep_shards.nAcX8w/chr15_50000001__60000000.vep.vcf.gz vep_shards.nAcX8w/chr15_60000001__70000000.vep.vcf.gz vep_shards.nAcX8w/chr15_70000001__80000000.vep.vcf.gz vep_shards.nAcX8w/chr15_90000001__100000000.vep.vcf.gz vep_shards.nAcX8w/chr16_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chr16_10000001__20000000.vep.vcf.gz vep_shards.nAcX8w/chr16_20000001__30000000.vep.vcf.gz vep_shards.nAcX8w/chr16_30000001__40000000.vep.vcf.gz vep_shards.nAcX8w/chr16_50000001__60000000.vep.vcf.gz vep_shards.nAcX8w/chr16_60000001__70000000.vep.vcf.gz vep_shards.nAcX8w/chr16_80000001__90000000.vep.vcf.gz vep_shards.nAcX8w/chr17_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chr17_60000001__70000000.vep.vcf.gz vep_shards.nAcX8w/chr17_70000001__80000000.vep.vcf.gz vep_shards.nAcX8w/chr18_50000001__60000000.vep.vcf.gz vep_shards.nAcX8w/chr18_60000001__70000000.vep.vcf.gz vep_shards.nAcX8w/chr19_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chr19_10000001__20000000.vep.vcf.gz vep_shards.nAcX8w/chr19_20000001__30000000.vep.vcf.gz vep_shards.nAcX8w/chr19_40000001__50000000.vep.vcf.gz vep_shards.nAcX8w/chr19_50000001__58617616.vep.vcf.gz vep_shards.nAcX8w/chr20_10000001__20000000.vep.vcf.gz vep_shards.nAcX8w/chr20_20000001__30000000.vep.vcf.gz vep_shards.nAcX8w/chr20_30000001__40000000.vep.vcf.gz vep_shards.nAcX8w/chr20_40000001__50000000.vep.vcf.gz vep_shards.nAcX8w/chr20_60000001__64444167.vep.vcf.gz vep_shards.nAcX8w/chr21_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chr21_40000001__46709983.vep.vcf.gz vep_shards.nAcX8w/chr22_30000001__40000000.vep.vcf.gz vep_shards.nAcX8w/chr22_40000001__50000000.vep.vcf.gz vep_shards.nAcX8w/chrX_1__10000000.vep.vcf.gz vep_shards.nAcX8w/chrX_40000001__50000000.vep.vcf.gz vep_shards.nAcX8w/chrX_50000001__60000000.vep.vcf.gz vep_shards.nAcX8w/chrX_70000001__80000000.vep.vcf.gz vep_shards.nAcX8w/chrX_130000001__140000000.vep.vcf.gz vep_shards.nAcX8w/chrY_20000001__30000000.vep.vcf.gz; Date=Thu Sep  4 17:45:13 2025
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	ST002-1D_BCM_ill_DS150x	ST002-1G_BCM_ill_DS150x
+chr1	121939377	.	T	A	.	PASS	AS_FilterStatus=SITE;AS_SB_TABLE=49,118|1,5;DP=179;ECNT=1;GERMQ=93;MBQ=31,31;MFRL=361,541;MMQ=37,31;MPOS=44;NALOD=1.91;NLOD=24.1;POPAF=6;ROQ=62;TLOD=10;CSQ=A|intergenic_variant|MODIFIER|||||||||||||||rs1184410371||||SNV|||||||||||||||||||||||chr1:121939374-121939374|1388|71042|0.1||||1388|71042|0.0195377|6|0.0389610|154||||895|0.0220683|5	GT:AD:AF:DP:F1R2:F2R1:SB	0/1:82,6:0.0781:88:43,4:39,2:23,59,1,5	0/0:85,0:0.0121:85:40,0:42,0:26,59,0,0
+chr1	121939378	.	T	A	.	PASS	AS_FilterStatus=SITE;AS_SB_TABLE=49,118|1,5;DP=179;ECNT=1;GERMQ=93;MBQ=31,31;MFRL=361,541;MMQ=37,31;MPOS=44;NALOD=1.91;NLOD=24.1;POPAF=6;ROQ=62;TLOD=10;CSQ=A|intergenic_variant|MODIFIER|||||||||||||||rs1184410371||||SNV|||||||||||||||||||||||chr1:121939374-121939374|1388|71042|0.101||||1388|71042|0.0195377|6|0.0389610|154||||895|0.0220683|9,A|intergenic_variant|MODIFIER|||||||||||||||rs1184410371||||SNV|||||||||||||||||||||||chr1:121939374-121939374|1388|71042|0.101||||1388|71042|0.0195377|6|0.0389610|154||||895|0.0220683|9	GT:AD:AF:DP:F1R2:F2R1:SB	0/1:82,6:0.0781:88:43,4:39,2:23,59,1,5	0/0:85,0:0.0121:85:40,0:42,0:26,59,0,0

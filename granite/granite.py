@@ -34,6 +34,7 @@ from granite import SVqcVCF
 from granite import validateVCF
 from granite import toPED
 from granite import geneList
+from granite import filterByTag
 
 
 #################################################################
@@ -58,11 +59,11 @@ def main():
     novoCaller_parser.add_argument('-o', '--outputfile', help='output file to write results as VCF, use .vcf as extension', type=str, required=True)
     novoCaller_parser.add_argument('-u', '--unrelatedfiles', help='TSV index file containing SampleID<TAB>Path/to/file for unrelated files used to train the model (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
     novoCaller_parser.add_argument('-t', '--triofiles', help='TSV index file containing SampleID<TAB>Path/to/file for family files, the PROBAND must be listed as FIRST (BAM or bgzip and tabix indexed RCK)', type=str, required=True)
-    novoCaller_parser.add_argument('--ppthr', help='threshold to filter by posterior probabilty for de novo calls (>=) [0]', type=float, required=False)
+    novoCaller_parser.add_argument('--ppthr', help='threshold to filter by posterior probability for de novo calls (>=) [0]', type=float, required=False)
     novoCaller_parser.add_argument('--afthr', help='threshold to filter by population allele frequency (<=) [1]', type=float, required=False)
     novoCaller_parser.add_argument('--afthr_unrelated', help='threshold to filter by allele frequency calculated among unrelated (<=) [1]', type=float, required=False)
     novoCaller_parser.add_argument('--aftag', help='TAG (TAG=<float>) or TAG field to be used to filter by population allele frequency', type=str, required=False)
-    novoCaller_parser.add_argument('--bam', help='by default the program expect bgzip and tabix indexed RCK files for "--triofiles" and "--unrelatedfiles", add this flag if files are in BAM format instead (SLOWER)', action='store_true', required=False)
+    novoCaller_parser.add_argument('--bam', help='by default the program expects bgzip and tabix indexed RCK files for "--triofiles" and "--unrelatedfiles", add this flag if files are in BAM format instead (SLOWER)', action='store_true', required=False)
     novoCaller_parser.add_argument('--MQthr', help='(only with "--bam") minimum mapping quality for an alignment to be used (>=) [0]', type=int, required=False)
     novoCaller_parser.add_argument('--BQthr', help='(only with "--bam") minimum base quality for a base to be considered (>=) [0]', type=int, required=False)
     novoCaller_parser.add_argument('--ADthr', help='threshold to filter by alternate allele depth in parents. This will ignore and set to "0" the posterior probability for variants with a number of alternate reads in parents higher than specified value', type=int, required=False)
@@ -84,8 +85,8 @@ def main():
     comHet_parser.add_argument('--verbose', help='show progress status in terminal', action='store_true', required=False)
 
     # Add mpileupCounts to subparsers
-    mpileupCounts_parser = subparsers.add_parser('mpileupCounts', description='samtools wrapper to calculate reads statistics for pileup at each position',
-                                                    help='samtools wrapper to calculate reads statistics for pileup at each position')
+    mpileupCounts_parser = subparsers.add_parser('mpileupCounts', description='samtools wrapper to calculate read statistics for pileup at each position',
+                                                    help='samtools wrapper to calculate read statistics for pileup at each position')
 
     mpileupCounts_parser.add_argument('-i', '--inputfile', help='input file in BAM format', type=str, required=True)
     mpileupCounts_parser.add_argument('-o', '--outputfile', help='output file to write results as RCK format (TSV), use .rck as extension', type=str, required=True)
@@ -158,7 +159,7 @@ def main():
 
     toBig_parser.add_argument('-f', '--file', help='file to be used to call positions. To do joint calling specify multiple files as: "-f file_1 -f file_2 -f ...". Expected bgzip and tabix indexed RCK file', action='append', required=True)
     toBig_parser.add_argument('-o', '--outputfile', help='output file to write results as BIG format (binary hdf5), use .big as extension', type=str, required=True)
-    toBig_parser.add_argument('-r', '--regionfile', help='file containing regions to be used [e.g. chr1:1-10000000, 1:1-10000000, chr1, 1] listed as a column, chromosomes names must match the reference', type=str, required=True)
+    toBig_parser.add_argument('-r', '--regionfile', help='file containing regions to be used [e.g. chr1:1-10000000, 1:1-10000000, chr1, 1] listed as a column, chromosome names must match the reference', type=str, required=True)
     toBig_parser.add_argument('-c', '--chromfile', help='chrom.sizes file containing chromosomes size information', type=str, required=True)
     toBig_parser.add_argument('--ncores', help='number of cores to be used if multiple regions are specified [1]', type=int, required=False)
     toBig_parser.add_argument('--fithr', help='minimum number of files with at least "--rdthr" for the alternate allele or having the variant, "calls" by allelic balance, to jointly "call" position (>=)', type=int, required=True)
@@ -215,6 +216,67 @@ def main():
     toPED_parser.add_argument('-o', '--outputfile', help='output file to write results as PED, use .ped as extension', type=str, required=True)
     toPED_parser.add_argument('--family', help='family ID to be used [FAM]', type=str, required=False)
 
+    # Add filterByTag to subparser
+    filterByTag_parser = subparsers.add_parser('filterByTag', description='utility to filter variants from input VCF file by INFO field tags and thresholds',
+                                               help='utility to filter variants from input VCF file by INFO field tags and thresholds',
+                                               formatter_class=argparse.RawTextHelpFormatter)
+    filterByTag_parser.add_argument(
+        '-i', '--inputfile', required=True, type=str,
+        help='input VCF file'
+    )
+    filterByTag_parser.add_argument(
+        '-o', '--outputfile', required=True, type=str,
+        help='output file to write results as VCF, use .vcf as extension'
+    )
+    filterByTag_parser.add_argument(
+        '-l', '--logic', default='any', choices=['any', 'all'], required=False,
+        help='across-tag logic (combine multiple tag filters). Accept "any" or "all" [%(default)s]'
+    )
+    filterByTag_parser.add_argument(
+        '-t', '--tag', required=True, nargs='+', metavar="TAG_FILTER",
+        help=(
+            'one or more tag filters. Quote each TAG_FILTER to protect special characters\n\n'
+            'format:\n'
+            "  'name/value/operator/type/logic[/entry=sep][/field=sep][/value=sep]'\n\n"
+            'components:\n'
+            '  name       tag name (e.g. DP, CSQ) or field name (e.g. IMPACT, Consequence for VEP annotations)\n'
+            '  value      threshold or string to compare against. For bool use placeholder "-"\n'
+            '  operator   one of:\n'
+            '               ==      equal to\n'
+            '               !=      not equal to\n'
+            '               <       less than (int, float)\n'
+            '               >       greater than (int, float)\n'
+            '               <=      less than or equal to (int, float)\n'
+            '               >=      greater than or equal to (int, float)\n'
+            '               ~       substring contains (str)\n'
+            '               !~      substring does not contain (str)\n'
+            '               true    flag is set (bool)\n'
+            '               false   flag is unset (bool)\n'
+            '  type       str | int | float | bool\n'
+            '  logic      any | all (within-tag aggregation across entries).\n'
+            '  entry=sep  entry separator within a tag, use if tag has multiple entries (e.g. VEP transcripts)\n'
+            '  field=sep  field separator within a tag, use if tag/entry has embedded fields (e.g. VEP annotations)\n'
+            '  value=sep  value separator within a field, use if tag/entry has multiple values per field (e.g. VEP Consequence)\n\n'
+            'notes:\n'
+            '  - if a numeric tag or embedded numeric value is missing in the VCF INFO field, it is treated as 0\n'
+            '  - if a string tag or embedded string value is missing in the VCF INFO field, it is treated as empty string\n'
+            '  - all string comparisons and tag matching are case-sensitive\n\n'
+            'examples:\n'
+            "  -t 'DP/10/>=/int/any'\n"
+            "  -t 'gnomADg_AF/0.01/<=/float/all/field=|/entry=,/value=&'\n"
+            "  -t 'PON/-/false/bool/any'\n"
+            "  -t 'IMPACT/HIGH/==/str/any/field=|/entry=,'"
+        )
+    )
+    filterByTag_parser.add_argument(
+        '--separator', default=';', type=str, required=False, metavar='SEP',
+        help='tag separator within INFO field [%(default)s]'
+    )
+    filterByTag_parser.add_argument(
+        '-v', '--verbose', action='store_true', required=False,
+        help='show progress status in terminal'
+    )
+
     # Add mergeVCF to subparsers
     # mergeVCF_parser = subparsers.add_parser('mergeVCF', description='utility to ',
     #                                             help='')
@@ -235,7 +297,8 @@ def main():
                     'qcVCF': qcVCF_parser,
                     'SVqcVCF': SVqcVCF_parser,
                     'validateVCF': validateVCF_parser,
-                    'toPED': toPED_parser
+                    'toPED': toPED_parser,
+                    'filterByTag': filterByTag_parser
                     }
 
     # Checking arguments
@@ -280,6 +343,8 @@ def main():
         validateVCF.main(args)
     elif args['func'] == 'toPED':
         toPED.main(args)
+    elif args['func'] == 'filterByTag':
+        filterByTag.main(args)
     #end if
 #end def
 

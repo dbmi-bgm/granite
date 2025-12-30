@@ -1,5 +1,95 @@
 ## Variant Filtering
 
+### filterByTag
+filterByTag allows to filter variants from input VCF file by INFO field tags and thresholds. Users can define one or more filters on numeric, string, or boolean annotations. Each filter specifies the tag or field name, a value, an operator, type, and logic for aggregation. Multiple filters can be combined with global across-tag logic (`any` or `all`).
+
+#### Arguments
+```text
+    usage: granite filterByTag [-h] -i INPUTFILE -o OUTPUTFILE
+                               [-l {any, all}] -t TAG_FILTER [TAG_FILTER ...]
+                               [--separator SEP] [-v]
+
+    optional arguments:
+      -i INPUTFILE, --inputfile INPUTFILE
+                            input VCF file
+      -o OUTPUTFILE, --outputfile OUTPUTFILE
+                            output file to write results as VCF, use .vcf as extension
+      -l {any, all}, --logic {any, all}
+                            across-tag logic (combine multiple tag filters). 
+                            Accept "any" or "all" [any]
+      -t TAG_FILTER [TAG_FILTER ...], --tag TAG_FILTER [TAG_FILTER ...]
+                            one or more tag filters. Quote each TAG_FILTER to protect
+                            special characters
+
+                            format:
+                              'name/value/operator/type/logic[/entry=sep][/field=sep][/value=sep]'
+
+                            components:
+                              name       tag name (e.g. DP, CSQ) or
+                                         field name (e.g. IMPACT, Consequence for VEP annotations)
+                              value      threshold or string to compare against. For
+                                         bool use placeholder "-"
+                              operator   one of:
+                                           ==      equal to
+                                           !=      not equal to
+                                           <       less than (int, float)
+                                           >       greater than (int, float)
+                                           <=      less than or equal to (int, float)
+                                           >=      greater than or equal to (int, float)
+                                           ~       substring contains (str)
+                                           !~      substring does not contain (str)
+                                           true    flag is set (bool)
+                                           false   flag is unset (bool)
+                              type       str | int | float | bool
+                              logic      any | all (within-tag aggregation across entries)
+                              entry=sep  entry separator within a tag, if tag has
+                                         multiple entries (e.g. VEP transcripts)
+                              field=sep  field separator within a tag, if tag/entry has
+                                         embedded fields (e.g. VEP annotations)
+                              value=sep  value separator within a field, if tag/entry
+                                         has multiple values per field (e.g. VEP Consequence)
+
+                            notes:
+                              - if a numeric tag or embedded numeric value is missing in the
+                                VCF INFO field, it is treated as 0
+                              - if a string tag or embedded string value is missing in the
+                                VCF INFO field, it is treated as empty string
+                              - all string comparisons and tag matching are case-sensitive
+
+      --separator SEP       tag separator within INFO field [;]
+```
+
+For complex annotations with multiple fields or multiple entries (e.g. transcript-level annotations from VEP), the program expects a VEP-like structure with proper field and entry definitions in the VCF header.  
+
+**Format definition (example from VEP):**  
+
+    ##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Allele|Consequence|IMPACT|SYMBOL|Gene|Feature|...|gnomADg_AF|...">
+
+#### Examples
+Filter variants with depth >= 10.
+
+    granite filterByTag -i file.vcf -o file.out.vcf -t 'DP/10/>=/int/any'
+
+Filter variants with gnomAD genome allele frequency ("gnomADg_AF") <= 0.01, evaluating all entries (transcripts) from VEP annotations.
+
+    granite filterByTag -i file.vcf -o file.out.vcf -t 'gnomADg_AF/0.01/<=/float/all/field=|/entry=,/value=&'
+
+Filter variants where a boolean PON (in panel of normal) flag is not set.
+
+    granite filterByTag -i file.vcf -o file.out.vcf -t 'PON/-/false/bool/any'
+
+Filter variants with an "IMPACT" value equal to "HIGH" in any entry (transcript) from VEP annotations.
+
+    granite filterByTag -i file.vcf -o file.out.vcf -t 'IMPACT/HIGH/==/str/any/field=|/entry=,'
+
+Combine filters with global across-tag logic to require `all` filters to be true.
+
+    granite filterByTag -i file.vcf -o file.out.vcf -l all \
+        -t 'DP/10/>=/int/any' \
+           'gnomADg_AF/0.01/<=/float/all/field=|/entry=,/value=&' \
+           'PON/-/false/bool/any' \
+           'IMPACT/HIGH/==/str/any/field=|/entry=,'
+
 ### whiteList
 whiteList allows to select and filter-in a subset of variants from input VCF file based on specified annotations and positions. The software can use provided VEP, ClinVar or SpliceAI annotations. Positions can be also specified as a BED format file.
 
@@ -89,7 +179,7 @@ blackList allows to filter-out variants from input VCF file based on positions s
 #### Arguments
 ```text
     usage: granite blackList [-h] -i INPUTFILE -o OUTPUTFILE [-b BIGFILE]
-                             [--aftag AFTAG] [--afthr AFTHR]
+                             [--aftag AFTAG] [--afthr AFTHR] [--BEDfile BEDFILE]
 
     optional arguments:
       -i INPUTFILE, --inputfile INPUTFILE
@@ -129,7 +219,7 @@ cleanVCF allows to clean INFO field of input VCF file. The software can remove a
                             [--VEPrescue VEPRESCUE [VEPRESCUE ...]]
                             [--VEPremove VEPREMOVE [VEPREMOVE ...]]
                             [--VEPsep VEPSEP] [--SpliceAI SPLICEAI]
-                            [--SpliceAItag SPLICEAITAG]
+                            [--SpliceAItag SPLICEAITAG] [--filter_VEP]
 
     optional arguments:
       -i INPUTFILE, --inputfile INPUTFILE
@@ -163,6 +253,9 @@ cleanVCF allows to clean INFO field of input VCF file. The software can remove a
                             max delta score for the variant. If a max value is
                             already defined, use this parameter to specify the TAG
                             | TAG field to be used
+      --filter_VEP          by default the program returns all variants in the input VCF file.
+                            This flag will drop the variants with no VEP annotations after the
+                            cleaning
 ```
 
 #### Examples

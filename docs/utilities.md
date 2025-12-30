@@ -1,7 +1,7 @@
 ## Utilities
 
 ### mpileupCounts
-mpileupCounts uses *Samtools* to access input BAM and calculates statistics for read pileups at each position in the specified region, returns counts in RCK format.
+mpileupCounts uses *Samtools* to access input BAM and calculates statistics for read pileups at each position in the specified region, returns read counts in RCK format.
 
 #### Arguments
 ```text
@@ -44,7 +44,7 @@ toBig converts counts from bgzip and tabix indexed RCK format into BIG format. P
       -r REGIONFILE, --regionfile REGIONFILE
                             file containing regions to be used [e.g.
                             chr1:1-10000000, 1:1-10000000, chr1, 1] listed as a
-                            column, chromosomes names must match the reference
+                            column, chromosome names must match the reference
       -c CHROMFILE, --chromfile CHROMFILE
                             chrom.sizes file containing chromosomes size
                             information

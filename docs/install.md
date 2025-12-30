@@ -1,16 +1,16 @@
 ## Install
 
-A ready-to-use docker image is available to download.
+A ready-to-use Docker image is available to download [here](https://hub.docker.com/r/b3rse/granite "granite Docker").
 
     docker pull b3rse/granite:<version>
 
-Run granite using docker as follow:
+Run granite using Docker as follows:
 
     docker run b3rse/granite:<version> granite <command> ...
 
 If installed locally, additional software needs to be available in the environment to run certain commands:
 
-  - [*samtools*](http://www.htslib.org/ "samtools documentation")
+  - [*Samtools*](http://www.htslib.org/ "Samtools documentation")
   - [*bgzip*](http://www.htslib.org/doc/bgzip.1.html "bgzip documentation")
   - [*tabix*](http://www.htslib.org/doc/tabix.1.html "tabix documentation")
 
@@ -23,3 +23,10 @@ To install the program from source:
 To install the program with pip:
 
     pip install granite-suite
+
+### VEP
+
+The comHet command requires gene- and transcript-level annotations produced by the Ensembl Variant Effect Predictor (VEP). granite does not run VEP directly; instead, it consumes VEP annotations already present in the input VCF file and uses them to assign variants to genes and transcripts and to evaluate inheritance patterns.
+
+VEP annotations are expected to follow the standard VCF INFO field format (e.g. the *CSQ* tag), as produced by default VEP configurations. For details on running VEP and generating compatible annotations, please refer to the official documentation:
+https://github.com/Ensembl/ensembl-vep

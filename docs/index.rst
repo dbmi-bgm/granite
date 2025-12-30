@@ -6,7 +6,7 @@
 granite
 ===================================
 
-granite is a collection of software to work with genomic variants. The suite provides inheritance mode callers and utilities to filter and refine variants called by other methods in VCF format.
+granite is a software suite for working with genomic variants. The suite provides inheritance mode callers and utilities to filter and refine variants called by other methods in VCF format.
 
 .. image:: images/chart.png
 
