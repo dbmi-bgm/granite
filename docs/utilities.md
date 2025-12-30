@@ -1,7 +1,7 @@
 ## Utilities
 
 ### mpileupCounts
-mpileupCounts uses *Samtools* to access input BAM and calculates statistics for read pileups at each position in the specified region, returns counts in RCK format.
+mpileupCounts uses *Samtools* to access input BAM and calculates statistics for read pileups at each position in the specified region, returns read counts in RCK format.
 
 #### Arguments
 ```text

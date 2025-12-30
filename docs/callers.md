@@ -89,6 +89,8 @@ Filters can be combined.
 ### comHet
 comHet is a calling algorithm for compound heterozygous mutations. The model uses genotype-level information in pedigree (trio) and VEP-based annotations to call possible compound heterozygous pairs. VEP annotations are used to assign variants to genes and transcripts, genotype information allows to refine calls based on inheritance mode. Calls are further flagged as "Phased" or "Unphased", where "Phased" means that genotype information supports in-trans inheritance for alternate alleles from parents.
 
+*note*: granite does not run VEP directly; instead, it consumes VEP annotations already present in the input VCF file. VEP annotations are expected to follow the standard VCF INFO field format (e.g. the *CSQ* tag), as produced by default VEP configurations. For details on running VEP and generating compatible annotations, please refer to the official documentation: https://github.com/Ensembl/ensembl-vep
+
 #### Arguments
 ```text
     usage: granite comHet [-h] -i INPUTFILE -o OUTPUTFILE --trio TRIO [TRIO ...]
@@ -155,14 +157,14 @@ Example:
 
     comHet=Phased|ENSG00000069424||STRONG_PAIR||chr1:6051661C>T,Phased|ENSG00000069424|ENST00000652845|STRONG_PAIR|STRONG_PAIR|chr1:6082358C>T,Phased|ENSG00000084636|ENST00000373672&ENST00000488897|STRONG_PAIR|STRONG_PAIR|chr1:6051661G>A
 
-All shared transcripts for a given pair are listed in `transcript` field. If the pair does not share any transcript, the field is empty.
+All shared transcripts for a given pair are listed in "transcript" field. If the pair does not share any transcript, the field is empty.
 
 #### Examples
 Calls compound heterozygous variants.
 
     granite comHet -i file.vcf -o file.out.vcf --trio PROBAND_ID [PARENT_ID] [PARENT_ID]
 
-It is possible to add impact information for gene (`impact_gene`) and for shared transcripts (`impact_transcript`). `impact_gene` is the worst impact calculated at gene level while considering all its associated transcripts. `impact_transcript` is the worst impact calculated considering only transcripts that are shared between the two mates, if any. VEP annotations for "IMPACT" or "Consequence" must be provided in INFO column in order to assign an impact. If available, SpliceAI and ClinVar "CLNSIG" information is used together with VEP to refine the assignment.
+It is possible to add impact information for gene ("impact_gene") and for shared transcripts ("impact_transcript"). "impact_gene" is the worst impact calculated at gene level while considering all its associated transcripts. "impact_transcript" is the worst impact calculated considering only transcripts that are shared between the two mates, if any. VEP annotations for "IMPACT" or "Consequence" must be provided in INFO column in order to assign an impact. If available, SpliceAI and ClinVar "CLNSIG" information is used together with VEP to refine the assignment.
 
     granite comHet -i file.vcf -o file.out.vcf --trio PROBAND_ID [PARENT_ID] [PARENT_ID] --impact
 
@@ -171,4 +173,4 @@ It is possible to reduce the output to only variants that are potential compound
     granite comHet -i file.vcf -o file.out.vcf --trio PROBAND_ID [PARENT_ID] [PARENT_ID] --filter_cmpHet
 
 #### Impact
-A variant is considered to have a potential STRONG impact if VEP impact is HIGH or MODERATE, SpliceAI score is >= 0.8, or ClinVar assignment is Pathogenic | Likely Pathogenic. If both variants are STRONG, the pair is assigned as a STRONG_PAIR. If only one of the two variants is STRONG, the pair is assigned as a MEDIUM_PAIR. If none of the variants is STRONG, the pair is assigned as a WEAK_PAIR.
+A variant is considered to have a potential strong impact if VEP impact is "HIGH" or "MODERATE", SpliceAI score is >= 0.8, or ClinVar assignment is "Pathogenic" | "Likely Pathogenic". If both variants are strong, the pair is assigned as a "STRONG_PAIR". If only one of the two variants is STRONG, the pair is assigned as a "MEDIUM_PAIR". If none of the variants is strong, the pair is assigned as a "WEAK_PAIR".

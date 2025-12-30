@@ -66,11 +66,11 @@ For complex annotations with multiple fields or multiple entries (e.g. transcrip
     ##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Allele|Consequence|IMPACT|SYMBOL|Gene|Feature|...|gnomADg_AF|...">
 
 #### Examples
-Filter variants with depth >=10.
+Filter variants with depth >= 10.
 
     granite filterByTag -i file.vcf -o file.out.vcf -t 'DP/10/>=/int/any'
 
-Filter variants with gnomAD genome allele frequency <=0.01, evaluating all entries (transcripts) from VEP annotations.
+Filter variants with gnomAD genome allele frequency ("gnomADg_AF") <= 0.01, evaluating all entries (transcripts) from VEP annotations.
 
     granite filterByTag -i file.vcf -o file.out.vcf -t 'gnomADg_AF/0.01/<=/float/all/field=|/entry=,/value=&'
 
@@ -78,7 +78,7 @@ Filter variants where a boolean PON (in panel of normal) flag is not set.
 
     granite filterByTag -i file.vcf -o file.out.vcf -t 'PON/-/false/bool/any'
 
-Filter variants with an IMPACT value equal to HIGH in any entry (transcript) from VEP annotations.
+Filter variants with an "IMPACT" value equal to "HIGH" in any entry (transcript) from VEP annotations.
 
     granite filterByTag -i file.vcf -o file.out.vcf -t 'IMPACT/HIGH/==/str/any/field=|/entry=,'
 
