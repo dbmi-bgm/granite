@@ -214,7 +214,7 @@ If the tag is a flag, set *is_flag=True*; the function will return True or False
 
     tag_val <bool> = vnt_obj.get_tag_value(tag, is_flag=True)
 
-*note: tag and ID are case sensitive.*
+*note*: tag and ID are case sensitive.
 
 ### Custom error classes
 
