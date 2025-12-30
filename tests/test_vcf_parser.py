@@ -181,3 +181,45 @@ def test_minimal_flag_emptyINFO():
         #end if
     #end for
 #end def
+
+def test_malformed_vcf_missing_SAMPLE():
+    vcf_obj = vcf_parser.Vcf("tests/files/input_vcf_parser_missing_SAMPLE.vcf")
+
+    expected = (
+        "\nERROR in variant VCF structure, expected 3 sample columns "
+        "but found 2 for variant\n"
+        "chr1\t69897\trs200676709\tT\tC\t295.91\tVQSRTrancheSNP99.90to100.00\tAC=2\t"
+        "GT:AD:DP:GQ:PL\t./.:0,0:0:.:0,0,0\t./.:0,0:0:.:0,0,0\n"
+    )
+
+    with pytest.raises(vcf_parser.VcfFormatError, match=expected):
+        # force generator evaluation
+        for _ in vcf_obj.parse_variants():
+            pass
+
+def test_malformed_vcf_missing_FORMAT():
+    vcf_obj = vcf_parser.Vcf("tests/files/input_vcf_parser_missing_FORMAT.vcf")
+
+    expected = (
+        "\nERROR in variant VCF structure, missing FORMAT column for variant\n"
+        "chr1\t942451\t.\tT\tC\t6532.90\tPASS\tAC=6\n"
+    )
+
+    with pytest.raises(vcf_parser.VcfFormatError, match=expected):
+        # force generator evaluation
+        for _ in vcf_obj.parse_variants():
+            pass
+
+
+def test_malformed_vcf():
+    vcf_obj = vcf_parser.Vcf("tests/files/input_vcf_parser_malformed.vcf")
+
+    expected = (
+        "\nERROR in variant VCF structure, malformed variant line:\nchr1\t942451\n"
+    )
+
+    with pytest.raises(vcf_parser.VcfFormatError, match=expected):
+        # force generator evaluation
+        for _ in vcf_obj.parse_variants():
+            pass
+

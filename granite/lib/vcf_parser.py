@@ -206,11 +206,28 @@ class Vcf(object):
             self.FILTER = line_split[6]
             self.INFO = line_split[7]
             if IDs_genotypes: # if samples
+                if len(line_split) < 9:
+                    raise VcfFormatError(
+                        f"\nERROR in variant VCF structure, missing FORMAT column for variant\n{line_strip}\n"
+                    )
                 self.FORMAT = line_split[8] # get FORMAT column
             else: self.FORMAT = ''
             #end if
             self.IDs_genotypes = IDs_genotypes
-            self.GENOTYPES = {k: v for k, v in zip(IDs_genotypes, line_split[9:])}
+            self.GENOTYPES = {}
+            if IDs_genotypes:
+                sample_cols = line_split[9:]
+                n_expected = len(IDs_genotypes)
+                n_found = len(sample_cols)
+
+                if n_found != n_expected:
+                    raise VcfFormatError(
+                        f"\nERROR in variant VCF structure, expected {n_expected} sample columns "
+                        f"but found {n_found} for variant\n{line_strip}\n"
+                    )
+
+                self.GENOTYPES = {k: v for k, v in zip(IDs_genotypes, sample_cols)}
+            # end if
         #end def
 
         def to_string(self):
@@ -287,8 +304,18 @@ class Vcf(object):
 
         def empty_genotype(self, sep=':'):
             ''' return an empty genotype based on FORMAT structure '''
-            len_FORMAT = len(self.FORMAT.split(sep))
-            return './.' + (sep + '.') * (len_FORMAT - 1)
+            if self.FORMAT == '':
+                raise VcfFormatError('\nERROR in variant VCF structure, FORMAT field is missing. Cannot generate empty genotype\n')
+            format_tags = self.FORMAT.split(sep)
+
+            values = []
+            for tag in format_tags:
+                if tag == 'GT':
+                    values.append('./.')
+                else:
+                    values.append('.')
+
+            return sep.join(values)
         #end def
 
         def remove_tag_info(self, tag_to_remove, sep=';'):
@@ -386,7 +413,7 @@ class Vcf(object):
                             .format(tag_to_get))
             #end if
             # Get value from index in genotype by ID
-            if self.GENOTYPES.get(ID_genotype):
+            if ID_genotype in self.GENOTYPES:
                 try:
                     return self.GENOTYPES[ID_genotype].split(sep)[idx_tag_to_get]
                 except Exception:
@@ -457,8 +484,10 @@ class Vcf(object):
                 if line_strip:
                     try:
                         yield self.Variant(line_strip, self.header.IDs_genotypes)
+                    except VcfFormatError:
+                        raise
                     except Exception:
-                        raise VcfFormatError('\nERROR in variant VCF structure, missing essential columns\n')
+                        raise VcfFormatError(f'\nERROR in variant VCF structure, malformed variant line:\n{line_strip}\n')
                     #end try
                 #end if
             #end if

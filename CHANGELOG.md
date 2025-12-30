@@ -1,3 +1,7 @@
+0.5.0
+=====
+* Added filterByTag module
+* Improved handling of flags in INFO field in VCF parser library
 
 0.4.0
 =====
