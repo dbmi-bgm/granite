@@ -41,7 +41,7 @@ VEP annotations are expected to follow the standard VCF INFO field format (e.g. 
 https://github.com/Ensembl/ensembl-vep
 
 ### Examples
-Example input file and usage demonstration for parser and filtering is provided in [examples](https://github.com/dbmi-bgm/granite/tree/master/examples "examples folder") folder. Please refer to the README in the folder.
+An example input file and usage demonstrations for the VCF parser and filtering utilities are provided in the [examples](https://github.com/dbmi-bgm/granite/tree/master/examples "examples folder") folder. Please refer to the README in the folder.
 
 ## File formats
 The program is compatible with standard BED, BAM and VCF formats (`VCFv4.x`).
