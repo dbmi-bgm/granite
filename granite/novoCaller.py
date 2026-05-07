@@ -802,7 +802,13 @@ def main(args, test=False):
     ''' '''
     # Variables
     is_bam = True if args['bam'] else False
-    is_afthr = True if args['afthr'] else False
+
+    is_afthr = False
+    if args['afthr']:
+        if float(args['afthr']) == 0:
+            sys.exit('\nERROR in parsing arguments: --afthr set to 0, needs to be > 0 \n')
+        else: is_afthr = True
+
     afthr, aftag, aftag_idx = 1., 'novoAF', 0 # novoAF as aftag placeholder if not is_afthr
     ppthr = float(args['ppthr']) if args['ppthr'] else 0.
     afthr_unrelated = float(args['afthr_unrelated']) if args['afthr_unrelated'] else 1.
@@ -853,6 +859,12 @@ def main(args, test=False):
     # Subset trio_files and IDs_trio to exclude additional family members
     trio_files = trio_files[:3]
     IDs_trio = IDs_trio[:3]
+
+    # Checking info files for trio is complete
+    if len(trio_files) != 3:
+        sys.exit('\nERROR in BAMs info file for trio: missing information for some family member\n')
+    #end if
+
     # Sorting trio_files and IDs_trio to have proband last
     #   [child, parent, parent] this is as it is expected in the input file
     #   the code expect instead [parent, parent, child]
@@ -860,11 +872,6 @@ def main(args, test=False):
     trio_files.append(trio_files.pop(0))
     IDs_trio.append(IDs_trio.pop(0))
     # !!!
-
-    # Checking info files for trio is complete
-    if len(trio_files) != 3:
-        sys.exit('\nERROR in BAMs info file for trio: missing information for some family member\n')
-    #end if
 
     # Checking information for trio is complete in the vcf
     for ID in IDs_trio:

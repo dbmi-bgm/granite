@@ -19,8 +19,13 @@
 #################################################################
 import sys, os
 import argparse
+# Version
+from importlib.metadata import version, PackageNotFoundError
+try:
+    __version__ = version("granite-suite")
+except PackageNotFoundError:
+    __version__ = "development"
 # Tools
-from granite import _version
 from granite import novoCaller
 from granite import comHet
 from granite import blackList
@@ -48,7 +53,7 @@ from granite import filterByTag
 def main():
     ''' command line wrapper around available tools '''
     # Adding parser and subparsers
-    parser = argparse.ArgumentParser(prog='granite', description='granite ({0}) is a collection of software to work with genomic variants. The suite provides inheritance mode callers and utilities to filter and refine variants called by other methods in VCF format'.format(_version.__version__))
+    parser = argparse.ArgumentParser(prog='granite', description='granite ({0}) is a collection of software to work with genomic variants. The suite provides inheritance mode callers and utilities to filter and refine variants called by other methods in VCF format'.format(__version__))
     subparsers = parser.add_subparsers(dest='func', metavar="<command>")
 
     # Add novoCaller to subparsers

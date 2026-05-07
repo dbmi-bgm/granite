@@ -28,6 +28,8 @@ novoCaller is a Bayesian calling algorithm for *de novo* mutations. The model us
                             novo calls (>=) [0]
       --afthr AFTHR         threshold to filter by population allele frequency
                             (<=) [1]
+      --afthr_unrelated     threshold to filter by allele frequency calculated
+                            among unrelated (<=) [1]
       --aftag AFTAG         TAG (TAG=<float>) or TAG field to be used to filter by
                             population allele frequency
       --bam                 by default the program expect bgzip and tabix indexed

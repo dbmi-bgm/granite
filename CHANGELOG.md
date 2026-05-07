@@ -1,3 +1,7 @@
+0.5.1
+=====
+* Fixed a potential bug in --impact calculation in comHet
+
 0.5.0
 =====
 * Added filterByTag module

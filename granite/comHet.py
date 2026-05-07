@@ -122,6 +122,7 @@ class VariantHet(object):
             else:
                 if score < tmp_score:
                     tmp_ENST = ENST
+                    tmp_score = score
                 #end if
             #end if
         #end for
